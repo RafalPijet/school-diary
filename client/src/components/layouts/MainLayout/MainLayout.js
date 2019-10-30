@@ -2,9 +2,9 @@ import React from 'react';
 import PageContainer from '../PageContainer/PageContainter';
 import NavBar from '../../features/NavBar/NavBar';
 
-const MainLayout = ({children}) => (
+const MainLayout = ({children, isLogin, loggedUser}) => (
     <PageContainer>
-        <NavBar/>
+        <NavBar isLogin={isLogin} loggedUser={loggedUser}/>
         {children}
     </PageContainer>
 );

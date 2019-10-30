@@ -1,7 +1,7 @@
 import {SET_LOGIN, SET_USER} from "../actions/usersActions";
 
 const initialState = {
-    isLogin: false,
+    isLogin: true,
     user: {}
 };
 
