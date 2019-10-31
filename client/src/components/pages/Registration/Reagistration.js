@@ -1,8 +1,11 @@
 import React from 'react';
+import PageTitle from '../../common/PageTitle/PageTitle';
+import UserForm from '../../features/UserForm/UserFormContainer';
 
 const Registration = () => (
     <div>
-        Registration
+        <PageTitle>Registration</PageTitle>
+        <UserForm/>
     </div>
 );
 

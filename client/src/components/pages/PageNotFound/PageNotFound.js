@@ -1,8 +1,9 @@
 import React from 'react';
+import PageTitle from '../../common/PageTitle/PageTitle';
 
 const PageNotFound = () => (
     <div>
-        PageNotFound - 404
+        <PageTitle>PageNotFound - 404</PageTitle>
     </div>
 );
 

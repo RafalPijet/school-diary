@@ -1,7 +1,10 @@
 import React from 'react';
+import PageTitle from '../../common/PageTitle/PageTitle';
 
 const StudentAttendance = () => (
-    <div>Student Attentdance</div>
+    <div>
+        <PageTitle>Student Attentdance</PageTitle>
+    </div>
 );
 
 export default StudentAttendance;
