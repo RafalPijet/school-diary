@@ -16,7 +16,8 @@ class NavBar extends React.Component {
             {path: "/ratings", title: "Ratings"},
             {path: "/attendance", title: "Attendance"},
             {path: "/data", title: "Student Data"},
-            {path: "/teachers", title: "Teachers"}
+            {path: "/teachers", title: "Teachers"},
+            {path: "/logout", title: "LogOut"}
         ]
     };
 
