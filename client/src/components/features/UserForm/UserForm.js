@@ -20,8 +20,19 @@ class UserForm extends React.Component {
             email: '',
             password: '',
             confirm: ''
-        }
+        },
+        isVisible: true
     };
+
+    componentDidMount() {
+        this.props.resetRequest();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.request.error === null) {
+            this.setState({isVisible: true});
+        }
+    }
 
     handleTextField = event => {
         const {isLogin} = this.props;
@@ -32,26 +43,53 @@ class UserForm extends React.Component {
     };
 
     confirmData = event => {
-        const {loadUser} = this.props;
+        const {loadUser, isLogin, errorRequest, resetRequest} = this.props;
         const {login} = this.state;
         event.preventDefault();
-        loadUser(login);
+
+        if (isLogin) {
+
+            if (login.email.includes('@')) {
+                loadUser(login);
+            } else {
+                errorRequest('You must enter an email adress');
+                setTimeout(() => resetRequest, 4000);
+            }
+        }
+
+    };
+
+    countVisible = error => {
+        const {email} = this.state.login;
+        const {resetRequest} = this.props;
+        setTimeout(() => this.setState({
+            isVisible: false,
+            login: {
+                email: `${(error === 'Wrong password!') ? email : ''}`,
+                password: ''
+            }
+        }), 3000);
+        setTimeout(() => resetRequest(), 4000);
     };
 
     render() {
-        const {login, register} = this.state;
-        const {handleTextField, confirmData} = this;
+        const {login, register, isVisible} = this.state;
+        const {handleTextField, confirmData, countVisible} = this;
         const {isLogin} = this.props;
         const {pending, error, success} = this.props.request;
 
         if (pending) {
             return <Spinner/>
         } else if (!pending && success) {
-            return <Redirect to='/'/>;
+            return <Redirect to='/'/>
+        } else if (!pending && error) {
+            countVisible(error);
+            return <Alert variant={error === 'User don\'t exist!!!' ? 'warning' : 'error'}
+                          isVisible={isVisible}>{error}
+                   </Alert>
         } else {
             return (
                 <form className='form-main'>
-                    <Alert variant='warning' isVisible={true}>WOW sdsd sdfsd  sdfsd sdfsdfsd sdfsf   sdfsdfs sdfsdf</Alert>
                     <TextField hidden={isLogin} label='first name' name='firstName' value={register.firstName}
                                onChange={handleTextField}/>
                     <TextField hidden={isLogin} label='last name' name='lastName' value={register.lastName}
@@ -71,6 +109,8 @@ class UserForm extends React.Component {
 
 UserForm.propTypes = {
     loadUser: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired,
+    errorRequest: PropTypes.func.isRequired,
     isLogin: PropTypes.bool,
     request: PropTypes.object.isRequired
 };
