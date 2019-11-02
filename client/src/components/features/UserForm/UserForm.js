@@ -4,6 +4,7 @@ import TextField from '../../common/TextField/TextField';
 import {Redirect} from "react-router";
 import Button from '../../common/Button/Button';
 import Spinner from '../../common/Spinner/Spinner';
+import Alert from '../../common/Alert/Alert';
 import './UserForm.scss';
 
 class UserForm extends React.Component {
@@ -50,6 +51,7 @@ class UserForm extends React.Component {
         } else {
             return (
                 <form className='form-main'>
+                    <Alert variant='warning' isVisible={true}>WOW sdsd sdfsd  sdfsd sdfsdfsd sdfsf   sdfsdfs sdfsdf</Alert>
                     <TextField hidden={isLogin} label='first name' name='firstName' value={register.firstName}
                                onChange={handleTextField}/>
                     <TextField hidden={isLogin} label='last name' name='lastName' value={register.lastName}

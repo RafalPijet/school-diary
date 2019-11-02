@@ -1,0 +1,42 @@
+@import '../../../styles/settings.scss';
+
+.alert-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.alert-main {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: $color-alert-text;
+  background-color: $color-background;
+  padding: 1rem 0.8rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: $base-size * 25;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  border-radius: $radius-alert;
+
+  svg {
+    margin-right: 20px;
+  }
+
+  &--info {
+    background-color: $color-info-back;
+  }
+
+  &--success {
+    background-color: $color-success-back;
+  }
+
+  &--error {
+    background-color: $color-error-back;
+  }
+
+  &--warning {
+    background-color: $color-warning-back;
+  }
+}
+
