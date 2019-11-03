@@ -1,5 +1,18 @@
+@import "../../../styles/settings";
+
 .form-main {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.user-type {
+  margin-top: $base-size * 2;
+  display: flex;
+  justify-content: space-between;
+  width: 30%;
+
+  select {
+    outline: none;
+  }
 }

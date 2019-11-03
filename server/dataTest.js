@@ -10,8 +10,10 @@ const loadTestData = async () => {
             const user = new User({
                 id: uuid.v4(),
                 status: 'student',
+                subject: '',
                 firstName: 'John',
                 lastName: 'Travolta',
+                birthDate: Date.now(),
                 email: 'travolta@gmail.com',
                 password: 'qqq'
             });

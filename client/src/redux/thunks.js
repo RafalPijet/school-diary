@@ -28,3 +28,18 @@ export const loadUserByLogin = login => {
         }
     }
 };
+
+export const addUser = user => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await axios.post(`${API_URL}/users/add`, user);
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(`Something went wrong.
+             This email address probably already exists: ${err.message}`));
+        }
+    }
+};

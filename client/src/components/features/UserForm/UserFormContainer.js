@@ -1,11 +1,12 @@
 import {connect} from 'react-redux';
-import {loadUserByLogin} from "../../../redux/thunks";
+import {loadUserByLogin, addUser} from "../../../redux/thunks";
 import {getRequest} from "../../../redux/actions/requestActions";
 import {resetRequest, errorRequest} from "../../../redux/actions/requestActions";
 import UserForm from './UserForm';
 
 const mapDispatchToProps = dispatch => ({
     loadUser: login => dispatch(loadUserByLogin(login)),
+    addUser: user => dispatch(addUser(user)),
     resetRequest: () => dispatch(resetRequest()),
     errorRequest: error => dispatch(errorRequest(error))
 });
