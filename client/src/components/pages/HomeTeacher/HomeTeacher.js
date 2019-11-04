@@ -1,10 +1,10 @@
 import React from 'react';
 import PageTitle from '../../common/PageTitle/PageTitle';
 
-const Home = () => (
+const HomeTeacher = () => (
     <div>
-        <PageTitle>Student Home</PageTitle>
+        <PageTitle>Teacher Home</PageTitle>
     </div>
 );
 
-export default Home;
+export default HomeTeacher;

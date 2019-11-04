@@ -12,13 +12,16 @@ import StudentData from './components/pages/StudentData/StudentData';
 import StudentAttendance from './components/pages/StudentAttendance/StudentAttendance';
 import Teachers from './components/pages/Teachers/Teachers';
 import Home from './components/pages/Home/Home';
+import HomeTeacher from './components/pages/HomeTeacher/HomeTeacher';
+import ClassDiaries from './components/pages/ClassDiaries/ClassDiaries';
+import TeacherData from './components/pages/TeacherData/TeacherData';
 import Logout from './components/pages/Logout/Logout';
 
 class App extends React.Component {
   render() {
       const {isLogin, loggedUser} = this.props;
 
-      if (isLogin) {
+      if (isLogin && loggedUser.status === 'student') {
           return (
               <MainLayout isLogin={isLogin} loggedUser={loggedUser}>
                   <Switch>
@@ -27,6 +30,18 @@ class App extends React.Component {
                       <Route path='/attendance' exact component={StudentAttendance}/>
                       <Route path='/data' exact component={StudentData}/>
                       <Route path='/teachers' exact component={Teachers}/>
+                      <Route path='/logout' exact component={Logout}/>
+                      <Route component={PageNotFound}/>
+                  </Switch>
+              </MainLayout>
+          )
+      } else if (isLogin && loggedUser.status === 'teacher') {
+          return (
+              <MainLayout isLogin={isLogin} loggedUser={loggedUser}>
+                  <Switch>
+                      <Route path='/' exact component={HomeTeacher}/>
+                      <Route path='/diaries' exact component={ClassDiaries}/>
+                      <Route path='/data' exact component={TeacherData}/>
                       <Route path='/logout' exact component={Logout}/>
                       <Route component={PageNotFound}/>
                   </Switch>

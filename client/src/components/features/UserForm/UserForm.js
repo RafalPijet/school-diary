@@ -53,7 +53,7 @@ class UserForm extends React.Component {
 
     confirmData = event => {
         const {loadUser, addUser, isLogin, errorRequest, resetRequest} = this.props;
-        const {login, register, userType, subject} = this.state;
+        const {login, register, userType, subject, subjectVisible} = this.state;
         event.preventDefault();
 
         if (isLogin) {
@@ -76,7 +76,7 @@ class UserForm extends React.Component {
                             if (new Date(register.birthDate) < new Date()) {
                                 let user = {
                                     status: userType,
-                                    subject: subject,
+                                    subject: subjectVisible ? subject : '',
                                     firstName: register.firstName,
                                     lastName: register.lastName,
                                     birthDate: new Date(register.birthDate),
@@ -130,8 +130,9 @@ class UserForm extends React.Component {
         } else if (!pending && success) {
 
             if (!isLogin) {
-                return <Alert variant='success' isVisible={isVisible}>The user has been registered</Alert>
+                return <Alert variant='success' isVisible={isVisible}>{`The ${userType} has been registered`}</Alert>
             } else {
+
                 return <Redirect to='/'/>
             }
         } else if (!pending && error) {

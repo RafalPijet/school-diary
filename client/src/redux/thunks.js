@@ -15,8 +15,8 @@ export const loadUserByLogin = login => {
 
                 if (res.data.password === login.password) {
                     await dispatch(stopRequest());
-                    await dispatch(setLogin(true));
                     await dispatch(setUser(res.data));
+                    await dispatch(setLogin(true));
                 } else {
                     dispatch(errorRequest("Wrong password!"));
                 }

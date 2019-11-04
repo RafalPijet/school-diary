@@ -9,7 +9,9 @@ const Logout = props => {
     props.resetRequest();
 
     return (
-        <Redirect to='/'/>
+        <div>
+            <Redirect to='/'/>
+        </div>
 )};
 
 const mapDispatchToProps = dispatch => ({
