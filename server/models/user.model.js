@@ -9,7 +9,15 @@ const User = new Schema({
     lastName: {type: "String", required: true},
     birthDate: {type: "Date", required: true},
     email: {type: "String", required: true, unique: true},
-    password: {type: "String", required: true}
+    password: {type: "String", required: true},
+    students: [{type: Schema.ObjectId, ref: "Student"}]
 });
+
+function populateStudents(next) {
+    this.populate('students');
+    next();
+}
+
+User.pre('findOne', populateStudents);
 
 module.exports = mongoose.model("User", User);
