@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import MainMenu from '../../layouts/MainMenu/MainMenu';
 import Logo from "../../common/Logo/Logo";
 import logo from '../../../images/logo.png';
+import LoggedUser from '../../features/LoggedUser/LoggedUser';
 import '../../features/NavBar/NavBar.scss';
 
 class NavBar extends React.Component {
@@ -29,7 +30,6 @@ class NavBar extends React.Component {
             ],
             activeLink: []
         };
-        // this.linksHandling();
     }
 
     componentDidMount() {
@@ -55,10 +55,15 @@ class NavBar extends React.Component {
 
     render() {
         const {activeLink} = this.state;
+        const {isLogin, loggedUser} = this.props;
         return (
             <div className='navbar-main'>
                 <Logo image={logo} name='logo' style='logo-200'/>
-                <MainMenu links={activeLink}/>
+                <div className='menu-box'>
+                    <MainMenu links={activeLink}/>
+                    <LoggedUser hidden={!isLogin} firstName={isLogin ? loggedUser.firstName : ''}
+                                lastName={isLogin ? loggedUser.lastName : ''}/>
+                </div>
             </div>
         )
     }

@@ -1,9 +1,26 @@
 .logo-200 {
-  width: 250px;
+  width: 320px;
+  height: 90px;
   margin: 0;
 }
 
 .navbar-main {
   display: flex;
   justify-content: space-between;
+}
+
+.menu-box {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+
+  p {
+    padding-right: 12px;
+    font-weight: 500;
+  }
+
+  span {
+    font-weight: 200;
+    font-size: 14px;
+  }
 }
