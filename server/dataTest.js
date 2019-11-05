@@ -36,29 +36,38 @@ const loadTestData = async () => {
                 ratings: [],
                 parents: []
             });
+            const item1 = {
+                value: 6, description: 'For team work', date: Date.now(), teacher: "James Bond"
+            };
+            const item2 = {
+                value: 4, description: 'For home work', date: Date.now(), teacher: "James Bond"
+            };
+            const item3 = {
+                value: 3, description: 'For school test', date: Date.now(), teacher: "James Bond"
+            };
             const rating1 = new Rating({
                 id: uuid.v4(),
                 studentId: student1.id,
                 subject: 'math',
-                ratings: [4, 5]
+                ratings: [item1, item2, item3, item1]
             });
             const rating2 = new Rating({
                 id: uuid.v4(),
                 studentId: student1.id,
                 subject: 'english',
-                ratings: [3, 5, 6]
+                ratings: [item3, item1, item2]
             });
             const rating3 = new Rating({
                 id: uuid.v4(),
                 studentId: student2.id,
                 subject: 'math',
-                ratings: [4, 2, 4]
+                ratings: [item3, item3, item1, item2]
             });
             const rating4 = new Rating({
                 id: uuid.v4(),
                 studentId: student2.id,
                 subject: 'english',
-                ratings: [2, 4, 5]
+                ratings: [item2, item3, item1]
             });
             student1.ratings.push(rating1);
             student1.ratings.push(rating2);
