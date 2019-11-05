@@ -1,6 +1,8 @@
 import React from 'react';
 import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import classnames from 'classnames';
+import RatingSubjectList from '../../features/RatingSubjectList/RatingSubjectList';
+import './RatingBox.scss';
 
 class RatingsBox extends React.Component {
     state = {
@@ -15,6 +17,7 @@ class RatingsBox extends React.Component {
         const {activeTab} = this.state;
         if (activeTab !== tab) this.setState({activeTab: tab});
     };
+
     render() {
         const {students} = this.props.user;
         const {activeTab} = this.state;
@@ -25,7 +28,7 @@ class RatingsBox extends React.Component {
                         return (
                             <NavItem key={i}>
                                 <NavLink
-                                    className={classnames({active: activeTab === i + 1})}
+                                    className={`${classnames({active: activeTab === i + 1})} tab-title`}
                                     onClick={() => {
                                         this.toggle(i + 1);
                                     }}
@@ -40,7 +43,7 @@ class RatingsBox extends React.Component {
                     {students.map((item, i) => {
                         return (
                             <TabPane tabId={i + 1} key={i}>
-                                <h4>{item.ratings.length + " -- " + i}</h4>
+                                <RatingSubjectList student={item}/>
                             </TabPane>
                         )
                     })}
