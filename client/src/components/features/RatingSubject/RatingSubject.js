@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {UncontrolledTooltip} from 'reactstrap';
 import './RatingSubject.scss';
@@ -27,6 +27,10 @@ const RatingSubject = props => {
             </td>
         </tr>
     )
+};
+
+RatingSubject.propTypes = {
+  ratings: PropTypes.object.isRequired
 };
 
 export default RatingSubject;
