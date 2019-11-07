@@ -43,3 +43,17 @@ export const addUser = user => {
         }
     }
 };
+
+export const getAllClassByTeacherId = teacherId => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            let res = await axios.get(`${API_URL}/class/${teacherId}`);
+
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message))
+        }
+    }
+};

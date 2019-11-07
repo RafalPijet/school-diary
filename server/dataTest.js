@@ -2,6 +2,7 @@ const uuid = require('uuid');
 const User = require('./models/user.model');
 const Student = require('./models/student.model');
 const Rating = require('./models/rating.model');
+const Class = require('./models/class.model');
 
 const loadTestData = async () => {
 
@@ -69,6 +70,39 @@ const loadTestData = async () => {
                 subject: 'english',
                 ratings: [item2, item3, item1]
             });
+
+            const user2 = new User({
+                id: uuid.v4(),
+                status: 'teacher',
+                subject: 'english',
+                firstName: 'David',
+                lastName: 'Gahan',
+                birthDate: Date.now(),
+                email: 'david@gmail.com',
+                password: 'qqq',
+                students: []
+            });
+            const user3 = new User({
+                id: uuid.v4(),
+                status: 'teacher',
+                subject: 'polish',
+                firstName: 'Martin',
+                lastName: 'L.Gore',
+                birthDate: Date.now(),
+                email: 'martin@gmail.com',
+                password: 'qqq',
+                students: []
+            });
+            const class1 = new Class({
+                id: uuid.v4(),
+                name: 'Class 8a',
+                mainTeacher: {},
+                subjectTeachers: [],
+                students: []
+            });
+            class1.mainTeacher = user2;
+            class1.subjectTeachers.push(user2);
+            class1.subjectTeachers.push(user3);
             student1.ratings.push(rating1);
             student1.ratings.push(rating2);
             student2.ratings.push(rating3);
@@ -77,6 +111,9 @@ const loadTestData = async () => {
             student2.parents.push(user);
             user.students.push(student1);
             user.students.push(student2);
+            class1.students.push(student1);
+            class1.students.push(student2);
+            class1.save();
             rating1.save();
             rating2.save();
             rating3.save();
@@ -84,6 +121,8 @@ const loadTestData = async () => {
             student1.save();
             student2.save();
             user.save();
+            user2.save();
+            user3.save();
             console.log('Test data has been successfuly loaded');
         }
     } catch (err) {
