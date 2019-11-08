@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {API_URL} from "../config";
 import {setUser, setLogin} from "./actions/usersActions";
+import {loadClassByTeacher} from "./actions/classActions";
 import {startRequest, stopRequest, errorRequest} from "./actions/requestActions";
 
 export const loadUserByLogin = login => {
@@ -44,13 +45,14 @@ export const addUser = user => {
     }
 };
 
-export const getAllClassByTeacherId = teacherId => {
+export const loadAllClassByTeacherId = teacherId => {
     return async dispatch => {
         dispatch(startRequest());
 
         try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class/${teacherId}`);
-
+            dispatch(loadClassByTeacher(res.data));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))

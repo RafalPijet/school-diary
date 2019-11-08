@@ -8,9 +8,9 @@ const loadTestData = async () => {
 
     try {
         const usersAmount = await User.countDocuments();
-        console.log('No users. Loading data...');
 
         if (usersAmount === 0) {
+            console.log('No users. Loading data...');
             const user = new User({
                 id: uuid.v4(),
                 status: 'student',

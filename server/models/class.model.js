@@ -5,12 +5,13 @@ const Class = new Schema({
     id: {type: "String", required: true},
     name: {type: "String", required: true},
     mainTeacher: {type: Schema.ObjectId, ref: "User"},
-    subjectTeachers: [{type: Schema.ObjectId, ref: "User"}],
-    students: [{type: Schema.ObjectId, ref: "User"}]
+    students: [{type: Schema.ObjectId, ref: "Student"}],
+    subjectTeachers: [{type: Schema.ObjectId, ref: "User"}]
 });
 
-function populateMainTeacher() {
-    this.populate('mainTeacher')
+function populateMainTeacher(next) {
+    this.populate('mainTeacher');
+    next();
 }
 
 function populateSubjectTeachers(next) {
@@ -23,7 +24,7 @@ function populateStudents(next) {
     next();
 }
 
-Class.pre('findOne', populateMainTeacher);
+Class.pre('find', populateMainTeacher);
 Class.pre('find', populateSubjectTeachers);
 Class.pre('find', populateStudents);
 
