@@ -6,7 +6,7 @@
   background-color: $color-class-box-back;
   color: $color-background;
   border-radius: $radius;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, .8);
+  box-shadow: $box-shadow;
   cursor: pointer;
   transition: .2s;
 

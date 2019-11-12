@@ -1,0 +1,12 @@
+@import "../../../styles/settings";
+
+.diary-box-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: $base-size * 30;
+  overflow-y: auto;
+  background-color: $color-diary-box-back;
+  box-shadow: $box-shadow;
+  border-radius: $radius;
+}

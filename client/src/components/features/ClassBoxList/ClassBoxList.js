@@ -15,9 +15,17 @@ class ClassBoxList extends React.Component {
         const {classes, request} = this.props;
 
         if (request.pending) {
-            return <Spinner/>
+            return (
+                <div className="empty-space">
+                    <Spinner/>
+                </div>
+            )
         } else if (!request.pending && request.error) {
-            return <Alert variant="error" isVisible={true}>{request.error}</Alert>
+            return (
+                <div className="empty-space">
+                    <Alert variant="error" isVisible={true}>{request.error}</Alert>
+                </div>
+            )
         } else {
             return (
                 <ul className="box-list-main">

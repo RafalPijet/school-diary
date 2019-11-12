@@ -6,6 +6,7 @@ import {getRequest} from "../../../redux/actions/requestActions";
 import {loadAllClassByTeacherId} from "../../../redux/thunks";
 import PageTitle from '../../common/PageTitle/PageTitle';
 import ClassBoxList from '../../features/ClassBoxList/ClassBoxList';
+import DiaryBox from '../../features/DiaryBox/DiaryBoxContainer';
 
 const ClassDiaries = props => {
     const {loadClasses, user, classes, request} = props;
@@ -14,6 +15,7 @@ const ClassDiaries = props => {
             <PageTitle>Class Diaries</PageTitle>
             <ClassBoxList classes={classes} user={user}
                           loadClasses={loadClasses} request={request}/>
+            <DiaryBox/>
         </div>
     )
 };
