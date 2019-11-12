@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ClassBox from '../../features/ClassBox/ClassBox';
+import ClassBox from '../../features/ClassBox/ClassBoxContainer';
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
 import './ClassBoxList.scss';

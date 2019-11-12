@@ -7,9 +7,19 @@ class ClassBox extends React.Component {
         isActive: false
     };
 
+    componentDidMount() {
+        const {selectedClass, diary} = this.props;
+        selectedClass.id === diary.id ? this.setState({isActive: true}) : this.setState({isActive: false});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        nextProps.selectedClass.id !== this.props.diary.id ? this.setState({isActive: false}) :
+            this.setState({isActive: true});
+    }
+
     activeHandling = () => {
-        this.setState({isActive: true});
-        setTimeout(() => console.log(this.state.isActive), 1000);
+        const {setSelectedClass, diary} = this.props;
+        setSelectedClass(diary);
     };
 
     render() {
@@ -27,7 +37,9 @@ class ClassBox extends React.Component {
 }
 
 ClassBox.propTypes = {
-    diary: PropTypes.object.isRequired
+    diary: PropTypes.object.isRequired,
+    selectedClass: PropTypes.object.isRequired,
+    setSelectedClass: PropTypes.func.isRequired
 };
 
 export default ClassBox;
