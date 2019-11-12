@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import ClassBox from '../../features/ClassBox/ClassBox';
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
+import './ClassBoxList.scss';
 
 class ClassBoxList extends React.Component {
     constructor(props) {
         super(props);
         this.props.loadClasses(this.props.user.id);
-        console.log('wow');
     }
 
     render() {
@@ -20,7 +20,7 @@ class ClassBoxList extends React.Component {
             return <Alert variant="error" isVisible={true}>{request.error}</Alert>
         } else {
             return (
-                <ul>
+                <ul className="box-list-main">
                     {classes.map((diary, i) => {
                         return <ClassBox key={i} diary={diary}/>
                     })}

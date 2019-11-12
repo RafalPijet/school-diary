@@ -1,0 +1,21 @@
+@import "../../../styles/settings";
+
+.box-main {
+  padding: $base-size;
+  margin: $base-size;
+  background-color: $color-class-box-back;
+  color: $color-background;
+  border-radius: $radius;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, .8);
+  cursor: pointer;
+  transition: .2s;
+
+  &:active {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 1);
+  }
+}
+
+.box-active {
+  box-shadow: 0 0 0 rgba(0, 0, 0, 1);
+  background-color: $color-class-box-active;
+}
