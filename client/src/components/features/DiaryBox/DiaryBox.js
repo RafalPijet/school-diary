@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Alert from '../../common/Alert/Alert';
+import DiaryList from '../../features/DiaryList/DiaryList';
 import './DiaryBox.scss';
 
 class DiaryBox extends React.Component {
@@ -23,7 +24,7 @@ class DiaryBox extends React.Component {
         } else if (Object.entries(selectedClass).length !== 0) {
             return (
                 <div className="diary-box-main">
-                    Diary Box
+                    <DiaryList selectedClass={selectedClass}/>
                 </div>
             )
         }

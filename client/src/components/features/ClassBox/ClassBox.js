@@ -28,7 +28,7 @@ class ClassBox extends React.Component {
         const {isActive} = this.state;
         return (
             <li className={`box-main ${isActive ? 'box-active' : ''}`} onClick={() => activeHandling()}>
-                <h4 className="text-center">{name}</h4>
+                <h4 className="text-center font-weight-bold">{name}</h4>
                 <h6>{`class teacher: ${mainTeacher.firstName} ${mainTeacher.lastName}`}</h6>
                 <h6 className="text-center">{`students: ${students.length}`}</h6>
             </li>
