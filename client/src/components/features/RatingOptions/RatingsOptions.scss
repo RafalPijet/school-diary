@@ -1,0 +1,21 @@
+@import "../../../styles/settings";
+
+.options-main {
+  display: flex;
+  align-items: center;
+
+  .plus-or-minus {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    span {
+      width: 2rem;
+      height: 1.5rem;
+      display: inherit;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
+

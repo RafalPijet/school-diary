@@ -7,7 +7,7 @@ import './DiaryBox.scss';
 class DiaryBox extends React.Component {
 
     render() {
-        const {request, selectedClass} = this.props;
+        const {request, selectedClass, teacher} = this.props;
 
         if (request.pending) {
             return (
@@ -24,7 +24,7 @@ class DiaryBox extends React.Component {
         } else if (Object.entries(selectedClass).length !== 0) {
             return (
                 <div className="diary-box-main">
-                    <DiaryList selectedClass={selectedClass}/>
+                    <DiaryList selectedClass={selectedClass} teacher={teacher}/>
                 </div>
             )
         }
@@ -33,7 +33,8 @@ class DiaryBox extends React.Component {
 
 DiaryBox.propTypes = {
     request: PropTypes.object.isRequired,
-    selectedClass: PropTypes.object.isRequired
+    selectedClass: PropTypes.object.isRequired,
+    teacher: PropTypes.object.isRequired
 };
 
 export default DiaryBox;
