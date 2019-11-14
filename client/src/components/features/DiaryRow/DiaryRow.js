@@ -9,7 +9,8 @@ class DiaryRow extends React.Component {
     state = {
         studentRatings: [],
         isNewRating: false,
-        studentId: ""
+        studentId: "",
+        plusOrMinus: null
     };
 
     componentDidMount() {
@@ -43,10 +44,14 @@ class DiaryRow extends React.Component {
         });
     };
 
+    plusOrMinusHandling = event => {
+        this.setState({plusOrMinus: event.target.value})
+    };
+
     render() {
         const {student, i} = this.props;
         const {studentRatings, isNewRating, studentId} = this.state;
-        const {addRating} = this;
+        const {addRating, plusOrMinusHandling} = this;
 
         return (
             <tr>
@@ -57,7 +62,7 @@ class DiaryRow extends React.Component {
                 })}
                 <span className='buttons-main'>
                     <Button variant="success" title="Add rating" onClick={addRating}>{isNewRating ? 'Enter' : 'Add'}</Button>
-                    <RatingOptions hidden={!isNewRating} studentId={studentId}/>
+                    <RatingOptions plusOrMinus={plusOrMinusHandling} hidden={!isNewRating} studentId={studentId}/>
                 </span>
                 </td>
             </tr>
