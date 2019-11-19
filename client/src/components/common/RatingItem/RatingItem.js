@@ -5,7 +5,6 @@ class RatingItem extends React.Component {
     state = {
         value: "",
         inputType: "text",
-        possibleRatings: ["1", "1+", "2-", "2", "2+", "3-", "3", "3+", "4-", "4", "4+", "5-", "5", "5+", "6-", "6"]
     };
 
     componentDidMount() {
@@ -13,12 +12,28 @@ class RatingItem extends React.Component {
         this.setState({value: rating.value});
     }
 
+    componentWillReceiveProps(nextProps) {
+
+        // if (this.state.inputType === "text") {
+            console.log(nextProps.rating);
+            this.setState({value: nextProps.rating.value});
+        // }
+    }
+
     valueHandling = event => {
         this.setState({value: event.target.value})
     };
 
     typeHandling = isNumber => {
-        isNumber ? this.setState({inputType: "number"}) : this.setState({inputType: "text"})
+        const {ratingValueHandling} = this.props;
+        const {value} = this.state;
+        // isNumber ? this.setState({inputType: "number"}) : this.setState({inputType: "text"});
+
+        if (!isNumber) {
+            ratingValueHandling(value);
+        } else {
+            this.setState({inputType: "number"});
+        }
     };
 
     render() {
@@ -34,7 +49,8 @@ class RatingItem extends React.Component {
 }
 
 RatingItem.propTypes = {
-    rating: PropTypes.object.isRequired
+    rating: PropTypes.object.isRequired,
+    ratingValueHandling: PropTypes.func.isRequired
 };
 
 export default RatingItem;

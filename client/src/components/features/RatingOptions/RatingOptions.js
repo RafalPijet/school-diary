@@ -9,6 +9,8 @@ class RatingOptions extends React.Component {
             <div className='options-main' hidden={hidden}>
                 <div className='plus-or-minus'>
                     <span>+<input onChange={event => plusOrMinus(event)} type='radio' name={studentId} value="+"/></span>
+                    <span>=<input onChange={event => plusOrMinus(event)} type='radio' name={studentId} value=""
+                                  defaultChecked={true}/></span>
                     <span>-<input onChange={event => plusOrMinus(event)} type='radio' name={studentId} value="-"/></span>
                 </div>
             </div>
