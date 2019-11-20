@@ -1,7 +1,7 @@
 import React from 'react';
 import {Table} from 'reactstrap';
 import PropTypes from 'prop-types';
-import DiaryRow from '../../features/DiaryRow/DiaryRow';
+import DiaryRow from '../../features/DiaryRow/DiaryRowContainer';
 
 const DiaryList = props => {
     const {students} = props.selectedClass;

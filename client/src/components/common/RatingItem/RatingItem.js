@@ -13,31 +13,31 @@ class RatingItem extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({value: nextProps.rating.value});
 
+        if (!nextProps.isNewRating.isNew) {
+            this.setState({
+                inputType: "text",
+                value: nextProps.rating.value
+            })
+        }
     }
 
     valueHandling = event => {
-        this.setState({value: event.target.value})
-    };
+        const {setRatingValue, isNewRating} = this.props;
+        this.setState({value: event.target.value});
 
-    typeHandling = isNumber => {
-        const {ratingValueHandling} = this.props;
-        const {value} = this.state;
-        isNumber ? this.setState({inputType: "number"}) : this.setState({inputType: "text"});
-
-        if (!isNumber) {
-            ratingValueHandling(value);
+        if (isNewRating.isNew) {
+            setRatingValue(event.target.value);
         }
     };
 
     render() {
         const {value, inputType} = this.state;
-        const {valueHandling, typeHandling} = this;
+        const {valueHandling} = this;
         return (
             <span>
-                <input type={inputType} onClick={() => typeHandling(true)} style={{width: "2rem"}} value={value}
-                       onChange={valueHandling} onBlur={() => typeHandling(false)} min={1} max={6}/>
+                <input type={inputType} onClick={() => this.setState({inputType: "number"})} style={{width: "2rem"}} value={value}
+                       onChange={valueHandling} min={1} max={6}/>
             </span>
         )
     }
@@ -45,7 +45,8 @@ class RatingItem extends React.Component {
 
 RatingItem.propTypes = {
     rating: PropTypes.object.isRequired,
-    ratingValueHandling: PropTypes.func.isRequired
+    isNewRating: PropTypes.object.isRequired,
+    setRatingValue: PropTypes.func.isRequired
 };
 
 export default RatingItem;
