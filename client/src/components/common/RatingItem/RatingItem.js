@@ -13,11 +13,8 @@ class RatingItem extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        this.setState({value: nextProps.rating.value});
 
-        // if (this.state.inputType === "text") {
-            console.log(nextProps.rating);
-            this.setState({value: nextProps.rating.value});
-        // }
     }
 
     valueHandling = event => {
@@ -27,12 +24,10 @@ class RatingItem extends React.Component {
     typeHandling = isNumber => {
         const {ratingValueHandling} = this.props;
         const {value} = this.state;
-        // isNumber ? this.setState({inputType: "number"}) : this.setState({inputType: "text"});
+        isNumber ? this.setState({inputType: "number"}) : this.setState({inputType: "text"});
 
         if (!isNumber) {
             ratingValueHandling(value);
-        } else {
-            this.setState({inputType: "number"});
         }
     };
 

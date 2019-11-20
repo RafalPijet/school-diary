@@ -3,11 +3,13 @@ import thunk from 'redux-thunk';
 import user from './reducers/usersReducer';
 import request from './reducers/requestReducer';
 import classes from './reducers/classReducer';
+import values from './reducers/valuesReducer';
 
 const reducers = combineReducers({
     user,
     request,
-    classes
+    classes,
+    values
 });
 
 const store = createStore(reducers, compose(
