@@ -59,12 +59,27 @@ class DiaryRow extends React.Component {
         setIsNewRating(true, studentId);
     };
 
+    cancelHandling = () => {
+        const {studentRatings} = this.state;
+        const {setIsNewRating, setIsPlus, setRatingValue, setDescription, setScales} = this.props;
+        studentRatings.pop();
+        this.setState({studentRatings: studentRatings});
+        setIsNewRating(false, "");
+        setIsPlus(null);
+        setRatingValue("");
+        setDescription("");
+        setScales(1);
+    };
+
     enterRating = () => {
         const {ratingValue, plusOrMinus, studentRatings} = this.state;
-        const {setIsNewRating, setIsPlus, setRatingValue, selectedDescription,
-            selectedScales, setDescription, setScales} = this.props;
+        const {
+            setIsNewRating, setIsPlus, setRatingValue, selectedDescription,
+            selectedScales, setDescription, setScales
+        } = this.props;
 
-        if (ratingValue !== '') {
+        if (ratingValue !== '' && (plusOrMinus !== "+" || ratingValue !== "6")
+            && (plusOrMinus !== "-" || ratingValue !== "1")) {
             let newRating = studentRatings[studentRatings.length - 1];
             newRating.value = ratingValue + plusOrMinus;
             newRating.description = selectedDescription;
@@ -82,7 +97,7 @@ class DiaryRow extends React.Component {
     render() {
         const {student, i, isNewRating, setRatingValue} = this.props;
         const {studentRatings, studentId} = this.state;
-        const {addRating, enterRating} = this;
+        const {addRating, enterRating, cancelHandling} = this;
 
         return (
             <tr>
@@ -97,7 +112,7 @@ class DiaryRow extends React.Component {
                             onClick={(isNewRating.isNew && isNewRating.studentId === studentId) ? enterRating : addRating}>
                         {(isNewRating.isNew && isNewRating.studentId === studentId) ? 'Enter' : 'Add'}</Button>
                     <RatingOptions hidden={!(isNewRating.isNew && isNewRating.studentId === studentId)}
-                                   studentId={studentId}/>
+                                   studentId={studentId} cancelHandling={cancelHandling}/>
                 </span>
                 </td>
             </tr>

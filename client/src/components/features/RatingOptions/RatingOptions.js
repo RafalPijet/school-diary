@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Button from '../../common/Button/Button';
 import './RatingsOptions.scss';
 
 class RatingOptions extends React.Component {
@@ -29,7 +30,7 @@ class RatingOptions extends React.Component {
     };
 
     render() {
-        const {hidden, ratingDescriptions, ratingScales} = this.props;
+        const {hidden, ratingDescriptions, ratingScales, ratingValue, cancelHandling} = this.props;
         const {halfValue, descValue, scaleValue} = this.state;
         const {selectHandling} = this;
         return (
@@ -48,8 +49,8 @@ class RatingOptions extends React.Component {
                                 title="select +/-">
                             <optgroup label="half">
                                 <option value=""></option>
-                                <option value={true}>+</option>
-                                <option value={false}>-</option>
+                                <option hidden={ratingValue === '6'} value={true}>+</option>
+                                <option hidden={ratingValue === '1'} value={false}>-</option>
                             </optgroup>
                         </select>
                         <select value={scaleValue} name="scaleValue" onChange={selectHandling}
@@ -62,6 +63,7 @@ class RatingOptions extends React.Component {
                         </select>
                     </div>
                 </div>
+                <Button variant="danger" title="abort adding rating" onClick={cancelHandling}>Cancel</Button>
             </div>
         )
     }
@@ -75,7 +77,9 @@ RatingOptions.propTypes = {
     ratingDescriptions: PropTypes.array.isRequired,
     ratingScales: PropTypes.array.isRequired,
     setDescription: PropTypes.func.isRequired,
-    setScales: PropTypes.func.isRequired
+    setScales: PropTypes.func.isRequired,
+    ratingValue: PropTypes.string.isRequired,
+    cancelHandling: PropTypes.func.isRequired
 };
 
 export default RatingOptions;

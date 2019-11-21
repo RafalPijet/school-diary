@@ -5,6 +5,7 @@ import {
     getIsNewRating,
     getRatingDescriptions,
     getRatingScales,
+    getRatingValue,
     setDescription,
     setScales
 } from "../../../redux/actions/valuesActions";
@@ -18,7 +19,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
     isNewRating: getIsNewRating(state),
     ratingDescriptions: getRatingDescriptions(state),
-    ratingScales: getRatingScales(state)
+    ratingScales: getRatingScales(state),
+    ratingValue: getRatingValue(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RatingOptions);
