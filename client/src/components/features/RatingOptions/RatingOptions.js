@@ -4,59 +4,63 @@ import './RatingsOptions.scss';
 
 class RatingOptions extends React.Component {
     state = {
-        plus: false,
-        empty: true,
-        minus: false
+        halfValue: '',
+        descValue: this.props.ratingDescriptions[0],
+        scaleValue: this.props.ratingScales[0]
     };
 
     componentWillReceiveProps(nextProps) {
 
         if (!nextProps.isNewRating.isNew) {
             this.setState({
-                plus: false,
-                empty: true,
-                minus: false
+                halfValue: '',
+                descValue: nextProps.ratingDescriptions[0],
+                scaleValue: nextProps.ratingScales[0]
             })
         }
     }
 
-    changeHandling = event => {
-        const {setIsPlus} = this.props;
-        if (event.target.id === 'plus') {
-            this.setState({
-                plus: true,
-                empty: false,
-                minus: false
-            })
-        } else if (event.target.id === 'minus') {
-            this.setState({
-                plus: false,
-                empty: false,
-                minus: true
-            })
-        } else {
-            this.setState({
-                plus: false,
-                empty: true,
-                minus: false
-            })
-        }
-        setIsPlus(event.target.value);
+    selectHandling = async event => {
+        const {setIsPlus, setDescription, setScales} = this.props;
+        await this.setState({[event.target.name]: event.target.value});
+        await setIsPlus(this.state.halfValue);
+        await setDescription(this.state.descValue);
+        await setScales(this.state.scaleValue)
     };
 
     render() {
-        const {studentId, hidden} = this.props;
-        const {plus, empty, minus} = this.state;
-        const {changeHandling} = this;
+        const {hidden, ratingDescriptions, ratingScales} = this.props;
+        const {halfValue, descValue, scaleValue} = this.state;
+        const {selectHandling} = this;
         return (
             <div className='options-main' hidden={hidden}>
-                <div className='plus-or-minus'>
-                    <span>+<input onChange={changeHandling} type='radio' name={studentId}
-                                  value={true} checked={plus} title="value +" id='plus'/></span>
-                    <span>=<input onChange={changeHandling} type='radio' name={studentId}
-                                  value={'undefined'} checked={empty} title="only value" id='empty'/></span>
-                    <span>-<input onChange={changeHandling} type='radio' name={studentId}
-                                  value={false} checked={minus} title="value -" id='minus'/></span>
+                <div className="select-main">
+                    <select value={descValue} name="descValue" onChange={selectHandling}
+                            title="select description of rating">
+                        <optgroup label="description">
+                            {ratingDescriptions.map((desc, i) => {
+                                return <option key={i} value={desc}>{desc}</option>
+                            })}
+                        </optgroup>
+                    </select>
+                    <div className="second-row">
+                        <select value={halfValue} name="halfValue" onChange={selectHandling}
+                                title="select +/-">
+                            <optgroup label="half">
+                                <option value=""></option>
+                                <option value={true}>+</option>
+                                <option value={false}>-</option>
+                            </optgroup>
+                        </select>
+                        <select value={scaleValue} name="scaleValue" onChange={selectHandling}
+                                title="select scales of rating">
+                            <optgroup label="scales">
+                                {ratingScales.map((scales, i) => {
+                                    return <option key={i} value={scales}>{scales}</option>
+                                })}
+                            </optgroup>
+                        </select>
+                    </div>
                 </div>
             </div>
         )
@@ -67,7 +71,11 @@ RatingOptions.propTypes = {
     studentId: PropTypes.string.isRequired,
     hidden: PropTypes.bool.isRequired,
     setIsPlus: PropTypes.func.isRequired,
-    isNewRating: PropTypes.object
+    isNewRating: PropTypes.object,
+    ratingDescriptions: PropTypes.array.isRequired,
+    ratingScales: PropTypes.array.isRequired,
+    setDescription: PropTypes.func.isRequired,
+    setScales: PropTypes.func.isRequired
 };
 
 export default RatingOptions;

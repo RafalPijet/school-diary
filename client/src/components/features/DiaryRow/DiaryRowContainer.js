@@ -6,19 +6,27 @@ import {
     getIsNewRating,
     setRatingValue,
     getRatingValue,
-    setIsPlus
+    setIsPlus,
+    setDescription,
+    setScales,
+    getSelectedDescription,
+    getSelectedScales
 } from "../../../redux/actions/valuesActions";
 
 const mapStateToProps = state => ({
     isPlus: getIsPlus(state),
     isNewRating: getIsNewRating(state),
-    getRatingValue: getRatingValue(state)
+    ratingValue: getRatingValue(state),
+    selectedDescription: getSelectedDescription(state),
+    selectedScales: getSelectedScales(state)
 });
 
 const mapDispatchToProps = dispatch => ({
     setIsNewRating: (isNewRating, studentId) => dispatch(setIsNewRating(isNewRating, studentId)),
     setRatingValue: value => dispatch(setRatingValue(value)),
-    setIsPlus: isPlus => dispatch(setIsPlus(isPlus))
+    setIsPlus: isPlus => dispatch(setIsPlus(isPlus)),
+    setDescription: desc => dispatch(setDescription(desc)),
+    setScales: value => dispatch(setScales(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiaryRow);

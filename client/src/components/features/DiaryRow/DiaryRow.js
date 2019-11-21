@@ -39,7 +39,7 @@ class DiaryRow extends React.Component {
         }
 
         if (nextProps.isNewRating.isNew) {
-            this.setState({ratingValue: nextProps.getRatingValue});
+            this.setState({ratingValue: nextProps.ratingValue});
         }
     }
 
@@ -49,6 +49,7 @@ class DiaryRow extends React.Component {
         let rating = {
             value: "",
             description: "",
+            scales: 1,
             date: new Date(),
             teacher: `${teacher.firstName} ${teacher.lastName}`
         };
@@ -60,16 +61,21 @@ class DiaryRow extends React.Component {
 
     enterRating = () => {
         const {ratingValue, plusOrMinus, studentRatings} = this.state;
-        const {setIsNewRating, setIsPlus, setRatingValue} = this.props;
+        const {setIsNewRating, setIsPlus, setRatingValue, selectedDescription,
+            selectedScales, setDescription, setScales} = this.props;
 
         if (ratingValue !== '') {
             let newRating = studentRatings[studentRatings.length - 1];
             newRating.value = ratingValue + plusOrMinus;
+            newRating.description = selectedDescription;
+            newRating.scales = selectedScales;
             studentRatings[studentRatings.length - 1] = newRating;
             this.setState({studentRatings: studentRatings});
             setIsNewRating(false, "");
             setIsPlus(null);
-            setRatingValue("")
+            setRatingValue("");
+            setDescription("");
+            setScales(1);
         }
     };
 
@@ -87,7 +93,7 @@ class DiaryRow extends React.Component {
                                        setRatingValue={setRatingValue}/>
                 })}
                     <span className='buttons-main'>
-                    <Button variant="success" title="Add rating"
+                    <Button variant="success" title={isNewRating.isNew ? "Enter rating" : "Add rating"}
                             onClick={(isNewRating.isNew && isNewRating.studentId === studentId) ? enterRating : addRating}>
                         {(isNewRating.isNew && isNewRating.studentId === studentId) ? 'Enter' : 'Add'}</Button>
                     <RatingOptions hidden={!(isNewRating.isNew && isNewRating.studentId === studentId)}
@@ -108,7 +114,11 @@ DiaryRow.propTypes = {
     setIsNewRating: PropTypes.func.isRequired,
     setRatingValue: PropTypes.func.isRequired,
     isNewRating: PropTypes.object.isRequired,
-    getRatingValue: PropTypes.string.isRequired
+    ratingValue: PropTypes.string.isRequired,
+    selectedDescription: PropTypes.string.isRequired,
+    selectedScales: PropTypes.number.isRequired,
+    setDescription: PropTypes.func.isRequired,
+    setScales: PropTypes.func.isRequired
 };
 
 export default DiaryRow;
