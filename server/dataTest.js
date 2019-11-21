@@ -74,13 +74,13 @@ const loadTestData = async () => {
                 parents: []
             });
             const item1 = {
-                value: "6", description: 'For team work', date: Date.now(), teacher: "David Gahan"
+                value: "6", description: 'For team work', scales: 3, date: Date.now(), teacher: "David Gahan"
             };
             const item2 = {
-                value: "4", description: 'For home work', date: Date.now(), teacher: "David Gahan"
+                value: "4", description: 'For home work', scales: 2, date: Date.now(), teacher: "David Gahan"
             };
             const item3 = {
-                value: "3+", description: 'For school test', date: Date.now(), teacher: "Martin L.Gore"
+                value: "3+", description: 'For school test', scales: 1, date: Date.now(), teacher: "Martin L.Gore"
             };
             const rating1 = new Rating({
                 id: uuid.v4(),
