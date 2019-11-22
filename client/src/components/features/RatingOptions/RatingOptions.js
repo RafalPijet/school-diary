@@ -10,6 +10,10 @@ class RatingOptions extends React.Component {
         scaleValue: this.props.ratingScales[0]
     };
 
+    componentDidMount() {
+        this.setDefaultState();
+    }
+
     componentWillReceiveProps(nextProps) {
 
         if (!nextProps.isNewRating.isNew) {
@@ -17,9 +21,18 @@ class RatingOptions extends React.Component {
                 halfValue: '',
                 descValue: nextProps.ratingDescriptions[0],
                 scaleValue: nextProps.ratingScales[0]
-            })
+            });
+            this.setDefaultState();
         }
     }
+
+    setDefaultState = () => {
+        const {setIsPlus, setDescription, setScales} = this.props;
+        const {halfValue, descValue, scaleValue} = this.state;
+        setIsPlus(halfValue);
+        setDescription(descValue);
+        setScales(scaleValue);
+    };
 
     selectHandling = async event => {
         const {setIsPlus, setDescription, setScales} = this.props;

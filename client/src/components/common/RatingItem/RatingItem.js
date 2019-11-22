@@ -5,11 +5,18 @@ class RatingItem extends React.Component {
     state = {
         value: "",
         inputType: "text",
+        description: "",
+        style: "color-black"
     };
 
     componentDidMount() {
         const {rating} = this.props;
-        this.setState({value: rating.value});
+        const {setColors} = this;
+        this.setState({
+            value: rating.value,
+            description: rating.description,
+        });
+        setColors(rating);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -20,7 +27,24 @@ class RatingItem extends React.Component {
                 value: nextProps.rating.value
             })
         }
+
+        if (nextProps.rating.description !== "") {
+            this.setState({
+                description: nextProps.rating.description
+            })
+        }
+        this.setColors(nextProps.rating);
     }
+
+    setColors = rating => {
+        if (rating.scales === 2) {
+            this.setState({style: "color-blue"});
+        } else if (rating.scales === 3) {
+            this.setState({style: "color-red"});
+        } else {
+            this.setState({style: "color-black"});
+        }
+    };
 
     valueHandling = event => {
         const {setRatingValue, isNewRating} = this.props;
@@ -32,11 +56,12 @@ class RatingItem extends React.Component {
     };
 
     render() {
-        const {value, inputType} = this.state;
+        const {value, inputType, description, style} = this.state;
         const {valueHandling} = this;
+
         return (
             <span>
-                <input type={inputType} onClick={() => this.setState({inputType: "number"})} style={{width: "2rem"}} value={value}
+                <input className={style} disabled={description !== ""} type={inputType} onClick={() => this.setState({inputType: "number"})} style={{width: "2rem"}} value={value}
                        onChange={valueHandling} min={1} max={6}/>
             </span>
         )

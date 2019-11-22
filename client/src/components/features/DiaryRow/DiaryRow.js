@@ -44,19 +44,22 @@ class DiaryRow extends React.Component {
     }
 
     addRating = () => {
-        const {teacher, setIsNewRating} = this.props;
+        const {teacher, setIsNewRating, isNewRating} = this.props;
         const {studentId} = this.state;
-        let rating = {
-            value: "",
-            description: "",
-            scales: 1,
-            date: new Date(),
-            teacher: `${teacher.firstName} ${teacher.lastName}`
-        };
-        this.setState({
-            studentRatings: [...this.state.studentRatings, rating]
-        });
-        setIsNewRating(true, studentId);
+
+        if (!isNewRating.isNew) {
+            let rating = {
+                value: "",
+                description: "",
+                scales: 1,
+                date: new Date(),
+                teacher: `${teacher.firstName} ${teacher.lastName}`
+            };
+            this.setState({
+                studentRatings: [...this.state.studentRatings, rating]
+            });
+            setIsNewRating(true, studentId);
+        }
     };
 
     cancelHandling = () => {
@@ -108,7 +111,9 @@ class DiaryRow extends React.Component {
                                        setRatingValue={setRatingValue}/>
                 })}
                     <span className='buttons-main'>
-                    <Button variant="success" title={isNewRating.isNew ? "Enter rating" : "Add rating"}
+                    <Button disabled={isNewRating.isNew && studentId !== isNewRating.studentId}
+                            variant={(isNewRating.isNew && studentId !== isNewRating.studentId) ? "off" : "success"}
+                            title={isNewRating.isNew ? "Enter rating" : "Add rating"}
                             onClick={(isNewRating.isNew && isNewRating.studentId === studentId) ? enterRating : addRating}>
                         {(isNewRating.isNew && isNewRating.studentId === studentId) ? 'Enter' : 'Add'}</Button>
                     <RatingOptions hidden={!(isNewRating.isNew && isNewRating.studentId === studentId)}
