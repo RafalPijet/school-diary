@@ -16,19 +16,12 @@ class DiaryRow extends React.Component {
 
     componentDidMount() {
         const {student, teacher} = this.props;
-        student.ratings.forEach(item => {
-
-            if (teacher.subject === item.subject) {
-                this.setState({
-                    studentRatings: item.ratings,
-                    ratingsId: item.id,
-                    studentId: student.id
-                });
-            }
-        });
+        const {actualizeRatings} = this;
+        actualizeRatings(student, teacher)
     }
 
     componentWillReceiveProps(nextProps) {
+        const {actualizeRatings} = this;
 
         if (nextProps.isPlus !== null) {
             nextProps.isPlus ? this.setState({plusOrMinus: "+"}) : this.setState({plusOrMinus: "-"})
@@ -39,7 +32,24 @@ class DiaryRow extends React.Component {
         if (nextProps.isNewRating.isNew) {
             this.setState({ratingValue: nextProps.ratingValue});
         }
+
+        if (!nextProps.isNewRating.isNew) {
+            actualizeRatings(nextProps.student, nextProps.teacher);
+        }
     }
+
+    actualizeRatings = (student, teacher) => {
+        student.ratings.forEach(item => {
+
+            if (teacher.subject === item.subject) {
+                this.setState({
+                    studentRatings: item.ratings,
+                    ratingsId: item.id,
+                    studentId: student.id
+                });
+            }
+        });
+    };
 
     addRating = () => {
         const {teacher, setIsNewRating, isNewRating} = this.props;
@@ -81,7 +91,7 @@ class DiaryRow extends React.Component {
 
         if (ratingValue !== '' && (plusOrMinus !== "+" || ratingValue !== "6")
             && (plusOrMinus !== "-" || ratingValue !== "1")) {
-            let newRating = studentRatings[studentRatings.length - 1];
+            let newRating = studentRatings.pop();
             newRating.value = ratingValue + plusOrMinus;
             newRating.description = selectedDescription;
             newRating.scales = selectedScales;
@@ -90,8 +100,6 @@ class DiaryRow extends React.Component {
                 ratingsId: ratingsId
             };
             addRating(dataPackage);
-            studentRatings[studentRatings.length - 1] = newRating;
-            this.setState({studentRatings: studentRatings});
             setIsNewRating(false, "");
             setIsPlus(null);
             setRatingValue("");
@@ -101,7 +109,7 @@ class DiaryRow extends React.Component {
     };
 
     render() {
-        const {student, i, isNewRating, setRatingValue} = this.props;
+        const {student, i, isNewRating, setRatingValue, request} = this.props;
         const {studentRatings, studentId} = this.state;
         const {addRating, enterRating, cancelHandling} = this;
 
@@ -114,8 +122,8 @@ class DiaryRow extends React.Component {
                                        setRatingValue={setRatingValue}/>
                 })}
                     <span className='buttons-main'>
-                    <Button disabled={isNewRating.isNew && studentId !== isNewRating.studentId}
-                            variant={(isNewRating.isNew && studentId !== isNewRating.studentId) ? "off" : "success"}
+                    <Button disabled={(isNewRating.isNew && studentId !== isNewRating.studentId) || request.adding}
+                            variant={((isNewRating.isNew && studentId !== isNewRating.studentId) || request.adding) ? "off" : "success"}
                             title={isNewRating.isNew ? "Enter rating" : "Add rating"}
                             onClick={(isNewRating.isNew && isNewRating.studentId === studentId) ? enterRating : addRating}>
                         {(isNewRating.isNew && isNewRating.studentId === studentId) ? 'Enter' : 'Add'}</Button>
@@ -142,7 +150,8 @@ DiaryRow.propTypes = {
     selectedScales: PropTypes.number.isRequired,
     setDescription: PropTypes.func.isRequired,
     setScales: PropTypes.func.isRequired,
-    addRating: PropTypes.func.isRequired
+    addRating: PropTypes.func.isRequired,
+    request: PropTypes.object.isRequired
 };
 
 export default DiaryRow;

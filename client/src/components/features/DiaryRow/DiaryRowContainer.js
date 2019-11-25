@@ -12,6 +12,7 @@ import {
     getSelectedDescription,
     getSelectedScales
 } from "../../../redux/actions/valuesActions";
+import {getRequest} from "../../../redux/actions/requestActions";
 import {addRatingForStudent} from "../../../redux/thunks";
 
 const mapStateToProps = state => ({
@@ -19,7 +20,8 @@ const mapStateToProps = state => ({
     isNewRating: getIsNewRating(state),
     ratingValue: getRatingValue(state),
     selectedDescription: getSelectedDescription(state),
-    selectedScales: getSelectedScales(state)
+    selectedScales: getSelectedScales(state),
+    request: getRequest(state)
 });
 
 const mapDispatchToProps = dispatch => ({

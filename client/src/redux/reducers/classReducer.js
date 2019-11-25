@@ -1,4 +1,4 @@
-import {LOAD_CLASS_BY_TEACHER_ID, SELECT_CLASS} from "../actions/classActions";
+import {LOAD_CLASS_BY_TEACHER_ID, SELECT_CLASS, ADD_RATING_TO_STUDENT} from "../actions/classActions";
 
 const initialState = {
     teacherAllClass: [],
@@ -11,6 +11,16 @@ const reducer = (state = initialState, action) => {
             return {...state, teacherAllClass: action.allClass};
         case SELECT_CLASS:
             return {...state, selectedClass: action.diary};
+        case ADD_RATING_TO_STUDENT:
+            let selectedStudent = state.selectedClass.students.find(student => student.id === action.rating.studentId);
+            selectedStudent.ratings = selectedStudent.ratings.map(rating => {
+
+                if (rating.id === action.rating.id) {
+                    return action.rating
+                } else {
+                    return rating
+                }
+            });
         default:
             return state;
     }

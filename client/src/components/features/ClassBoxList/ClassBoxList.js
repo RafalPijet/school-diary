@@ -26,6 +26,12 @@ class ClassBoxList extends React.Component {
                     <Alert variant="error" isVisible={true}>{request.error}</Alert>
                 </div>
             )
+        } else if (request.adding) {
+            return (
+                <div className="alert-working">
+                    <Alert variant="info" isVisible={true}>Adding rating...</Alert>
+                </div>
+            )
         } else {
             return (
                 <ul className="box-list-main">
