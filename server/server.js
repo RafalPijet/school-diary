@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const loadTestData = require('./dataTest');
 const userRouter = require('./routes/user.routes');
 const classRouter = require('./routes/class.routes');
+const ratingRouter = require('./routes/rating.routes');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use('/api', userRouter);
 app.use('/api', classRouter);
+app.use('/api', ratingRouter);
 
 mongoose.connect('mongodb://localhost:27017/school-diary', {useNewUrlParser: true});
 let db = mongoose.connection;

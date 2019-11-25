@@ -9,24 +9,22 @@ class DiaryRow extends React.Component {
     state = {
         studentRatings: [],
         studentId: "",
+        ratingsId: "",
         ratingValue: "",
         plusOrMinus: ""
     };
 
     componentDidMount() {
         const {student, teacher} = this.props;
-        let result = [];
         student.ratings.forEach(item => {
 
             if (teacher.subject === item.subject) {
-                result = item.ratings.map(rating => {
-                    return rating;
-                })
+                this.setState({
+                    studentRatings: item.ratings,
+                    ratingsId: item.id,
+                    studentId: student.id
+                });
             }
-        });
-        this.setState({
-            studentRatings: result,
-            studentId: student.id
         });
     }
 
@@ -51,7 +49,7 @@ class DiaryRow extends React.Component {
             let rating = {
                 value: "",
                 description: "",
-                scales: 1,
+                scales: 0,
                 date: new Date(),
                 teacher: `${teacher.firstName} ${teacher.lastName}`
             };
@@ -75,10 +73,10 @@ class DiaryRow extends React.Component {
     };
 
     enterRating = () => {
-        const {ratingValue, plusOrMinus, studentRatings} = this.state;
+        const {ratingValue, plusOrMinus, studentRatings, ratingsId} = this.state;
         const {
             setIsNewRating, setIsPlus, setRatingValue, selectedDescription,
-            selectedScales, setDescription, setScales
+            selectedScales, setDescription, setScales, addRating
         } = this.props;
 
         if (ratingValue !== '' && (plusOrMinus !== "+" || ratingValue !== "6")
@@ -87,6 +85,11 @@ class DiaryRow extends React.Component {
             newRating.value = ratingValue + plusOrMinus;
             newRating.description = selectedDescription;
             newRating.scales = selectedScales;
+            let dataPackage = {
+                rating: newRating,
+                ratingsId: ratingsId
+            };
+            addRating(dataPackage);
             studentRatings[studentRatings.length - 1] = newRating;
             this.setState({studentRatings: studentRatings});
             setIsNewRating(false, "");
@@ -138,7 +141,8 @@ DiaryRow.propTypes = {
     selectedDescription: PropTypes.string.isRequired,
     selectedScales: PropTypes.number.isRequired,
     setDescription: PropTypes.func.isRequired,
-    setScales: PropTypes.func.isRequired
+    setScales: PropTypes.func.isRequired,
+    addRating: PropTypes.func.isRequired
 };
 
 export default DiaryRow;

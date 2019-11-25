@@ -59,3 +59,18 @@ export const loadAllClassByTeacherId = teacherId => {
         }
     }
 };
+
+export const addRatingForStudent = dataPackage => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
+            console.log(res.data);
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message))
+        }
+    }
+}

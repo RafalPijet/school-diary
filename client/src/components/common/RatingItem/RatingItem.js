@@ -38,11 +38,13 @@ class RatingItem extends React.Component {
 
     setColors = rating => {
         if (rating.scales === 2) {
-            this.setState({style: "color-blue"});
+            this.setState({style: "color-orange"});
         } else if (rating.scales === 3) {
             this.setState({style: "color-red"});
+        } else if (rating.scales === 1) {
+            this.setState({style: "color-yellow"});
         } else {
-            this.setState({style: "color-black"});
+            this.setState({style: "color-black"})
         }
     };
 
