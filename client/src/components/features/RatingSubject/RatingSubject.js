@@ -3,18 +3,31 @@ import PropTypes from 'prop-types';
 import {UncontrolledTooltip} from 'reactstrap';
 import './RatingSubject.scss';
 
-const RatingSubject = props => {
-    const {ratings} = props;
-    return (
-        <tr>
-            <th>{ratings.subject}</th>
-            <td>
-                {ratings.ratings.map((item, i) => {
-                    let number = Math.round(Math.random() * 10000000);
-                    return (
-                        <span key={i}>
-                        <span id={"Tooltip" + number}>{`${item.value}, `}</span>
-                        <UncontrolledTooltip placement='right' target={"Tooltip" + number}>
+class RatingSubject extends React.Component {
+
+    setColors = scales => {
+
+        if (scales === 2) {
+            return "color-orange";
+        } else if (scales === 3) {
+            return "color-red";
+        } else {
+            return "color-yellow";
+        }
+    };
+
+    render() {
+        const {ratings} = this.props;
+        const {setColors} = this;
+        return (
+            <tr>
+                <th>{ratings.subject}</th>
+                <td>
+                    {ratings.ratings.map((item, i) => {
+                        return (
+                            <span key={i}>
+                        <span className={`rating-item ${setColors(item.scales)}`} id={"Tooltip" + i}>{item.value}</span>
+                        <UncontrolledTooltip placement='right' target={"Tooltip" + i}>
                             <div>
                                 <p className="m-0 text-justify">{`scales: ${item.scales}`}</p>
                                 <p className="m-0 text-justify">{`description: ${item.description}`}</p>
@@ -23,15 +36,16 @@ const RatingSubject = props => {
                             </div>
                         </UncontrolledTooltip>
                     </span>
-                    )
-                })}
-            </td>
-        </tr>
-    )
-};
+                        )
+                    })}
+                </td>
+            </tr>
+        )
+    }
+}
 
 RatingSubject.propTypes = {
-  ratings: PropTypes.object.isRequired
+    ratings: PropTypes.object.isRequired
 };
 
 export default RatingSubject;

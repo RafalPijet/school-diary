@@ -6,7 +6,7 @@ const RatingSubjectList = props => {
     const {student} = props;
     return (
         <div>
-            <Table striped>
+            <Table dark>
                 <tbody>
                 {student.ratings.map(item => {
                     return <RatingSubject key={item.id} ratings={item}/>

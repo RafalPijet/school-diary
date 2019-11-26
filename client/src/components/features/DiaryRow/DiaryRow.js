@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {UncontrolledTooltip} from 'reactstrap';
 import RatingItem from '../../common/RatingItem/RatingItem';
 import Button from '../../common/Button/Button';
 import RatingOptions from '../../features/RatingOptions/RatingOptionsContainer';
@@ -118,8 +119,19 @@ class DiaryRow extends React.Component {
                 <td style={{width: "1rem"}}>{i + 1}</td>
                 <td style={{width: "20rem"}}>{`${student.firstName} ${student.lastName}`}</td>
                 <td>{studentRatings.map((rating, index) => {
-                    return <RatingItem key={index} rating={rating} isNewRating={isNewRating}
-                                       setRatingValue={setRatingValue}/>
+                    return (
+                        <span key={"item" + index} id={"Tooltip" + index}>
+                            <RatingItem rating={rating} isNewRating={isNewRating}
+                                        setRatingValue={setRatingValue}/>
+                            <UncontrolledTooltip placement='right' target={"Tooltip" + index}>
+                                <div>
+                                    <p className="m-0 text-justify">{`scales: ${rating.scales}`}</p>
+                                    <p className="m-0 text-justify">{`description: ${rating.description}`}</p>
+                                    <p className="m-0 text-justify">{`date: ${!isNewRating.isNew ? rating.date.substring(0, 10) : rating.date}`}</p>
+                                </div>
+                            </UncontrolledTooltip>
+                        </span>
+                    )
                 })}
                     <span className='buttons-main'>
                     <Button disabled={(isNewRating.isNew && studentId !== isNewRating.studentId) || request.adding}
