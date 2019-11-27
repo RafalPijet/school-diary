@@ -41,6 +41,16 @@ const loadTestData = async () => {
                 email: 'deniro@gmail.com',
                 password: 'qqq'
             });
+            const principal = new User({
+                id: uuid.v4(),
+                status: 'principal',
+                subject: '',
+                firstName: 'Rafal',
+                lastName: 'Pijet',
+                birthDate: Date.now(),
+                email: 'principal@gmail.com',
+                password: 'qqq'
+            });
             const student1 = new Student({
                 id: uuid.v4(),
                 firstName: 'Jenifer',
@@ -209,6 +219,7 @@ const loadTestData = async () => {
             user3.save();
             user4.save();
             user5.save();
+            principal.save();
             console.log('Test data has been successfuly loaded');
         }
     } catch (err) {

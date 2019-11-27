@@ -123,11 +123,11 @@ class DiaryRow extends React.Component {
                         <span key={"item" + index} id={"Tooltip" + index}>
                             <RatingItem rating={rating} isNewRating={isNewRating}
                                         setRatingValue={setRatingValue}/>
-                            <UncontrolledTooltip placement='right' target={"Tooltip" + index}>
+                            <UncontrolledTooltip placement='top' target={"Tooltip" + index}>
                                 <div>
                                     <p className="m-0 text-justify">{`scales: ${rating.scales}`}</p>
                                     <p className="m-0 text-justify">{`description: ${rating.description}`}</p>
-                                    <p className="m-0 text-justify">{`date: ${!isNewRating.isNew ? rating.date.substring(0, 10) : rating.date}`}</p>
+                                    <p className="m-0 text-justify">{`date: ${!isNewRating.isNew ? rating.date.substring(0, 10) : ""}`}</p>
                                 </div>
                             </UncontrolledTooltip>
                         </span>

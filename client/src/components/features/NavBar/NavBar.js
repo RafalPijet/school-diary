@@ -28,6 +28,13 @@ class NavBar extends React.Component {
                 {path: "/data", title: "Teacher data"},
                 {path: "/logout", title: "LogOut"}
             ],
+            principalLinks: [
+                {path: "/", title: "Home"},
+                {path: "/classes", title: "Classes"},
+                {path: "/teachers", title: "Teachers"},
+                {path: "/students", title: "Students"},
+                {path: "/logout", title: "LogOut"}
+            ],
             activeLink: []
         };
     }
@@ -42,12 +49,14 @@ class NavBar extends React.Component {
     }
 
     linksHandling = (isLogin, loggedUser) => {
-        const {loginLinks, studentLinks, teacherLinks} = this.state;
+        const {loginLinks, studentLinks, teacherLinks, principalLinks} = this.state;
 
         if (isLogin && loggedUser.status === 'student') {
             this.setState({activeLink: studentLinks})
         } else if (isLogin && loggedUser.status === 'teacher') {
             this.setState({activeLink: teacherLinks})
+        } else if (isLogin && loggedUser.status === 'principal') {
+            this.setState({activeLink: principalLinks})
         } else {
             this.setState({activeLink: loginLinks})
         }

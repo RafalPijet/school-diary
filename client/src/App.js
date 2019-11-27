@@ -15,6 +15,10 @@ import Home from './components/pages/Home/Home';
 import HomeTeacher from './components/pages/HomeTeacher/HomeTeacher';
 import ClassDiaries from './components/pages/ClassDiaries/ClassDiaries';
 import TeacherData from './components/pages/TeacherData/TeacherData';
+import HomePrincipal from './components/pages/HomePrincipal/HomePrincipal';
+import Classes from './components/pages/Classes/Classes';
+import TeachersConfig from './components/pages/TeachersConfig/TeachersConfig';
+import Students from './components/pages/Students/Students';
 import Logout from './components/pages/Logout/Logout';
 
 class App extends React.Component {
@@ -44,6 +48,18 @@ class App extends React.Component {
                       <Route path='/data' exact component={TeacherData}/>
                       <Route path='/logout' exact component={Logout}/>
                       <Route component={PageNotFound}/>
+                  </Switch>
+              </MainLayout>
+          )
+      } else if (isLogin && loggedUser.status === 'principal') {
+          return (
+              <MainLayout isLogin={isLogin} loggedUser={loggedUser}>
+                  <Switch>
+                      <Route path='/' exact component={HomePrincipal}/>
+                      <Route path='/classes' exact component={Classes}/>
+                      <Route path='/teachers' exact component={TeachersConfig}/>
+                      <Route path='/students' exact component={Students}/>
+                      <Route path='/logout' exact component={Logout}/>
                   </Switch>
               </MainLayout>
           )

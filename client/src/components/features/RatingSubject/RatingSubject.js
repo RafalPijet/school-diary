@@ -27,7 +27,7 @@ class RatingSubject extends React.Component {
                         return (
                             <span key={i}>
                         <span className={`rating-item ${setColors(item.scales)}`} id={"Tooltip" + i}>{item.value}</span>
-                        <UncontrolledTooltip placement='right' target={"Tooltip" + i}>
+                        <UncontrolledTooltip placement='top' target={"Tooltip" + i}>
                             <div>
                                 <p className="m-0 text-justify">{`scales: ${item.scales}`}</p>
                                 <p className="m-0 text-justify">{`description: ${item.description}`}</p>
