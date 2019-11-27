@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {API_URL} from "../config";
 import {setUser, setLogin} from "./actions/usersActions";
-import {loadClassByTeacher, addRatingToStudent} from "./actions/classActions";
+import {loadClassByTeacher, addRatingToStudent, loadAllClasses} from "./actions/classActions";
 import {startRequest, stopRequest, errorRequest, startAddingRequest, stopAddingRequest} from "./actions/requestActions";
 
 export const loadUserByLogin = login => {
@@ -41,6 +41,20 @@ export const addUser = user => {
         } catch (err) {
             dispatch(errorRequest(`Something went wrong.
              This email address probably already exists: ${err.message}`));
+        }
+    }
+};
+
+export const loadAllClassesRequest = () => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            let res = await axios.get(`${API_URL}/class`);
+            dispatch(loadAllClasses(res.data));
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };

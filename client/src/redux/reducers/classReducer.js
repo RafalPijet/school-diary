@@ -1,6 +1,7 @@
-import {LOAD_CLASS_BY_TEACHER_ID, SELECT_CLASS, ADD_RATING_TO_STUDENT} from "../actions/classActions";
+import {LOAD_CLASS_BY_TEACHER_ID, SELECT_CLASS, ADD_RATING_TO_STUDENT, LOAD_ALL_CLASSES} from "../actions/classActions";
 
 const initialState = {
+    allClasses: [],
     teacherAllClass: [],
     selectedClass: {}
 };
@@ -9,6 +10,8 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_CLASS_BY_TEACHER_ID:
             return {...state, teacherAllClass: action.allClass};
+        case LOAD_ALL_CLASSES:
+            return {...state, allClasses: action.allClass};
         case SELECT_CLASS:
             return {...state, selectedClass: action.diary};
         case ADD_RATING_TO_STUDENT:

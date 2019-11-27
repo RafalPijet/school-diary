@@ -14,7 +14,16 @@ exports.getClassByTeacherId = async (req, res) => {
                 }
             })
         });
-        res.status(200).json(result)
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.getAllClasses = async (req, res) => {
+
+    try {
+        res.status(200).json(await Class.find());
     } catch (err) {
         res.status(500).json(err);
     }
