@@ -11,7 +11,7 @@ const reducer = (state = initialState, action) => {
         case LOAD_CLASS_BY_TEACHER_ID:
             return {...state, teacherAllClass: action.allClass};
         case LOAD_ALL_CLASSES:
-            return {...state, allClasses: action.allClass};
+            return {...state, allClasses: action.allClasses};
         case SELECT_CLASS:
             return {...state, selectedClass: action.diary};
         case ADD_RATING_TO_STUDENT:
@@ -24,6 +24,7 @@ const reducer = (state = initialState, action) => {
                     return rating
                 }
             });
+            break;
         default:
             return state;
     }

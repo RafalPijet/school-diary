@@ -50,6 +50,7 @@ export const loadAllClassesRequest = () => {
         dispatch(startRequest());
 
         try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class`);
             dispatch(loadAllClasses(res.data));
             dispatch(stopRequest());
