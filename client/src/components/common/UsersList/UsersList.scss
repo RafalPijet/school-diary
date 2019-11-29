@@ -1,0 +1,12 @@
+@import "../../../styles/settings";
+
+.user-column {
+  display: inline-flex;
+  flex-direction: column;
+  width: fit-content;
+  padding: 10px;
+}
+
+.user-row {
+  color: #353b48;
+}
