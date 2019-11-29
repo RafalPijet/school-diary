@@ -7,7 +7,7 @@ const UsersList = props => {
     return (
         <div className={`user-column ${color}`}>
             {users.map((user, i) => {
-                return <p className='user-row' key={i}>{`${i + 1}. ${user.firstName} ${user.lastName}`}</p>
+                return <p className='user-row' key={i}>{`${i + 1}. ${user.firstName} ${user.lastName}${user.subject ? ` - ${user.subject}` : ''}`}</p>
             })}
         </div>
     )
