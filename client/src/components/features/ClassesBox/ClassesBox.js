@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
+import ClassItem from '../../features/ClassItem/ClassItem';
 
 class ClassesBox extends React.Component {
     componentDidMount() {
@@ -9,8 +10,8 @@ class ClassesBox extends React.Component {
     }
 
     render() {
-        const {request} = this.props;
-
+        const {request, allClasses} = this.props;
+        
         if (request.pending) {
             return <Spinner/>
         } else if(request.error !== null) {
@@ -18,7 +19,9 @@ class ClassesBox extends React.Component {
         } else {
             return (
                 <div>
-                    ClassesBox
+                    {allClasses.map(classItem => {
+                        return <ClassItem key={classItem.id} classItem={classItem}/>
+                    })}
                 </div>
             )
         }
@@ -27,7 +30,8 @@ class ClassesBox extends React.Component {
 
 ClassesBox.propTypes = {
     loadAllClasses: PropTypes.func.isRequired,
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    allClasses: PropTypes.array.isRequired
 };
 
 export default ClassesBox;
