@@ -4,14 +4,17 @@ import {
     ERROR_REQUEST,
     RESET_REQUEST,
     START_ADDING_REQUEST,
-    STOP_ADDING_REQUEST
+    STOP_ADDING_REQUEST,
+    START_WORKING_REQUEST,
+    STOP_WORKING_REQUEST
 } from "../actions/requestActions";
 
 const initialState = {
     pending: false,
     error: null,
     success: null,
-    adding: false
+    adding: false,
+    working: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,13 +24,17 @@ const reducer = (state = initialState, action) => {
         case STOP_REQUEST:
             return {...state, pending: false, error: null, success: true, adding: false};
         case ERROR_REQUEST:
-            return {...state, pending: false, error: action.error, success: false, adding: false};
+            return {...state, pending: false, error: action.error, success: false, adding: false, working: false};
         case RESET_REQUEST:
-            return {...state, pending: false, error: null, success: null, adding: false};
+            return {...state, pending: false, error: null, success: null, adding: false, working: false};
         case START_ADDING_REQUEST:
-            return {...state, pending: false, error: null, success: true, adding: true};
+            return {...state, pending: false, error: null, success: true, adding: true, working: false};
         case STOP_ADDING_REQUEST:
-            return {...state, pending: false, error: null, success: true, adding: false};
+            return {...state, pending: false, error: null, success: true, adding: false, working: false};
+        case START_WORKING_REQUEST:
+            return {...state, pending: false, error: null, success: true, adding: false, working: true};
+        case STOP_WORKING_REQUEST:
+            return {...state, pending: false, error: null, success: true, adding: false, working: false};
         default:
             return state
 

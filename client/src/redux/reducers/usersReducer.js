@@ -1,7 +1,8 @@
-import {SET_LOGIN, SET_USER} from "../actions/usersActions";
+import {SET_LOGIN, SET_USER, LOAD_TEACHERS} from "../actions/usersActions";
 
 const initialState = {
     isLogin: true,
+    teachers: [],
     user: {
         students: [],
         _id: "5dde40899f03ed9b4de5e5f1)",
@@ -23,6 +24,8 @@ const reducer = (state = initialState, action) => {
             return {...state, isLogin: action.isLogin};
         case SET_USER:
             return {...state, user: action.user};
+        case LOAD_TEACHERS:
+            return {...state, teachers: action.teachers};
         default:
             return state
     }

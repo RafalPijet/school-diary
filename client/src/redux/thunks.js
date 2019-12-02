@@ -1,8 +1,16 @@
 import axios from 'axios';
 import {API_URL} from "../config";
-import {setUser, setLogin} from "./actions/usersActions";
+import {setUser, setLogin, loadTeachers} from "./actions/usersActions";
 import {loadClassByTeacher, addRatingToStudent, loadAllClasses} from "./actions/classActions";
-import {startRequest, stopRequest, errorRequest, startAddingRequest, stopAddingRequest} from "./actions/requestActions";
+import {
+    startRequest,
+    stopRequest,
+    errorRequest,
+    startAddingRequest,
+    stopAddingRequest,
+    startWorkingRequest,
+    stopWorkingRequest
+} from "./actions/requestActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -86,6 +94,21 @@ export const addRatingForStudent = dataPackage => {
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
+        }
+    }
+};
+
+export const loadTeachersRequest = () => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/users/teachers`);
+            dispatch(loadTeachers(res.data));
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };

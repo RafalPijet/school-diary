@@ -20,3 +20,14 @@ exports.addUser = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.getTeachers = async (req, res) => {
+
+    try {
+        let users = await User.find();
+        let teachers = users.filter(user => user.status === 'teacher');
+        res.status(200).json(teachers);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

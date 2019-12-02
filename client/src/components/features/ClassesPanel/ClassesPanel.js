@@ -5,9 +5,14 @@ import './ClassesPanel.scss';
 
 class ClassesPanel extends React.Component {
     state = {
-        name: '',
+        name: 'Class ',
         isVisible: false
     };
+
+    componentDidMount() {
+        const {loadTeachers} = this.props;
+        loadTeachers();
+    }
 
     nameHandling = event => (
         this.setState({name: event.target.value})
@@ -18,9 +23,10 @@ class ClassesPanel extends React.Component {
     };
 
     render() {
-        const {allClasses} = this.props;
+        const {allClasses, request} = this.props;
         const {name, isVisible} = this.state;
         const {nameHandling, buttonHandling} = this;
+
         return (
             <div className='panel-main'>
                 <h4>{`classes amount: ${allClasses.length}`}</h4>
@@ -32,14 +38,17 @@ class ClassesPanel extends React.Component {
                         </optgroup>
                     </select>
                 </span>
-                <Button variant='success' onClick={buttonHandling}>{isVisible ? 'Add class' : 'New class'}</Button>
+                <Button disabled={request.working} variant={request.working ? 'off' : 'success'}
+                        onClick={buttonHandling}>{isVisible ? 'Add class' : 'New class'}</Button>
             </div>
         )
     }
 }
 
 ClassesPanel.propTypes = {
-    allClasses: PropTypes.array.isRequired
+    allClasses: PropTypes.array.isRequired,
+    request: PropTypes.object.isRequired,
+    loadTeachers: PropTypes.func.isRequired
 };
 
 export default ClassesPanel;

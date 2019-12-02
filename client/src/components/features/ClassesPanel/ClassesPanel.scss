@@ -1,5 +1,9 @@
 @import "../../../styles/settings";
 
+button {
+  outline: none !important;
+}
+
 .panel-main {
   display: flex;
   justify-content: space-between;
