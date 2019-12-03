@@ -112,3 +112,14 @@ export const loadTeachersRequest = () => {
         }
     }
 };
+
+export const addClass = payload => {
+    return async dispatch => {
+
+        try {
+
+        } catch (err) {
+
+        }
+    }
+};

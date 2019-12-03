@@ -28,3 +28,11 @@ exports.getAllClasses = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.addClass = async (req, res) => {
+    try {
+
+    } catch (err) {
+
+    }
+};
