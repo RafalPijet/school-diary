@@ -113,13 +113,16 @@ export const loadTeachersRequest = () => {
     }
 };
 
-export const addClass = payload => {
+export const addClassRequest = payload => {
     return async dispatch => {
+        dispatch(startAddingRequest());
 
         try {
-
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await axios.post(`${API_URL}/class`, payload);
+            dispatch(stopAddingRequest());
         } catch (err) {
-
+            dispatch(errorRequest(err.message))
         }
     }
 };

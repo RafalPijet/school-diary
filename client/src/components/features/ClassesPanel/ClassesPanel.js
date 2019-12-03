@@ -8,7 +8,8 @@ class ClassesPanel extends React.Component {
         name: 'Class ',
         isVisible: false,
         mainTeacher: {},
-        availableTeachers: []
+        availableTeachers: [],
+        buttonStyle: 'success'
     };
 
     componentDidMount() {
@@ -34,9 +35,12 @@ class ClassesPanel extends React.Component {
         if (availableTeachers.length) this.setState({mainTeacher: availableTeachers[0]});
     };
 
-    formHandling = event => {
-        event.target.name === 'mainTeacher' ?  this.setState({[event.target.name]: JSON.parse(event.target.value)}) :
-        this.setState({[event.target.name]: event.target.value});
+    formHandling = async event => {
+        const {checkClassName} = this;
+        event.target.name === 'mainTeacher' ?  await this.setState({[event.target.name]: JSON.parse(event.target.value)}) :
+        await this.setState({[event.target.name]: event.target.value});
+
+        (checkClassName(this.state.name)) ? this.setState({buttonStyle: 'success'}) : this.setState({buttonStyle: 'danger'});
     };
 
     checkClassName = name => {
@@ -50,33 +54,39 @@ class ClassesPanel extends React.Component {
         return result;
     };
 
-    buttonHandling = () => {
-        const {isVisible, name, mainTeacher} = this.state;
+    buttonHandling = async () => {
+        const {isVisible, mainTeacher} = this.state;
         const {checkClassName} = this;
+        const {addClass, request, loadAllClasses} = this.props;
 
-        if (!isVisible) this.setState({isVisible: true});
+        if (!isVisible) this.setState({isVisible: true, buttonStyle: 'danger'});
 
-        if (isVisible && checkClassName(name)) {
+        if (isVisible && checkClassName(this.state.name)) {
             let payload = {
-                name: name,
+                name: this.state.name,
                 mainTeacher: mainTeacher
             };
-            this.setState({isVisible: false});
+            await addClass(payload);
+
+            if (!request.adding) {
+                await loadAllClasses();
+                await this.setState({isVisible: false});
+            }
         }
     };
 
     render() {
         const {allClasses, request} = this.props;
-        const {name, isVisible, mainTeacher, availableTeachers} = this.state;
+        const {name, isVisible, mainTeacher, availableTeachers, buttonStyle} = this.state;
         const {formHandling, buttonHandling} = this;
 
         return (
             <div className='panel-main'>
                 <h4>{`classes amount: ${allClasses.length}`}</h4>
-                <span hidden={!isVisible}>name: <input name='name' type="text" value={name}
+                <span hidden={!isVisible}>name: <input disabled={request.adding} name='name' type="text" value={name}
                                                        onChange={formHandling}/></span>
                 <span hidden={!isVisible}>
-                    <select name="mainTeacher" value={JSON.stringify(mainTeacher)} onChange={formHandling}>
+                    <select disabled={request.adding} name="mainTeacher" value={JSON.stringify(mainTeacher)} onChange={formHandling}>
                         <optgroup label='main teachers available'>
                             {availableTeachers.map((item, i) => {
                                 return <option key={i} value={JSON.stringify(item)}>{`${item.firstName} ${item.lastName}`}</option>
@@ -84,7 +94,8 @@ class ClassesPanel extends React.Component {
                         </optgroup>
                     </select>
                 </span>
-                <Button disabled={request.working} variant={request.working ? 'off' : 'success'}
+                <Button disabled={request.working || request.adding || request.pending}
+                        variant={(request.working || request.adding || request.pending) ? 'off' : `${buttonStyle}`}
                         onClick={buttonHandling}>{isVisible ? 'Add class' : 'New class'}</Button>
             </div>
         )
@@ -95,7 +106,9 @@ ClassesPanel.propTypes = {
     allClasses: PropTypes.array.isRequired,
     request: PropTypes.object.isRequired,
     loadTeachers: PropTypes.func.isRequired,
-    teachers: PropTypes.array.isRequired
+    teachers: PropTypes.array.isRequired,
+    addClass: PropTypes.func.isRequired,
+    loadAllClasses: PropTypes.func.isRequired
 };
 
 export default ClassesPanel;

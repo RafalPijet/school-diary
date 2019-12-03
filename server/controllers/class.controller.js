@@ -1,3 +1,4 @@
+const uuid = require('uuid');
 const Class = require('../models/class.model');
 
 exports.getClassByTeacherId = async (req, res) => {
@@ -31,8 +32,10 @@ exports.getAllClasses = async (req, res) => {
 
 exports.addClass = async (req, res) => {
     try {
-
+        let newClass = new Class(req.body);
+        newClass.id = uuid.v4();
+        res.status(200).json(await newClass.save());
     } catch (err) {
-
+        res.status(500).json(err);
     }
 };
