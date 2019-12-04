@@ -37,8 +37,8 @@ class ClassesPanel extends React.Component {
 
     formHandling = async event => {
         const {checkClassName} = this;
-        event.target.name === 'mainTeacher' ?  await this.setState({[event.target.name]: JSON.parse(event.target.value)}) :
-        await this.setState({[event.target.name]: event.target.value});
+        event.target.name === 'mainTeacher' ? await this.setState({[event.target.name]: JSON.parse(event.target.value)}) :
+            await this.setState({[event.target.name]: event.target.value});
 
         (checkClassName(this.state.name)) ? this.setState({buttonStyle: 'success'}) : this.setState({buttonStyle: 'danger'});
     };
@@ -47,9 +47,9 @@ class ClassesPanel extends React.Component {
         const {allClasses} = this.props;
         let result = true;
         allClasses.forEach(item => {
-           if (item.name === name || name === 'Class ') {
-               result = false;
-           }
+            if (item.name === name || name === 'Class ') {
+                result = false;
+            }
         });
         return result;
     };
@@ -75,10 +75,14 @@ class ClassesPanel extends React.Component {
         }
     };
 
+    cancelHandling = () => {
+        this.setState({isVisible: false, buttonStyle: 'success'})
+    };
+
     render() {
         const {allClasses, request} = this.props;
         const {name, isVisible, mainTeacher, availableTeachers, buttonStyle} = this.state;
-        const {formHandling, buttonHandling} = this;
+        const {formHandling, buttonHandling, cancelHandling, checkClassName} = this;
 
         return (
             <div className='panel-main'>
@@ -86,17 +90,22 @@ class ClassesPanel extends React.Component {
                 <span hidden={!isVisible}>name: <input disabled={request.adding} name='name' type="text" value={name}
                                                        onChange={formHandling}/></span>
                 <span hidden={!isVisible}>
-                    <select disabled={request.adding} name="mainTeacher" value={JSON.stringify(mainTeacher)} onChange={formHandling}>
-                        <optgroup label='main teachers available'>
+                    <select disabled={request.adding} name="mainTeacher" value={JSON.stringify(mainTeacher)}
+                            onChange={formHandling}>
+                        <optgroup label={availableTeachers.length ? 'main teachers available' : 'main teachers not available'}>
                             {availableTeachers.map((item, i) => {
-                                return <option key={i} value={JSON.stringify(item)}>{`${item.firstName} ${item.lastName}`}</option>
+                                return <option key={i}
+                                               value={JSON.stringify(item)}>{`${item.firstName} ${item.lastName}`}</option>
                             })}
                         </optgroup>
                     </select>
                 </span>
+                <Button hidden={!isVisible} variant='primary' onClick={cancelHandling}>Cancel</Button>
                 <Button disabled={request.working || request.adding || request.pending}
                         variant={(request.working || request.adding || request.pending) ? 'off' : `${buttonStyle}`}
-                        onClick={buttonHandling}>{isVisible ? 'Add class' : 'New class'}</Button>
+                        onClick={buttonHandling} title={(!checkClassName(this.state.name) && isVisible) ?
+                    'the name of class is not available...' : 'Add new class'}>{isVisible ? 'Add class' : 'New class'}
+                </Button>
             </div>
         )
     }
