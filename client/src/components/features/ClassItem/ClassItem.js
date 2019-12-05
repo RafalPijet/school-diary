@@ -6,6 +6,10 @@ import './ClassItem.scss';
 
 class ClassItem extends React.Component {
 
+    stopPropagation = e => {
+        e.stopPropagation();
+    };
+
     render() {
         const {classItem} = this.props;
         return (
@@ -20,6 +24,13 @@ class ClassItem extends React.Component {
                             <div className='users-box'>
                                 <UsersList users={classItem.students} color='students-back'/>
                                 <UsersList users={classItem.subjectTeachers} color='teachers-back'/>
+                                <div>
+                                    <select name="studentsAvailable" onClick={this.stopPropagation}>
+                                        <optgroup label='students available'>
+
+                                        </optgroup>
+                                    </select>
+                                </div>
                             </div>
                         </CardBody>
                     </Card>
