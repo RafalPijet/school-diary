@@ -6,18 +6,16 @@ import './ClassItem.scss';
 
 class ClassItem extends React.Component {
 
-    stopPropagation = e => {
-        e.stopPropagation();
-    };
-
     render() {
         const {classItem} = this.props;
         return (
-            <div className='class-item-main' id={`toggler${classItem.id}`}>
-                <h3>{classItem.name}</h3>
-                <h4 className='students'>{`students amount: ${classItem.students.length}`}</h4>
-                <h4 className='teachers'>{`teachers amount: ${classItem.subjectTeachers.length}`}</h4>
-                <h4>{`main teacher: ${classItem.mainTeacher.firstName} ${classItem.mainTeacher.lastName}`}</h4>
+            <div>
+                <div className='class-item-main' id={`toggler${classItem.id}`}>
+                    <h3>{classItem.name}</h3>
+                    <h4 className='students'>{`students amount: ${classItem.students.length}`}</h4>
+                    <h4 className='teachers'>{`teachers amount: ${classItem.subjectTeachers.length}`}</h4>
+                    <h4>{`main teacher: ${classItem.mainTeacher.firstName} ${classItem.mainTeacher.lastName}`}</h4>
+                </div>
                 <UncontrolledCollapse toggler={`#toggler${classItem.id}`}>
                     <Card>
                         <CardBody>
@@ -25,7 +23,7 @@ class ClassItem extends React.Component {
                                 <UsersList users={classItem.students} color='students-back'/>
                                 <UsersList users={classItem.subjectTeachers} color='teachers-back'/>
                                 <div>
-                                    <select name="studentsAvailable" onClick={this.stopPropagation}>
+                                    <select name="studentsAvailable">
                                         <optgroup label='students available'>
 
                                         </optgroup>

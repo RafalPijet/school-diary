@@ -12,24 +12,24 @@
     padding: 0 20px;
   }
 
-  .users-box {
-    display: flex;
-    justify-content: space-around;
-  }
-
   .students {
     color: $color-students-list;
-  }
-
-  .students-back {
-    background-color: $color-students-list;
   }
 
   .teachers {
     color: $color-teachers-list;
   }
+}
 
-  .teachers-back {
-    background-color: $color-teachers-list;
-  }
+.users-box {
+  display: flex;
+  justify-content: space-around;
+}
+
+.students-back {
+  background-color: $color-students-list;
+}
+
+.teachers-back {
+  background-color: $color-teachers-list;
 }
