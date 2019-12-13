@@ -9,4 +9,4 @@ export const LOAD_ALL_STUDENTS = createActionName(reducerName, 'LOAD_ALL_STUDENT
 export const loadAllStudents = students => ({students, type: LOAD_ALL_STUDENTS});
 
 //SELECTORS
-export const getAllStudents = state => state.students.allStudents;
+export const getAllStudents = store => store.students.allStudents;

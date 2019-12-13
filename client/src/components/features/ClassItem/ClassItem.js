@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {UncontrolledCollapse, CardBody, Card} from 'reactstrap';
 import UsersList from '../../common/UsersList/UsersList';
-import UsersSelect from '../../common/UsersSelect/UsersSelect';
+import UsersSelect from '../../common/UsersSelect/UsersSelectContainer';
 import './ClassItem.scss';
 
 class ClassItem extends React.Component {
@@ -24,7 +24,8 @@ class ClassItem extends React.Component {
                                 <UsersList users={classItem.students} color='students-back'/>
                                 <UsersList users={classItem.subjectTeachers} color='teachers-back'/>
                                 <div>
-                                    <UsersSelect groupName='students available'/>
+                                    <UsersSelect isStudent={true} groupName='students available' buttonName='Add student'/>
+                                    <UsersSelect isStudent={false} groupName='teachers available' buttonName='Add teacher'/>
                                 </div>
                             </div>
                         </CardBody>
