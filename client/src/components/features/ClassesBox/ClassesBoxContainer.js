@@ -2,10 +2,11 @@ import {connect} from 'react-redux';
 import ClassesBox from './ClassesBox';
 import {getRequest} from "../../../redux/actions/requestActions";
 import {getAllClasses} from "../../../redux/actions/classActions";
-import {loadAllClassesRequest} from "../../../redux/thunks";
+import {loadAllClassesRequest, getAllStudentsRequest} from "../../../redux/thunks";
 
 const mapDispatchToProps = dispatch => ({
-   loadAllClasses: () => dispatch(loadAllClassesRequest())
+    loadAllClasses: () => dispatch(loadAllClassesRequest()),
+    loadAllStudents: () => dispatch(getAllStudentsRequest())
 });
 
 const mapStateToProps = state => ({

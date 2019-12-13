@@ -11,6 +11,7 @@ import {
     startWorkingRequest,
     stopWorkingRequest
 } from "./actions/requestActions";
+import {loadAllStudents} from "./actions/studentActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -123,6 +124,21 @@ export const addClassRequest = payload => {
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
+        }
+    }
+};
+
+export const getAllStudentsRequest = () => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/students`);
+            dispatch(loadAllStudents(res.data));
+            dispatch(stopWorkingRequest());
+        } catch(err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };

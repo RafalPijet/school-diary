@@ -6,12 +6,18 @@ import ClassItem from '../../features/ClassItem/ClassItem';
 
 class ClassesBox extends React.Component {
     componentDidMount() {
-        this.props.loadAllClasses();
+        this.prepareState();
     }
+
+    prepareState = async () => {
+        const {loadAllClasses, loadAllStudents} = this.props;
+        await loadAllClasses();
+        await loadAllStudents()
+    };
 
     render() {
         const {request, allClasses} = this.props;
-        
+
         if (request.pending) {
             return <Spinner/>
         } else if(request.error !== null) {
@@ -31,7 +37,8 @@ class ClassesBox extends React.Component {
 ClassesBox.propTypes = {
     loadAllClasses: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
-    allClasses: PropTypes.array.isRequired
+    allClasses: PropTypes.array.isRequired,
+    loadAllStudents: PropTypes.func.isRequired
 };
 
 export default ClassesBox;
