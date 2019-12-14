@@ -39,3 +39,19 @@ exports.addClass = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.addStudent = async (req, res) => {
+    try {
+
+    } catch (err) {
+
+    }
+};
+
+exports.addTeacher = async (req, res) => {
+    try {
+
+    } catch (err) {
+
+    }
+};

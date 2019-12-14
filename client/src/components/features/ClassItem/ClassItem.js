@@ -7,8 +7,18 @@ import './ClassItem.scss';
 
 class ClassItem extends React.Component {
 
+    addUser = (isStudent, user) => {
+        const {classItem, addStudent, addTeacher} = this.props;
+        let payload = {
+            classId: classItem.id,
+            user: user
+        };
+        isStudent ? addStudent(payload) : addTeacher(payload);
+    };
+
     render() {
         const {classItem} = this.props;
+        const {addUser} = this;
         return (
             <div>
                 <div className='class-item-main' id={`toggler${classItem.id}`}>
@@ -24,8 +34,8 @@ class ClassItem extends React.Component {
                                 <UsersList users={classItem.students} color='students-back'/>
                                 <UsersList users={classItem.subjectTeachers} color='teachers-back'/>
                                 <div>
-                                    <UsersSelect isStudent={true} groupName='students available' buttonName='Add student'/>
-                                    <UsersSelect isStudent={false} groupName='teachers available' buttonName='Add teacher'/>
+                                    <UsersSelect addUser={addUser} isStudent={true} groupName='students available' buttonName='Add student'/>
+                                    <UsersSelect addUser={addUser} isStudent={false} groupName='teachers available' buttonName='Add teacher'/>
                                 </div>
                             </div>
                         </CardBody>
@@ -37,7 +47,9 @@ class ClassItem extends React.Component {
 }
 
 ClassItem.propTypes = {
-    classItem: PropTypes.object.isRequired
+    classItem: PropTypes.object.isRequired,
+    addStudent: PropTypes.func.isRequired,
+    addTeacher: PropTypes.func.isRequired
 };
 
 export default ClassItem;

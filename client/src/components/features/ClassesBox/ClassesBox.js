@@ -16,7 +16,7 @@ class ClassesBox extends React.Component {
     };
 
     render() {
-        const {request, allClasses} = this.props;
+        const {request, allClasses, addStudent, addTeacher} = this.props;
 
         if (request.pending) {
             return <Spinner/>
@@ -26,7 +26,12 @@ class ClassesBox extends React.Component {
             return (
                 <div>
                     {allClasses.map(classItem => {
-                        return <ClassItem key={classItem.id} classItem={classItem}/>
+                        return <ClassItem
+                            key={classItem.id}
+                            classItem={classItem}
+                            addStudent={addStudent}
+                            addTeacher={addTeacher}
+                        />
                     })}
                 </div>
             )
@@ -38,7 +43,9 @@ ClassesBox.propTypes = {
     loadAllClasses: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
     allClasses: PropTypes.array.isRequired,
-    loadAllStudents: PropTypes.func.isRequired
+    loadAllStudents: PropTypes.func.isRequired,
+    addStudent: PropTypes.func.isRequired,
+    addTeacher: PropTypes.func.isRequired
 };
 
 export default ClassesBox;

@@ -10,13 +10,12 @@ class UsersSelect extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (!nextProps.request.working) {
-            nextProps.isStudent ? this.setAvailableUsers(true, nextProps.students) :
-                this.setAvailableUsers(false, nextProps.teachers)
+            nextProps.isStudent ? this.setAvailableUsers(true, nextProps.students, nextProps.classes) :
+                this.setAvailableUsers(false, nextProps.teachers, nextProps.classes)
         }
     }
 
-    setAvailableUsers = async (isStudent, users) => {
-        const {classes} = this.props;
+    setAvailableUsers = async (isStudent, users, classes) => {
         this.setState({availableUsers: []});
 
         let usersInClasses = [];
@@ -38,10 +37,14 @@ class UsersSelect extends React.Component {
         this.setState({selectedUser: JSON.parse(event.target.value)});
     };
 
+    addUser = () => {
+        this.props.addUser(this.props.isStudent, this.state.selectedUser);
+    };
+
     render() {
         const {groupName, buttonName} = this.props;
         const {availableUsers, selectedUser} = this.state;
-        const {userHandling} = this;
+        const {userHandling, addUser} = this;
         return (
             <div>
                 <select name={groupName} onChange={userHandling} value={JSON.stringify(selectedUser)}>
@@ -53,7 +56,7 @@ class UsersSelect extends React.Component {
                         })}
                     </optgroup>
                 </select>
-                <Button variant='primary'>{buttonName}</Button>
+                <Button variant='primary' onClick={() => addUser()}>{buttonName}</Button>
             </div>
         )
     }
@@ -66,7 +69,8 @@ UsersSelect.propTypes = {
     students: PropTypes.array.isRequired,
     classes: PropTypes.array.isRequired,
     teachers: PropTypes.array.isRequired,
-    isStudent: PropTypes.bool.isRequired
+    isStudent: PropTypes.bool.isRequired,
+    addUser: PropTypes.func.isRequired
 };
 
 export default UsersSelect;

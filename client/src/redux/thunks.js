@@ -142,3 +142,29 @@ export const getAllStudentsRequest = () => {
         }
     }
 };
+
+export const addStudentToClassRequest = payload => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message))
+        }
+    }
+};
+
+export const addTeacherToClassRequest = payload => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message))
+        }
+    }
+};
