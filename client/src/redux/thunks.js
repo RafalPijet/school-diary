@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {API_URL} from "../config";
 import {setUser, setLogin, loadTeachers} from "./actions/usersActions";
-import {loadClassByTeacher, addRatingToStudent, loadAllClasses} from "./actions/classActions";
+import {loadClassByTeacher, addRatingToStudent, loadAllClasses, addUserToClass} from "./actions/classActions";
 import {
     startRequest,
     stopRequest,
@@ -137,7 +137,7 @@ export const getAllStudentsRequest = () => {
             let res = await axios.get(`${API_URL}/students`);
             dispatch(loadAllStudents(res.data));
             dispatch(stopWorkingRequest());
-        } catch(err) {
+        } catch (err) {
             dispatch(errorRequest(err.message));
         }
     }
@@ -149,6 +149,8 @@ export const addStudentToClassRequest = payload => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.post(`${API_URL}/class/student`, payload);
+            dispatch(addUserToClass(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
@@ -162,6 +164,8 @@ export const addTeacherToClassRequest = payload => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.post(`${API_URL}/class/teacher`, payload);
+            dispatch(addUserToClass(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))

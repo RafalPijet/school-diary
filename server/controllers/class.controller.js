@@ -42,16 +42,20 @@ exports.addClass = async (req, res) => {
 
 exports.addStudent = async (req, res) => {
     try {
-
+        let selectedClass = await Class.findOne({id: req.body.classId});
+        selectedClass.students = [...selectedClass.students, req.body.user];
+        res.status(200).json(await selectedClass.save());
     } catch (err) {
-
+        res.status(500).json(err);
     }
 };
 
 exports.addTeacher = async (req, res) => {
     try {
-
+        let selectedClass = await Class.findOne({id: req.body.classId});
+        selectedClass.subjectTeachers = [...selectedClass.subjectTeachers, req.body.user];
+        res.status(200).json(await selectedClass.save());
     } catch (err) {
-
+        res.status(500).json(err);
     }
 };

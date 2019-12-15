@@ -27,5 +27,8 @@ function populateStudents(next) {
 Class.pre('find', populateMainTeacher);
 Class.pre('find', populateSubjectTeachers);
 Class.pre('find', populateStudents);
+Class.pre('findOne', populateStudents);
+Class.pre('findOne', populateMainTeacher);
+Class.pre('findOne', populateSubjectTeachers);
 
 module.exports = mongoose.model("Class", Class);

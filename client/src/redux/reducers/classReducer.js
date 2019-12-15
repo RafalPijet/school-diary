@@ -1,4 +1,10 @@
-import {LOAD_CLASS_BY_TEACHER_ID, SELECT_CLASS, ADD_RATING_TO_STUDENT, LOAD_ALL_CLASSES} from "../actions/classActions";
+import {
+    LOAD_CLASS_BY_TEACHER_ID,
+    SELECT_CLASS,
+    ADD_RATING_TO_STUDENT,
+    LOAD_ALL_CLASSES,
+    ADD_USER_TO_CLASS
+} from "../actions/classActions";
 
 const initialState = {
     allClasses: [],
@@ -25,6 +31,15 @@ const reducer = (state = initialState, action) => {
                 }
             });
             break;
+        case ADD_USER_TO_CLASS:
+            return {...state, allClasses: state.allClasses.map(item => {
+
+                if (item.id === action.classContent.id) {
+                    return action.classContent
+                } else {
+                    return item
+                }
+            })};
         default:
             return state;
     }

@@ -24,6 +24,10 @@
 .users-box {
   display: flex;
   justify-content: space-around;
+
+  .users-select {
+    width: 40%;
+  }
 }
 
 .students-back {

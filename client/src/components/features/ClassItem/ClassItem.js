@@ -33,9 +33,21 @@ class ClassItem extends React.Component {
                             <div className='users-box'>
                                 <UsersList users={classItem.students} color='students-back'/>
                                 <UsersList users={classItem.subjectTeachers} color='teachers-back'/>
-                                <div>
-                                    <UsersSelect addUser={addUser} isStudent={true} groupName='students available' buttonName='Add student'/>
-                                    <UsersSelect addUser={addUser} isStudent={false} groupName='teachers available' buttonName='Add teacher'/>
+                                <div className='users-select'>
+                                    <UsersSelect
+                                        addUser={addUser}
+                                        isStudent={true}
+                                        groupName='students available'
+                                        buttonName='Add student'
+                                        classItem={classItem}
+                                    />
+                                    <UsersSelect
+                                        addUser={addUser}
+                                        isStudent={false}
+                                        groupName='teachers available'
+                                        buttonName='Add teacher'
+                                        classItem={classItem}
+                                    />
                                 </div>
                             </div>
                         </CardBody>
