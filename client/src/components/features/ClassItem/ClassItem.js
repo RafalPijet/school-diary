@@ -16,9 +16,14 @@ class ClassItem extends React.Component {
         isStudent ? addStudent(payload) : addTeacher(payload);
     };
 
+    removeUser = (isStudent, user) => {
+        console.log(isStudent);
+        console.log(user);
+    };
+
     render() {
         const {classItem} = this.props;
-        const {addUser} = this;
+        const {addUser, removeUser} = this;
         return (
             <div>
                 <div className='class-item-main' id={`toggler${classItem.id}`}>
@@ -35,17 +40,35 @@ class ClassItem extends React.Component {
                                 <UsersList users={classItem.subjectTeachers} color='teachers-back'/>
                                 <div className='users-select'>
                                     <UsersSelect
-                                        addUser={addUser}
+                                        buttonHandling={addUser}
+                                        isAdding={true}
                                         isStudent={true}
                                         groupName='students available'
                                         buttonName='Add student'
                                         classItem={classItem}
                                     />
                                     <UsersSelect
-                                        addUser={addUser}
+                                        buttonHandling={addUser}
+                                        isAdding={true}
                                         isStudent={false}
                                         groupName='teachers available'
                                         buttonName='Add teacher'
+                                        classItem={classItem}
+                                    />
+                                    <UsersSelect
+                                        buttonHandling={removeUser}
+                                        isAdding={false}
+                                        isStudent={true}
+                                        groupName='students in class'
+                                        buttonName='Remove student'
+                                        classItem={classItem}
+                                    />
+                                    <UsersSelect
+                                        buttonHandling={removeUser}
+                                        isAdding={false}
+                                        isStudent={false}
+                                        groupName='teachers in class'
+                                        buttonName='Remove teacher'
                                         classItem={classItem}
                                     />
                                 </div>

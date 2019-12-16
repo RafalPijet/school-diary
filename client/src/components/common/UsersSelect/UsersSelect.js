@@ -13,11 +13,17 @@ class UsersSelect extends React.Component {
     componentWillReceiveProps(nextProps) {
 
         if (!nextProps.request.working) {
-            nextProps.isStudent ? this.setAvailableUsers(true, nextProps.students, nextProps.classes) :
-                this.setAvailableUsers(false, nextProps.teachers, nextProps.classes)
+
+            if (nextProps.isAdding) {
+                nextProps.isStudent ? this.setAvailableUsers(true, true, nextProps.students, nextProps.classes) :
+                    this.setAvailableUsers(true, false, nextProps.teachers, nextProps.classes)
+            } else {
+                nextProps.isStudent ? this.setAvailableUsers(false, true, nextProps.students, nextProps.classes) :
+                    this.setAvailableUsers(false, false, nextProps.teachers, nextProps.classes)
+            }
+
         }
         this.setState({disabled: nextProps.request.working});
-        this.setState({disabled: this.state.availableUsers.length !== 0});
     }
 
     checkTeacherSubject = teacher => {
@@ -29,40 +35,47 @@ class UsersSelect extends React.Component {
         return result;
     };
 
-    setAvailableUsers = async (isStudent, users, classes) => {
+    setAvailableUsers = async (isAdding, isStudent, users, classes) => {
         this.setState({availableUsers: []});
 
-        let usersInClasses = [];
-        await classes.forEach(item => {
-            isStudent ? item.students.forEach(student => usersInClasses.push(JSON.stringify(student))) :
-                item.subjectTeachers.forEach(teacher => usersInClasses.push(JSON.stringify(teacher)));
-        });
+        if (isAdding) {
+            let usersInClasses = [];
+            await classes.forEach(item => {
+                isStudent ? item.students.forEach(student => usersInClasses.push(JSON.stringify(student))) :
+                    item.subjectTeachers.forEach(teacher => usersInClasses.push(JSON.stringify(teacher)));
+            });
 
-        await users.forEach(user => {
+            await users.forEach(user => {
 
-            if (!usersInClasses.includes(JSON.stringify(user))) {
-                this.setState({availableUsers: [...this.state.availableUsers, user]})
-            }
-        });
+                if (!usersInClasses.includes(JSON.stringify(user))) {
+                    this.setState({availableUsers: [...this.state.availableUsers, user]})
+                }
+            });
+        } else {
+            let selectedClass = classes.filter(item => item.id === this.props.classItem.id);
+            isStudent ? this.setState({availableUsers: selectedClass[0].students}) :
+                this.setState({availableUsers: selectedClass[0].subjectTeachers});
+        }
         await this.setState({selectedUser: this.state.availableUsers[0]});
-        if (this.state.selectedUser) this.setState({disabled: !this.checkTeacherSubject(this.state.selectedUser)});
+        if (isAdding && this.state.selectedUser && !isStudent) this.setState({disabled: !this.checkTeacherSubject(this.state.selectedUser)});
     };
 
     userHandling = async event => {
         const {checkTeacherSubject} = this;
-        const {isStudent} = this.props;
+        const {isStudent, isAdding} = this.props;
         await this.setState({selectedUser: JSON.parse(event.target.value)});
-        this.setState({disabled: !isStudent && !checkTeacherSubject(this.state.selectedUser)});
+        if (isAdding) this.setState({disabled: !isStudent && !checkTeacherSubject(this.state.selectedUser)});
+
     };
 
-    addUser = () => {
-        this.props.addUser(this.props.isStudent, this.state.selectedUser);
+    buttonAction = () => {
+        this.props.buttonHandling(this.props.isStudent, this.state.selectedUser);
     };
 
     render() {
         const {groupName, buttonName, isStudent} = this.props;
         const {availableUsers, selectedUser, disabled} = this.state;
-        const {userHandling, addUser} = this;
+        const {userHandling, buttonAction} = this;
         return (
             <div className='select-user-main'>
                 <select className='select-item' name={groupName} onChange={userHandling} value={JSON.stringify(selectedUser)}>
@@ -77,7 +90,7 @@ class UsersSelect extends React.Component {
                 <div className='button-add'>
                     <Button hidden={availableUsers.length === 0} disabled={disabled}
                             variant={disabled ? 'off' : 'success'}
-                            onClick={() => addUser()}>{buttonName}
+                            onClick={() => buttonAction()}>{buttonName}
                     </Button>
                 </div>
             </div>
@@ -93,8 +106,9 @@ UsersSelect.propTypes = {
     classes: PropTypes.array.isRequired,
     teachers: PropTypes.array.isRequired,
     isStudent: PropTypes.bool.isRequired,
-    addUser: PropTypes.func.isRequired,
-    classItem: PropTypes.object.isRequired
+    buttonHandling: PropTypes.func.isRequired,
+    classItem: PropTypes.object.isRequired,
+    isAdding: PropTypes.bool.isRequired
 };
 
 export default UsersSelect;
