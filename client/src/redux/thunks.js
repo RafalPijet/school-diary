@@ -172,3 +172,17 @@ export const addTeacherToClassRequest = payload => {
         }
     }
 };
+
+export const addStudentRequest = student => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await axios.post(`${API_URL}/student`, student);
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
