@@ -16,7 +16,8 @@ class StudentsHandling extends React.Component {
             ratings: [],
             parents: []
         },
-        isError: false
+        isError: false,
+        isSuccess: false
     };
 
     componentWillReceiveProps(nextProps) {
@@ -26,7 +27,8 @@ class StudentsHandling extends React.Component {
         if (nextProps.request.success) {
             this.setState({
                 newStudent: {firstName: '', lastName: '', birthDate: 'yyyy-mm-dd'}
-            })
+            });
+            this.successHandling();
         }
     }
 
@@ -35,6 +37,15 @@ class StudentsHandling extends React.Component {
         this.setState({isError: true});
         setTimeout(() => {
             this.setState({isError: false});
+            resetRequest();
+        }, 6000);
+    };
+
+    successHandling = () => {
+        const {resetRequest} = this.props;
+        this.setState({isSuccess: true});
+        setTimeout(() => {
+            this.setState({isSuccess: false});
             resetRequest();
         }, 6000);
     };
@@ -59,7 +70,7 @@ class StudentsHandling extends React.Component {
 
     render() {
         const {newStudentHandling, addStudent} = this;
-        const {newStudent, isError} = this.state;
+        const {newStudent, isError, isSuccess} = this.state;
         const {request} = this.props;
 
         if (request.pending) {
@@ -87,6 +98,21 @@ class StudentsHandling extends React.Component {
                         <Card>
                             <CardBody>
                                 <Alert variant='error' isVisible={isError}>{request.error}</Alert>
+                            </CardBody>
+                        </Card>
+                    </UncontrolledCollapse>
+                </form>
+            )
+        } else if (isSuccess) {
+            return (
+                <form>
+                    <div className='students-handling-main' id='togglerAddStudent'>
+                        <h3 className='text-center'>Add student</h3>
+                    </div>
+                    <UncontrolledCollapse toggler='#togglerAddStudent'>
+                        <Card>
+                            <CardBody>
+                                <Alert variant='success' isVisible={true}>The student has been added</Alert>
                             </CardBody>
                         </Card>
                     </UncontrolledCollapse>
