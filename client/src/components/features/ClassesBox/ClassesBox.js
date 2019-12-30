@@ -9,6 +9,11 @@ class ClassesBox extends React.Component {
         this.prepareState();
     }
 
+    componentWillUnmount() {
+        const {resetRequest} = this.props;
+        resetRequest();
+    }
+
     prepareState = async () => {
         const {loadAllClasses, loadAllStudents} = this.props;
         await loadAllClasses();
@@ -45,7 +50,8 @@ ClassesBox.propTypes = {
     allClasses: PropTypes.array.isRequired,
     loadAllStudents: PropTypes.func.isRequired,
     addStudent: PropTypes.func.isRequired,
-    addTeacher: PropTypes.func.isRequired
+    addTeacher: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired
 };
 
 export default ClassesBox;

@@ -42,8 +42,8 @@ class StudentsHandling extends React.Component {
     };
 
     successHandling = () => {
-        const {resetRequest} = this.props;
-        this.setState({isSuccess: true});
+        const {resetRequest, request} = this.props;
+        request.success ? this.setState({isSuccess: true}) : this.setState({isSuccess: false});
         setTimeout(() => {
             this.setState({isSuccess: false});
             resetRequest();
@@ -105,7 +105,7 @@ class StudentsHandling extends React.Component {
             )
         } else if (isSuccess) {
             return (
-                <form>
+                <div>
                     <div className='students-handling-main' id='togglerAddStudent'>
                         <h3 className='text-center'>Add student</h3>
                     </div>
@@ -116,7 +116,7 @@ class StudentsHandling extends React.Component {
                             </CardBody>
                         </Card>
                     </UncontrolledCollapse>
-                </form>
+                </div>
             )
         } else {
             return (

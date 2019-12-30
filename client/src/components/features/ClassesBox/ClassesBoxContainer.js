@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import ClassesBox from './ClassesBox';
-import {getRequest} from "../../../redux/actions/requestActions";
+import {getRequest, resetRequest} from "../../../redux/actions/requestActions";
 import {getAllClasses} from "../../../redux/actions/classActions";
 import {
     loadAllClassesRequest,
@@ -13,7 +13,8 @@ const mapDispatchToProps = dispatch => ({
     loadAllClasses: () => dispatch(loadAllClassesRequest()),
     loadAllStudents: () => dispatch(getAllStudentsRequest()),
     addStudent: payload => dispatch(addStudentToClassRequest(payload)),
-    addTeacher: payload => dispatch(addTeacherToClassRequest(payload))
+    addTeacher: payload => dispatch(addTeacherToClassRequest(payload)),
+    resetRequest: () => dispatch(resetRequest())
 });
 
 const mapStateToProps = state => ({
