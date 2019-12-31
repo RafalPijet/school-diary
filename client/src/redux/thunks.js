@@ -122,9 +122,19 @@ export const loadParentsRequest = () => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let parents = await axios.get(`${API_URL}/users/parents`);
             let students = await axios.get(`${API_URL}/students`);
-            console.log(parents.data);
-            console.log(students.data);
-            // dispatch(loadParents(res.data));
+            let allParents = [];
+            parents.data.forEach(parent => {
+                let studentsForParent = [];
+                students.data.forEach(student => {
+
+                    if (parent.students.includes(student._id)) {
+                        studentsForParent.push(student);
+                    }
+                });
+                parent.students = studentsForParent;
+                allParents = [...allParents, parent]
+            });
+            dispatch(loadParents(allParents));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
