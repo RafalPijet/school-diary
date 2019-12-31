@@ -33,6 +33,7 @@ class NavBar extends React.Component {
                 {path: "/classes", title: "Classes"},
                 {path: "/teachers", title: "Teachers"},
                 {path: "/students", title: "Students"},
+                {path: "/parents", title: "Parents"},
                 {path: "/logout", title: "LogOut"}
             ],
             activeLink: []

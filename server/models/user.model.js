@@ -18,6 +18,7 @@ function populateStudents(next) {
     next();
 }
 
+// User.pre('find', populateStudents);
 User.pre('findOne', populateStudents);
 
 module.exports = mongoose.model("User", User);

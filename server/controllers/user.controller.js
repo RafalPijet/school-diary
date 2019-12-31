@@ -31,3 +31,14 @@ exports.getTeachers = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.getParents = async (req, res) => {
+
+    try {
+        let users = await User.find();
+        let parents = users.filter(user => user.status === 'student');
+        res.status(200).json(parents)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

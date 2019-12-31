@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {API_URL} from "../config";
-import {setUser, setLogin, loadTeachers} from "./actions/usersActions";
+import {setUser, setLogin, loadTeachers, loadParents} from "./actions/usersActions";
 import {loadClassByTeacher, addRatingToStudent, loadAllClasses, addUserToClass} from "./actions/classActions";
 import {
     startRequest,
@@ -108,6 +108,24 @@ export const loadTeachersRequest = () => {
             let res = await axios.get(`${API_URL}/users/teachers`);
             dispatch(loadTeachers(res.data));
             dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const loadParentsRequest = () => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let parents = await axios.get(`${API_URL}/users/parents`);
+            let students = await axios.get(`${API_URL}/students`);
+            console.log(parents.data);
+            console.log(students.data);
+            // dispatch(loadParents(res.data));
+            dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }
