@@ -130,7 +130,8 @@ class UserForm extends React.Component {
         } else if (!pending && success) {
 
             if (!isLogin) {
-                return <Alert variant='success' isVisible={isVisible}>{`The ${userType} has been registered`}</Alert>
+                return <Alert variant='success' isVisible={isVisible}>
+                    {`The ${userType === 'student' ? 'parent' : userType} has been registered`}</Alert>
             } else {
 
                 return <Redirect to='/'/>
@@ -155,6 +156,11 @@ class UserForm extends React.Component {
                                 <option value='english'>English</option>
                                 <option value='polish'>Polish</option>
                                 <option value='math'>Math</option>
+                                <option value='biology'>Biology</option>
+                                <option value='history'>History</option>
+                                <option value='geography'>Geography</option>
+                                <option value='physics'>Physics</option>
+                                <option value='chemistry'>Chemistry</option>
                             </optgroup>
                         </select>
                     </div>
