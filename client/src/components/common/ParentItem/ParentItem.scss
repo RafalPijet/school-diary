@@ -1,0 +1,14 @@
+@import '../../../styles/settings';
+
+.parent-item-main {
+  display: flex;
+  background-color: $color-back-list;
+  color: $color-set;
+  padding: 10px 0;
+  border: 2px solid $color-text-light;
+  cursor: pointer;
+}
+
+.parent-collapse {
+  background-color: $color-off;
+}

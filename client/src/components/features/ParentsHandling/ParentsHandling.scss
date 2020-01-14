@@ -1,0 +1,10 @@
+@import "../../../styles/settings";
+
+.parents-main {
+  display: flex;
+  align-items: center;
+  background-color: $color-back-list;
+  color: $color-set;
+  padding: 15px 0;
+  font-weight: 700;
+}
