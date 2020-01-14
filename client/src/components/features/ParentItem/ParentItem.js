@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Collapse, CardBody, Card} from 'reactstrap';
+import ParentItemCollapse from '../ParentItemCollapse/ParentItemCollapseContainer';
 import './ParentItem.scss';
 
 const ParentItem = props => {
@@ -12,7 +13,7 @@ const ParentItem = props => {
     }, [setIsOpen, selectedItem, i]);
 
     const collapseSetting = () => {
-        setIsOpen(true);
+        setIsOpen(!isOpen);
         collapseHandling(i);
     };
 
@@ -29,7 +30,7 @@ const ParentItem = props => {
             <Collapse isOpen={isOpen}>
                 <Card>
                     <CardBody className='parent-collapse'>
-                        {parent.students.length}
+                        <ParentItemCollapse students={parent.students}/>
                     </CardBody>
                 </Card>
             </Collapse>

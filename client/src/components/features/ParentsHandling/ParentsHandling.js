@@ -1,23 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../../common/Spinner/Spinner';
-import ParentItem from '../../common/ParentItem/ParentItem';
+import ParentItem from '../ParentItem/ParentItem';
 import './ParentsHandling.scss';
 
 const ParentsHandling = props => {
-    const {loadParents, request, parents} = props;
+    const {loadParents, loadClasses, loadStudents, request, parents} = props;
     const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
         loadParents();
-    }, [loadParents]);
+        loadClasses();
+        loadStudents();
+    }, [loadParents, loadClasses, loadStudents]);
 
     const collapseHandling = index => {
         setSelectedItem(index);
-        console.log(index)
     };
 
-    if (request.pending) {
+    if (request.pending || request.working) {
         return <Spinner/>
     } else if (request.success) {
         return (
@@ -53,6 +54,8 @@ const ParentsHandling = props => {
 
 ParentsHandling.propTypes = {
     loadParents: PropTypes.func.isRequired,
+    loadClasses: PropTypes.func.isRequired,
+    loadStudents: PropTypes.func.isRequired,
     parents: PropTypes.array.isRequired,
     request: PropTypes.object.isRequired
 };
