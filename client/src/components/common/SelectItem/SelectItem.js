@@ -1,12 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Button from "../Button/Button";
 
 const SelectItem = props => {
     const {list, selectName, buttonName, confirmSelect} = props;
-    const [selectedItem, setSelectedItem] = useState(list[0]);
+    const [selectedItem, setSelectedItem] = useState({});
 
-    const changeHandling = e => {
+    useEffect(() => {
+        setSelectedItem(list[0]);
+    }, [setSelectedItem, list]);
+
+    const changeHandling =  e => {
         setSelectedItem(JSON.parse(e.target.value));
     };
 
@@ -16,7 +20,7 @@ const SelectItem = props => {
 
     return (
         <div>
-            <select name={selectName} value={selectedItem} onChange={changeHandling}>
+            <select name={selectName} value={JSON.stringify(selectedItem)} onChange={changeHandling}>
                 <optgroup label={selectName}>
                     {list.map((item, i) => {
                         return <option key={i} value={JSON.stringify(item)}>

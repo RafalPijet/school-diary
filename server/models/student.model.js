@@ -21,7 +21,9 @@ function populateUsers(next) {
 }
 
 Student.pre('find', populateRatings);
+Student.pre('findOne', populateRatings);
 Student.pre('find', populateUsers);
+Student.pre('findOne', populateUsers);
 
 module.exports = mongoose.model("Student", Student);
 

@@ -20,3 +20,18 @@ exports.addStudent = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.updateStudent = async (req, res) => {
+
+    try {
+        let student = await Student.findOne({id: req.body.id});
+        student.ratings = req.body.ratings;
+        student.parents = req.body.parents;
+        student.firstName = req.body.firstName;
+        student.lastName = req.body.lastName;
+        student.birthDate = req.body.birthDate;
+        res.status(200).json(await student.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

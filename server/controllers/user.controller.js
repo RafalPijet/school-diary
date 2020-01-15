@@ -21,6 +21,22 @@ exports.addUser = async (req, res) => {
     }
 };
 
+exports.updateUser = async (req, res) => {
+
+    try {
+        let user = await User.findOne({id: req.body.id});
+        user.status = req.body.status;
+        user.subject = req.body.subject;
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.birthDate = req.body.birthDate;
+        user.students = req.body.students;
+        res.status(200).json(await user.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getTeachers = async (req, res) => {
 
     try {

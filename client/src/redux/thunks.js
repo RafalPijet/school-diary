@@ -45,11 +45,25 @@ export const addUser = user => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            await axios.post(`${API_URL}/users/add`, user);
+            await axios.post(`${API_URL}/users`, user);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(`Something went wrong.
              This email address probably already exists: ${err.message}`));
+        }
+    }
+};
+
+export const updateUserRequest = user => {
+    return async dispatch => {
+        dispatch(startAddingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/users`, user);
+            dispatch(stopAddingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };
@@ -209,6 +223,20 @@ export const addStudentRequest = student => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             await axios.post(`${API_URL}/student`, student);
             dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const updateStudentRequest = student => {
+    return async dispatch => {
+        dispatch(startAddingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/student`, student);
+            dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

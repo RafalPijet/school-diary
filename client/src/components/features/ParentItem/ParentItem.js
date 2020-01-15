@@ -30,7 +30,7 @@ const ParentItem = props => {
             <Collapse isOpen={isOpen}>
                 <Card>
                     <CardBody className='parent-collapse'>
-                        <ParentItemCollapse students={parent.students}/>
+                        <ParentItemCollapse parent={parent}/>
                     </CardBody>
                 </Card>
             </Collapse>

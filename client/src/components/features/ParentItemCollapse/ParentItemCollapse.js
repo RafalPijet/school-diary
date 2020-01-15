@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SelectItem from "../../common/SelectItem/SelectItem";
 
 const ParentItemCollapse = props => {
-    const {students, allClasses, allStudents} = props;
+    const {parent, allClasses, allStudents, updateUser, updateStudent, request} = props;
     const [parentStudents, setParentStudents] = useState([]);
     const [studentsWithoutParent, setStudentsWithoutParent] = useState([]);
 
@@ -11,19 +11,19 @@ const ParentItemCollapse = props => {
         prepareStudents();
     }, []);
 
-    // useEffect(() => {
-    //     console.log(studentsWithoutParent.length);
-    // });
-
-    const getNewStudentForParent = student => {
-        console.log(student)
+    const getNewStudentForParent = async student => {
+        parent.students.push(student);
+        await updateUser(parent);
+        parent.students = [];
+        student.parents.push(parent);
+        updateStudent(student);
     };
 
     const prepareStudents = () => {
         let parentStudents = [];
-        students.forEach(student => {
+        parent.students.forEach(student => {
             let item = {
-                className: checkStudentClass(student.id) !== null ? checkStudentClass(student.id) : "None",
+                className: checkStudentClass(student.id) !== null ? checkStudentClass(student.id) : "None class",
                 firstName: student.firstName,
                 lastName: student.lastName
             };
@@ -77,9 +77,12 @@ const ParentItemCollapse = props => {
 };
 
 ParentItemCollapse.propTypes = {
-    students: PropTypes.array.isRequired,
+    parent: PropTypes.object.isRequired,
     allClasses: PropTypes.array.isRequired,
-    allStudents: PropTypes.array.isRequired
+    allStudents: PropTypes.array.isRequired,
+    updateUser: PropTypes.func.isRequired,
+    updateStudent: PropTypes.func.isRequired,
+    request: PropTypes.object.isRequired
 };
 
 export default ParentItemCollapse;
