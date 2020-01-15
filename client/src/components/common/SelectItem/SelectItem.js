@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from "../Button/Button";
 
 const SelectItem = props => {
-    const {list, selectName, buttonName, confirmSelect} = props;
+    const {list, selectName, buttonName, confirmSelect, isDisabled} = props;
     const [selectedItem, setSelectedItem] = useState({});
 
     useEffect(() => {
@@ -20,7 +20,7 @@ const SelectItem = props => {
 
     return (
         <div>
-            <select name={selectName} value={JSON.stringify(selectedItem)} onChange={changeHandling}>
+            <select disabled={isDisabled} name={selectName} value={JSON.stringify(selectedItem)} onChange={changeHandling}>
                 <optgroup label={selectName}>
                     {list.map((item, i) => {
                         return <option key={i} value={JSON.stringify(item)}>
@@ -29,7 +29,12 @@ const SelectItem = props => {
                     })}
                 </optgroup>
             </select>
-            <Button variant='success' onClick={buttonHandling}>{buttonName}</Button>
+            <Button
+                variant={isDisabled ? 'danger progress-votes' : 'success not-progress'}
+                disabled={isDisabled}
+                onClick={buttonHandling}>
+                {buttonName}
+            </Button>
         </div>
     )
 };
@@ -38,7 +43,8 @@ SelectItem.propTypes = {
     list: PropTypes.array.isRequired,
     selectName: PropTypes.string.isRequired,
     buttonName: PropTypes.string.isRequired,
-    confirmSelect: PropTypes.func.isRequired
+    confirmSelect: PropTypes.func.isRequired,
+    isDisabled: PropTypes.bool.isRequired
 };
 
 export default SelectItem;

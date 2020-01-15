@@ -1,0 +1,11 @@
+@import '../../../styles/settings';
+
+.parent-collapse-item {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+}

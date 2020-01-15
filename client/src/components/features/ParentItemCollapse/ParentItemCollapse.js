@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import SelectItem from "../../common/SelectItem/SelectItem";
+import './ParentItemCollapse.scss';
 
 const ParentItemCollapse = props => {
     const {parent, allClasses, allStudents, updateUser, updateStudent, request} = props;
@@ -9,7 +10,7 @@ const ParentItemCollapse = props => {
 
     useEffect(() => {
         prepareStudents();
-    }, []);
+    }, [allClasses, allStudents]);
 
     const getNewStudentForParent = async student => {
         parent.students.push(student);
@@ -47,27 +48,32 @@ const ParentItemCollapse = props => {
 
     if (parentStudents.length) {
         return (
-            <div>
+            <div className='parent-collapse-item'>
                 <SelectItem
                     list={studentsWithoutParent}
                     selectName='unassigned students'
                     buttonName="Assign"
-                    confirmSelect={getNewStudentForParent}/>
-                {parentStudents.map((student, i) => {
-                    return (
-                        <div key={i}>
-                            <span>{`${student.firstName} ${student.lastName} ${student.className}`}</span>
-                        </div>
-                    )
-                })}
+                    isDisabled={request.adding}
+                    confirmSelect={getNewStudentForParent}
+                />
+                <div>
+                    {parentStudents.map((student, i) => {
+                        return (
+                        <p key={i}>
+                            {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
+                        </p>
+                        )})}
+                </div>
+
             </div>
         )
     } else {
         return (
-            <div>
+            <div className='parent-collapse-item'>
                 <SelectItem list={studentsWithoutParent}
                             selectName='unassigned students'
                             buttonName="Assign"
+                            isDisabled={request.adding}
                             confirmSelect={getNewStudentForParent}/>
                 <span>The parent has no student assigned</span>
             </div>

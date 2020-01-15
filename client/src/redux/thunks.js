@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {API_URL} from "../config";
-import {setUser, setLogin, loadTeachers, loadParents} from "./actions/usersActions";
+import {setUser, setLogin, loadTeachers, loadParents, updateParent} from "./actions/usersActions";
 import {loadClassByTeacher, addRatingToStudent, loadAllClasses, addUserToClass} from "./actions/classActions";
 import {
     startRequest,
@@ -11,7 +11,7 @@ import {
     startWorkingRequest,
     stopWorkingRequest
 } from "./actions/requestActions";
-import {loadAllStudents} from "./actions/studentActions";
+import {loadAllStudents, updateStudent} from "./actions/studentActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -61,6 +61,7 @@ export const updateUserRequest = user => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/users`, user);
+            dispatch(updateParent(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -236,6 +237,7 @@ export const updateStudentRequest = student => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/student`, student);
+            dispatch(updateStudent(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

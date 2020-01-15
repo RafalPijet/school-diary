@@ -46,7 +46,10 @@
 
 .progress-votes {
   cursor: progress;
+}
 
+.not-progress {
+  cursor: default;
 }
 
 .disabled-votes {
