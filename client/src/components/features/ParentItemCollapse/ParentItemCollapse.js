@@ -10,7 +10,7 @@ const ParentItemCollapse = props => {
 
     useEffect(() => {
         prepareStudents();
-    }, [allClasses, allStudents]);
+    }, [allClasses, allStudents, parent]);
 
     const getNewStudentForParent = async student => {
         parent.students.push(student);
@@ -20,10 +20,19 @@ const ParentItemCollapse = props => {
         updateStudent(student);
     };
 
+    const removeStudentFromParent = student => {
+        let removedStudent = parent.students.find(item => item.id === student.id);
+        removedStudent.parents = [];
+        parent.students = parent.students.filter(item => item.id !== student.id);
+        updateUser(parent);
+        updateStudent(removedStudent);
+    };
+
     const prepareStudents = () => {
         let parentStudents = [];
         parent.students.forEach(student => {
             let item = {
+                id: student.id,
                 className: checkStudentClass(student.id) !== null ? checkStudentClass(student.id) : "None class",
                 firstName: student.firstName,
                 lastName: student.lastName
@@ -56,6 +65,12 @@ const ParentItemCollapse = props => {
                     isDisabled={request.adding}
                     confirmSelect={getNewStudentForParent}
                 />
+                <SelectItem
+                    list={parentStudents}
+                    selectName='assigned students'
+                    buttonName='Unassign'
+                    confirmSelect={removeStudentFromParent}
+                    isDisabled={request.adding}/>
                 <div>
                     {parentStudents.map((student, i) => {
                         return (
