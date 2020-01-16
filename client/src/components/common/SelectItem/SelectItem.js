@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Button from "../Button/Button";
+import './SelectItem.scss';
 
 const SelectItem = props => {
     const {list, selectName, buttonName, confirmSelect, isDisabled} = props;
@@ -20,7 +21,7 @@ const SelectItem = props => {
 
     return (
         <div>
-            <select disabled={isDisabled} name={selectName} value={JSON.stringify(selectedItem)} onChange={changeHandling}>
+            <select className='select-item-main' disabled={isDisabled} name={selectName} value={JSON.stringify(selectedItem)} onChange={changeHandling}>
                 <optgroup label={selectName}>
                     {list.map((item, i) => {
                         return <option key={i} value={JSON.stringify(item)}>

@@ -8,6 +8,7 @@ export const SET_USER = createActionName(reducerName, 'SET_USER');
 export const LOAD_TEACHERS = createActionName(reducerName, 'LOAD_TEACHERS');
 export const LOAD_PARENTS = createActionName(reducerName, 'LOAD_PARENTS');
 export const UPDATE_PARENT = createActionName(reducerName, 'UPDATE_PARENT');
+export const DELETE_PARENT = createActionName(reducerName, 'DELETE_PARENT');
 
 //CREATORS OF ACTIONS
 export const setLogin = isLogin => ({isLogin, type: SET_LOGIN});
@@ -15,6 +16,7 @@ export const setUser = user => ({user, type: SET_USER});
 export const loadTeachers = teachers => ({teachers, type: LOAD_TEACHERS});
 export const loadParents = parents => ({parents, type: LOAD_PARENTS});
 export const updateParent = parent => ({parent, type: UPDATE_PARENT});
+export const deleteParent = id => ({id, type: DELETE_PARENT});
 
 //SELECTORS
 export const getLogin = store => store.user.isLogin;

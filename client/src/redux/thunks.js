@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {API_URL} from "../config";
-import {setUser, setLogin, loadTeachers, loadParents, updateParent} from "./actions/usersActions";
+import {setUser, setLogin, loadTeachers, loadParents, updateParent, deleteParent} from "./actions/usersActions";
 import {loadClassByTeacher, addRatingToStudent, loadAllClasses, addUserToClass} from "./actions/classActions";
 import {
     startRequest,
@@ -63,6 +63,21 @@ export const updateUserRequest = user => {
             let res = await axios.put(`${API_URL}/users`, user);
             dispatch(updateParent(res.data));
             dispatch(stopAddingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const deleteParentRequest = id => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.delete(`${API_URL}/users/${id}`);
+            if (res.status === 200) dispatch(deleteParent(id));
+            dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

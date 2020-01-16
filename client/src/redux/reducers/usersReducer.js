@@ -1,4 +1,11 @@
-import {SET_LOGIN, SET_USER, LOAD_TEACHERS, LOAD_PARENTS, UPDATE_PARENT} from "../actions/usersActions";
+import {
+    SET_LOGIN,
+    SET_USER,
+    LOAD_TEACHERS,
+    LOAD_PARENTS,
+    UPDATE_PARENT,
+    DELETE_PARENT
+} from "../actions/usersActions";
 
 const initialState = {
     isLogin: true,
@@ -30,13 +37,17 @@ const reducer = (state = initialState, action) => {
         case LOAD_PARENTS:
             return {...state, parents: action.parents};
         case UPDATE_PARENT:
-            return {...state, parents: state.parents.map(parent => {
-                if (parent.id === action.parent.id) {
-                    return action.parent;
-                } else {
-                    return parent;
-                }
-                })};
+            return {
+                ...state, parents: state.parents.map(parent => {
+                    if (parent.id === action.parent.id) {
+                        return action.parent;
+                    } else {
+                        return parent;
+                    }
+                })
+            };
+        case DELETE_PARENT:
+            return {...state, parents: state.parents.filter(parent => parent.id !== action.id)};
         default:
             return state
     }

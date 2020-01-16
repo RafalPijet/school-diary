@@ -5,10 +5,14 @@
   background-color: $color-back-list;
   color: $color-set;
   padding: 10px 0;
-  border: 2px solid $color-text-light;
+  border-top: 2px solid $color-text-light;
   cursor: pointer;
 }
 
 .parent-collapse {
-  background-color: $color-off;
+  background-image: linear-gradient($color-back-list, #fff 30%, #fff 70%, $color-back-list);
+}
+
+.parent-item-card {
+  border: none !important;
 }

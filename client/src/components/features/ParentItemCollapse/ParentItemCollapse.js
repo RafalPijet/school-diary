@@ -2,11 +2,14 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import SelectItem from "../../common/SelectItem/SelectItem";
 import './ParentItemCollapse.scss';
+import Button from "../../common/Button/Button";
+import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 
 const ParentItemCollapse = props => {
-    const {parent, allClasses, allStudents, updateUser, updateStudent, request} = props;
+    const {parent, allClasses, allStudents, updateUser, updateStudent, request, deleteParent} = props;
     const [parentStudents, setParentStudents] = useState([]);
     const [studentsWithoutParent, setStudentsWithoutParent] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         prepareStudents();
@@ -55,14 +58,29 @@ const ParentItemCollapse = props => {
         return className
     };
 
+    const modalHandling = isDelete => {
+        setIsModalOpen(false);
+        if (isDelete) {
+            if (parent.students.length) {
+                parent.students.forEach(item => {
+                    item.parents = [];
+                    updateStudent(item);
+                })
+            }
+            deleteParent(parent.id);
+        }
+    };
+
     if (parentStudents.length) {
         return (
             <div className='parent-collapse-item'>
+                <ModalAreYouSure user={parent} isOpen={isModalOpen} isConfirm={modalHandling}/>
+                <Button variant='danger' onClick={() => setIsModalOpen(true)}>Remove parent</Button>
                 <SelectItem
                     list={studentsWithoutParent}
                     selectName='unassigned students'
                     buttonName="Assign"
-                    isDisabled={request.adding}
+                    isDisabled={request.adding || studentsWithoutParent.length === 0}
                     confirmSelect={getNewStudentForParent}
                 />
                 <SelectItem
@@ -79,16 +97,17 @@ const ParentItemCollapse = props => {
                         </p>
                         )})}
                 </div>
-
             </div>
         )
     } else {
         return (
             <div className='parent-collapse-item'>
+                <ModalAreYouSure user={parent} isOpen={isModalOpen} isConfirm={modalHandling}/>
+                <Button variant='danger' onClick={() => setIsModalOpen(true)}>Remove parent</Button>
                 <SelectItem list={studentsWithoutParent}
                             selectName='unassigned students'
                             buttonName="Assign"
-                            isDisabled={request.adding}
+                            isDisabled={request.adding || studentsWithoutParent.length === 0}
                             confirmSelect={getNewStudentForParent}/>
                 <span>The parent has no student assigned</span>
             </div>
@@ -103,7 +122,8 @@ ParentItemCollapse.propTypes = {
     allStudents: PropTypes.array.isRequired,
     updateUser: PropTypes.func.isRequired,
     updateStudent: PropTypes.func.isRequired,
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    deleteParent: PropTypes.func.isRequired
 };
 
 export default ParentItemCollapse;

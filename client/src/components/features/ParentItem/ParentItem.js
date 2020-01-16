@@ -28,7 +28,7 @@ const ParentItem = props => {
                 <span className='text-center col-1'>{parent.students.length}</span>
             </div>
             <Collapse isOpen={isOpen}>
-                <Card>
+                <Card className='parent-item-card'>
                     <CardBody className='parent-collapse'>
                         <ParentItemCollapse parent={parent}/>
                     </CardBody>

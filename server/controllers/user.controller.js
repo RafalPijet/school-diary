@@ -37,6 +37,16 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+exports.deleteUser = async (req, res) => {
+
+    try {
+        let user = await User.findOne({id: req.params.id});
+        res.status(200).json(user.remove());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getTeachers = async (req, res) => {
 
     try {
