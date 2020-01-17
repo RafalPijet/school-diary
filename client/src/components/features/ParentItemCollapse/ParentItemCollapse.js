@@ -4,6 +4,7 @@ import SelectItem from "../../common/SelectItem/SelectItem";
 import './ParentItemCollapse.scss';
 import Button from "../../common/Button/Button";
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
+import {checkStudentClass} from "../../../utilities/functions";
 
 const ParentItemCollapse = props => {
     const {parent, allClasses, allStudents, updateUser, updateStudent, request, deleteParent} = props;
@@ -12,7 +13,19 @@ const ParentItemCollapse = props => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        prepareStudents();
+        let parentStudents = [];
+        parent.students.forEach(student => {
+            let item = {
+                id: student.id,
+                className: checkStudentClass(allClasses, student.id) !== null ?
+                    checkStudentClass(allClasses, student.id) : "None class",
+                firstName: student.firstName,
+                lastName: student.lastName
+            };
+            parentStudents = [...parentStudents, item];
+        });
+        setParentStudents(parentStudents);
+        setStudentsWithoutParent(allStudents.filter(student => student.parents.length === 0));
     }, [allClasses, allStudents, parent]);
 
     const getNewStudentForParent = async student => {
@@ -29,33 +42,6 @@ const ParentItemCollapse = props => {
         parent.students = parent.students.filter(item => item.id !== student.id);
         updateUser(parent);
         updateStudent(removedStudent);
-    };
-
-    const prepareStudents = () => {
-        let parentStudents = [];
-        parent.students.forEach(student => {
-            let item = {
-                id: student.id,
-                className: checkStudentClass(student.id) !== null ? checkStudentClass(student.id) : "None class",
-                firstName: student.firstName,
-                lastName: student.lastName
-            };
-            parentStudents = [...parentStudents, item];
-        });
-        setParentStudents(parentStudents);
-        setStudentsWithoutParent(allStudents.filter(student => student.parents.length === 0));
-    };
-
-    const checkStudentClass = studentId => {
-        let className = null;
-        allClasses.forEach(item => {
-            item.students.forEach(student => {
-                if (student.id === studentId) {
-                    className = item.name;
-                }
-            })
-        });
-        return className
     };
 
     const modalHandling = isDelete => {
