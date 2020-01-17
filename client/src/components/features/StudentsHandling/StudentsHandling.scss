@@ -5,3 +5,14 @@
   background-color: #9c88ff;
   cursor: pointer;
 }
+
+.students-handling-card {
+  min-height: 440px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.center {
+  justify-content: center;
+}

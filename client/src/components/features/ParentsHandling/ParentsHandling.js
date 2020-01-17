@@ -5,14 +5,17 @@ import ParentItem from '../ParentItem/ParentItem';
 import './ParentsHandling.scss';
 
 const ParentsHandling = props => {
-    const {loadParents, loadClasses, loadStudents, request, parents} = props;
+    const {loadParents, loadClasses, loadStudents, request, parents, resetRequest} = props;
     const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
         loadParents();
         loadClasses();
         loadStudents();
-    }, [loadParents, loadClasses, loadStudents]);
+        return () => {
+            resetRequest();
+        }
+    }, [loadParents, loadClasses, loadStudents, resetRequest]);
 
     const collapseHandling = index => {
         setSelectedItem(index);
@@ -56,6 +59,7 @@ ParentsHandling.propTypes = {
     loadParents: PropTypes.func.isRequired,
     loadClasses: PropTypes.func.isRequired,
     loadStudents: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired,
     parents: PropTypes.array.isRequired,
     request: PropTypes.object.isRequired
 };
