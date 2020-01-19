@@ -5,6 +5,7 @@ import TextField from "../../common/TextField/TextField";
 import Button from "../../common/Button/Button";
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
+import StudentsList from "../StudentsList/StudentListContainer";
 import './StudentsHandling.scss';
 
 const StudentsHandling = props => {
@@ -103,7 +104,7 @@ const StudentsHandling = props => {
             <Collapse isOpen={!isOpen}>
                 <Card>
                     <CardBody>
-                        <h1>Students list body</h1>
+                        <StudentsList/>
                     </CardBody>
                 </Card>
             </Collapse>
