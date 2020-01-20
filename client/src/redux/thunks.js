@@ -129,6 +129,20 @@ export const addRatingForStudent = dataPackage => {
     }
 };
 
+export const deleteRatingRequest = id => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+        
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await axios.delete(`${API_URL}/rating/${id}`);
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const loadTeachersRequest = () => {
     return async dispatch => {
         dispatch(startWorkingRequest());

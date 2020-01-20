@@ -14,7 +14,8 @@ const StudentsList = props => {
         updateStudent,
         resetRequest,
         deleteStudent,
-        updateUser
+        updateUser,
+        deleteRating
     } = props;
     const [studentsData, setStudentsData] = useState([]);
     const [isReady, setIsReady] = useState(false);
@@ -52,18 +53,19 @@ const StudentsList = props => {
 
     const deleteStudentItem = id => {
         let student = students.find(student => student.id === id);
-        console.log(student);
+        
         if (student.parents.length) {
-            deleteStudent(student);
-            // console.log('parent is assigned');
             let parent = student.parents[0];
             parent.students = parent.students.filter(item => item !== student._id);
             updateUser(parent);
-        } else {
-            // console.log('parent is unassigned');
-            // console.log(student);
-            deleteStudent(student);
         }
+        if (student.ratings.length) {
+            student.ratings.forEach(item => {
+                deleteRating(item.id);
+            })
+        }
+        deleteStudent(student);
+        
     };
 
     return (
@@ -101,7 +103,8 @@ StudentsList.propTypes = {
     updateStudent: PropTypes.func.isRequired,
     resetRequest: PropTypes.func.isRequired,
     deleteStudent: PropTypes.func.isRequired,
-    updateUser: PropTypes.func.isRequired
+    updateUser: PropTypes.func.isRequired,
+    deleteRating: PropTypes.func.isRequired
 };
 
 export default StudentsList;
