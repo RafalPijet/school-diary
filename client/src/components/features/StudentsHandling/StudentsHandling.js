@@ -60,7 +60,7 @@ const StudentsHandling = props => {
             <div className='students-handling-main' onClick={() => setIsOpen(!isOpen)}>
                 <h3 className='text-center'>Add student</h3>
             </div>
-            <Collapse isOpen={isOpen}>
+            <Collapse isOpen={isOpen} onEntered={() => resetRequest()}>
                 <Card>
                     <CardBody className={request.pending ? 'students-handling-card center' : 'students-handling-card'}>
                         <Fragment>

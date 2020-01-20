@@ -11,7 +11,7 @@ import {
     startWorkingRequest,
     stopWorkingRequest
 } from "./actions/requestActions";
-import {loadAllStudents, updateStudent} from "./actions/studentActions";
+import {loadAllStudents, updateStudent, deleteStudent, addStudent} from "./actions/studentActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -237,7 +237,8 @@ export const addStudentRequest = student => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            await axios.post(`${API_URL}/student`, student);
+            let res = await axios.post(`${API_URL}/student`, student);
+            dispatch(addStudent(res.data));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -254,6 +255,23 @@ export const updateStudentRequest = student => {
             let res = await axios.put(`${API_URL}/student`, student);
             dispatch(updateStudent(res.data));
             dispatch(stopAddingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const deleteStudentRequest = student => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.delete(`${API_URL}/student/${student.id}`);
+            if (res.status === 200) {
+                dispatch(deleteStudent(student.id));
+                dispatch(stopRequest());
+            }
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

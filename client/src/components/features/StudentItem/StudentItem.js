@@ -2,12 +2,14 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Collapse, Card, CardBody} from 'reactstrap';
 import Button from "../../common/Button/Button";
+import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 import './StudentItem.scss';
 
 const StudentItem = props => {
-    const {student, i, setCollapseIndex, selectedIndex, updateStudent, request} = props;
+    const {student, i, setCollapseIndex, selectedIndex, updateStudent, request, deleteStudent} = props;
     const [isOpen, setIsOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [studentItem, setStudentItem] = useState({
         id: student.id,
         firstName: student.firstName,
@@ -29,6 +31,11 @@ const StudentItem = props => {
             setIsEdit(false);
             updateStudent(studentItem);
         }
+    };
+
+    const deleteHandling = isDelete => {
+        setModalIsOpen(false);
+        if (isDelete) deleteStudent(studentItem.id);
     };
 
     const inputsHandling = e => {
@@ -61,10 +68,15 @@ const StudentItem = props => {
                         <Button disabled={!isEdit || request.adding} variant={!isEdit || request.adding ?
                             `off ${request.adding ? 'progress-votes' : 'not-progress'}` : `success ${request.adding ?
                                 'progress-votes' : 'not-progress'}`} onClick={updateHandling}>Update</Button>
-                        <Button variant='danger'>Remove</Button>
+                        <Button variant='danger' onClick={() => setModalIsOpen(true)}>Remove</Button>
                     </CardBody>
                 </Card>
             </Collapse>
+            <ModalAreYouSure
+                user={studentItem}
+                description='Are you sure you want to delete the student'
+                isOpen={modalIsOpen}
+                isConfirm={deleteHandling}/>
         </div>
     )
 
@@ -76,7 +88,8 @@ StudentItem.propTypes = {
     setCollapseIndex: PropTypes.func.isRequired,
     selectedIndex: PropTypes.number.isRequired,
     updateStudent: PropTypes.func.isRequired,
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    deleteStudent: PropTypes.func.isRequired
 };
 
 export default StudentItem;

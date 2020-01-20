@@ -5,20 +5,36 @@ import StudentItem from "../StudentItem/StudentItem";
 import Spinner from "../../common/Spinner/Spinner";
 
 const StudentsList = props => {
-    const {students, classes, loadClasses, loadStudents, request, updateStudent} = props;
+    const {
+        students,
+        classes,
+        loadClasses,
+        loadStudents,
+        request,
+        updateStudent,
+        resetRequest,
+        deleteStudent,
+        updateUser
+    } = props;
     const [studentsData, setStudentsData] = useState([]);
     const [isReady, setIsReady] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     useEffect(() => {
         loadStudents();
-        loadClasses()
+        loadClasses();
     }, [loadStudents, loadClasses]);
 
     useEffect(() => {
         setStudentsData(prepareStudentsData(students, classes));
         if (request.success && !request.working) setIsReady(true);
     }, [students, classes, request]);
+
+    useEffect(() => {
+        return () => {
+            resetRequest();
+        }
+    }, [resetRequest]);
 
     const setCollapseIndex = index => {
         setSelectedIndex(index);
@@ -31,6 +47,22 @@ const StudentsList = props => {
             selectedStudent.lastName = studentItem.lastName;
             selectedStudent.birthDate = studentItem.birthDate;
             updateStudent(selectedStudent);
+        }
+    };
+
+    const deleteStudentItem = id => {
+        let student = students.find(student => student.id === id);
+        console.log(student);
+        if (student.parents.length) {
+            deleteStudent(student);
+            // console.log('parent is assigned');
+            let parent = student.parents[0];
+            parent.students = parent.students.filter(item => item !== student._id);
+            updateUser(parent);
+        } else {
+            // console.log('parent is unassigned');
+            // console.log(student);
+            deleteStudent(student);
         }
     };
 
@@ -53,6 +85,7 @@ const StudentsList = props => {
                     selectedIndex={selectedIndex}
                     updateStudent={updateStudentItem}
                     request={request}
+                    deleteStudent={deleteStudentItem}
                 />
             }) : <Spinner/>}
         </div>
@@ -65,7 +98,10 @@ StudentsList.propTypes = {
     loadStudents: PropTypes.func.isRequired,
     loadClasses: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
-    updateStudent: PropTypes.func.isRequired
+    updateStudent: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired,
+    deleteStudent: PropTypes.func.isRequired,
+    updateUser: PropTypes.func.isRequired
 };
 
 export default StudentsList;

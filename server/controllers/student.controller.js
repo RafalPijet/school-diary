@@ -35,3 +35,13 @@ exports.updateStudent = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.deleteStudent = async (req, res) => {
+
+    try {
+        let student = await Student.findOne({id: req.params.id});
+        res.status(200).json(student.remove());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

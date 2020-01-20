@@ -60,7 +60,11 @@ const ParentItemCollapse = props => {
     if (parentStudents.length) {
         return (
             <div className='parent-collapse-item'>
-                <ModalAreYouSure user={parent} isOpen={isModalOpen} isConfirm={modalHandling}/>
+                <ModalAreYouSure
+                    user={parent}
+                    isOpen={isModalOpen}
+                    isConfirm={modalHandling}
+                    description='Are you sure you want to delete the parent'/>
                 <Button variant='danger' onClick={() => setIsModalOpen(true)}>Remove parent</Button>
                 <SelectItem
                     list={studentsWithoutParent}
@@ -78,17 +82,22 @@ const ParentItemCollapse = props => {
                 <div>
                     {parentStudents.map((student, i) => {
                         return (
-                        <p key={i}>
-                            {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
-                        </p>
-                        )})}
+                            <p key={i}>
+                                {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
+                            </p>
+                        )
+                    })}
                 </div>
             </div>
         )
     } else {
         return (
             <div className='parent-collapse-item'>
-                <ModalAreYouSure user={parent} isOpen={isModalOpen} isConfirm={modalHandling}/>
+                <ModalAreYouSure
+                    user={parent}
+                    isOpen={isModalOpen}
+                    isConfirm={modalHandling}
+                    description='Are you sure you want to delete the parent'/>
                 <Button variant='danger' onClick={() => setIsModalOpen(true)}>Remove parent</Button>
                 <SelectItem list={studentsWithoutParent}
                             selectName='unassigned students'
