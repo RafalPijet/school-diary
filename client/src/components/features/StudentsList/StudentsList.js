@@ -5,21 +5,34 @@ import StudentItem from "../StudentItem/StudentItem";
 import Spinner from "../../common/Spinner/Spinner";
 
 const StudentsList = props => {
-    const {students, classes, loadClasses, loadStudents, request} = props;
+    const {students, classes, loadClasses, loadStudents, request, updateStudent} = props;
     const [studentsData, setStudentsData] = useState([]);
     const [isReady, setIsReady] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(0);
 
     useEffect(() => {
-        console.log('useEffect - first');
         loadStudents();
         loadClasses()
     }, [loadStudents, loadClasses]);
 
     useEffect(() => {
-        console.log('useEffect - second');
         setStudentsData(prepareStudentsData(students, classes));
         if (request.success && !request.working) setIsReady(true);
-    }, [students, classes]);
+    }, [students, classes, request]);
+
+    const setCollapseIndex = index => {
+        setSelectedIndex(index);
+    };
+
+    const updateStudentItem = studentItem => {
+        let selectedStudent = students.find(student => student.id === studentItem.id);
+        if (Object.entries({selectedStudent}).length) {
+            selectedStudent.firstName = studentItem.firstName;
+            selectedStudent.lastName = studentItem.lastName;
+            selectedStudent.birthDate = studentItem.birthDate;
+            updateStudent(selectedStudent);
+        }
+    };
 
     return (
         <div>
@@ -32,7 +45,15 @@ const StudentsList = props => {
                 <span className='text-center col-2'>Class</span>
             </div>
             {isReady ? studentsData.map((student, i) => {
-                return <StudentItem key={i} student={student} i={i}/>
+                return <StudentItem
+                    key={i}
+                    student={student}
+                    i={i}
+                    setCollapseIndex={setCollapseIndex}
+                    selectedIndex={selectedIndex}
+                    updateStudent={updateStudentItem}
+                    request={request}
+                />
             }) : <Spinner/>}
         </div>
     )
@@ -43,7 +64,8 @@ StudentsList.propTypes = {
     classes: PropTypes.array.isRequired,
     loadStudents: PropTypes.func.isRequired,
     loadClasses: PropTypes.func.isRequired,
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    updateStudent: PropTypes.func.isRequired
 };
 
 export default StudentsList;
