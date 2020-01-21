@@ -15,7 +15,8 @@ const StudentsList = props => {
         resetRequest,
         deleteStudent,
         updateUser,
-        deleteRating
+        deleteRating,
+        updateClass
     } = props;
     const [studentsData, setStudentsData] = useState([]);
     const [isReady, setIsReady] = useState(false);
@@ -53,7 +54,16 @@ const StudentsList = props => {
 
     const deleteStudentItem = id => {
         let student = students.find(student => student.id === id);
-        
+        let classWithStudent = {};
+        classes.forEach(item => {
+            item.students.forEach(user => {
+                if (user.id === id) classWithStudent = item;
+            })
+        });
+        if (Object.keys(classWithStudent).length) {
+            classWithStudent.students = classWithStudent.students.filter(item => item.id !== id);
+            updateClass(classWithStudent);
+        }
         if (student.parents.length) {
             let parent = student.parents[0];
             parent.students = parent.students.filter(item => item !== student._id);
@@ -65,7 +75,7 @@ const StudentsList = props => {
             })
         }
         deleteStudent(student);
-        
+
     };
 
     return (
@@ -104,7 +114,8 @@ StudentsList.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     deleteStudent: PropTypes.func.isRequired,
     updateUser: PropTypes.func.isRequired,
-    deleteRating: PropTypes.func.isRequired
+    deleteRating: PropTypes.func.isRequired,
+    updateClass: PropTypes.func.isRequired
 };
 
 export default StudentsList;

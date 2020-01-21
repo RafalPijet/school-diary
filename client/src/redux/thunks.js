@@ -1,7 +1,13 @@
 import axios from 'axios';
 import {API_URL} from "../config";
 import {setUser, setLogin, loadTeachers, loadParents, updateParent, deleteParent} from "./actions/usersActions";
-import {loadClassByTeacher, addRatingToStudent, loadAllClasses, addUserToClass} from "./actions/classActions";
+import {
+    loadClassByTeacher,
+    addRatingToStudent,
+    loadAllClasses,
+    addUserToClass,
+    updateClass
+} from "./actions/classActions";
 import {
     startRequest,
     stopRequest,
@@ -114,10 +120,25 @@ export const loadAllClassByTeacherId = teacherId => {
     }
 };
 
+export const updateClassRequest = classItem => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/class`, classItem);
+            dispatch(updateClass(res.data));
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const addRatingForStudent = dataPackage => {
     return async dispatch => {
         dispatch(startAddingRequest());
-
+        console.log(dataPackage);
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
@@ -132,7 +153,7 @@ export const addRatingForStudent = dataPackage => {
 export const deleteRatingRequest = id => {
     return async dispatch => {
         dispatch(startWorkingRequest());
-        
+
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             await axios.delete(`${API_URL}/rating/${id}`);

@@ -31,6 +31,7 @@ exports.getAllClasses = async (req, res) => {
 };
 
 exports.addClass = async (req, res) => {
+    
     try {
         let newClass = new Class(req.body);
         newClass.id = uuid.v4();
@@ -41,6 +42,7 @@ exports.addClass = async (req, res) => {
 };
 
 exports.addStudent = async (req, res) => {
+    
     try {
         let selectedClass = await Class.findOne({id: req.body.classId});
         selectedClass.students = [...selectedClass.students, req.body.user];
@@ -51,9 +53,24 @@ exports.addStudent = async (req, res) => {
 };
 
 exports.addTeacher = async (req, res) => {
+    
     try {
         let selectedClass = await Class.findOne({id: req.body.classId});
         selectedClass.subjectTeachers = [...selectedClass.subjectTeachers, req.body.user];
+        res.status(200).json(await selectedClass.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.updateClass = async (req, res) => {
+    
+    try {
+        let selectedClass = await Class.findOne({id: req.body.id});
+        selectedClass.name = req.body.name;
+        selectedClass.mainTeacher = req.body.mainTeacher;
+        selectedClass.students = req.body.students;
+        selectedClass.subjectTeachers = req.body.subjectTeachers;
         res.status(200).json(await selectedClass.save());
     } catch (err) {
         res.status(500).json(err);

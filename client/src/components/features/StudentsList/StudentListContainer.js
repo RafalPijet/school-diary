@@ -9,7 +9,8 @@ import {
     updateStudentRequest,
     deleteStudentRequest,
     updateUserRequest,
-    deleteRatingRequest
+    deleteRatingRequest,
+    updateClassRequest
 } from "../../../redux/thunks";
 
 const mapStateToProps = state => ({
@@ -25,7 +26,8 @@ const mapDispatchToProps = dispatch => ({
     resetRequest: () => dispatch(resetRequest()),
     deleteStudent: student => dispatch(deleteStudentRequest(student)),
     updateUser: user => dispatch(updateUserRequest(user)),
-    deleteRating: id => dispatch(deleteRatingRequest(id))
+    deleteRating: id => dispatch(deleteRatingRequest(id)),
+    updateClass: classItem => dispatch(updateClassRequest(classItem))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentsList);

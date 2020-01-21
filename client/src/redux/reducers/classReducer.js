@@ -3,7 +3,8 @@ import {
     SELECT_CLASS,
     ADD_RATING_TO_STUDENT,
     LOAD_ALL_CLASSES,
-    ADD_USER_TO_CLASS
+    ADD_USER_TO_CLASS,
+    UPDATE_CLASS
 } from "../actions/classActions";
 
 const initialState = {
@@ -40,6 +41,14 @@ const reducer = (state = initialState, action) => {
                     return item
                 }
             })};
+        case UPDATE_CLASS:
+            return {...state, allClasses: state.allClasses.map(item => {
+                if (item.id === action.classItem.id) {
+                    return action.classItem;
+                } else {
+                    return item;
+                }
+                })};
         default:
             return state;
     }
