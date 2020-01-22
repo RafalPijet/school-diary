@@ -2,6 +2,7 @@ import {connect} from 'react-redux';
 import {loadUserByLogin, addUser} from "../../../redux/thunks";
 import {getRequest} from "../../../redux/actions/requestActions";
 import {resetRequest, errorRequest} from "../../../redux/actions/requestActions";
+import {getSubjects} from "../../../redux/actions/valuesActions";
 import UserForm from './UserForm';
 
 const mapDispatchToProps = dispatch => ({
@@ -12,7 +13,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-    request: getRequest(state)
+    request: getRequest(state),
+    subjects: getSubjects(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserForm);

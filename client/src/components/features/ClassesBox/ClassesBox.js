@@ -21,7 +21,7 @@ class ClassesBox extends React.Component {
     };
 
     render() {
-        const {request, allClasses, addStudent, addTeacher} = this.props;
+        const {request, allClasses, addStudent, addTeacher, subjects} = this.props;
 
         if (request.pending) {
             return <Spinner/>
@@ -36,6 +36,7 @@ class ClassesBox extends React.Component {
                             classItem={classItem}
                             addStudent={addStudent}
                             addTeacher={addTeacher}
+                            subjects={subjects}
                         />
                     })}
                 </div>
@@ -51,7 +52,8 @@ ClassesBox.propTypes = {
     loadAllStudents: PropTypes.func.isRequired,
     addStudent: PropTypes.func.isRequired,
     addTeacher: PropTypes.func.isRequired,
-    resetRequest: PropTypes.func.isRequired
+    resetRequest: PropTypes.func.isRequired,
+    subjects: PropTypes.object.isRequired
 };
 
 export default ClassesBox;

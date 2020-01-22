@@ -8,11 +8,15 @@ import './ClassItem.scss';
 class ClassItem extends React.Component {
 
     addUser = (isStudent, user) => {
-        const {classItem, addStudent, addTeacher} = this.props;
+        const {classItem, addStudent, addTeacher, subjects} = this.props;
         let payload = {
             classId: classItem.id,
             user: user
         };
+
+        if (isStudent) {
+            payload.subjects = subjects[`class${classItem.name.substring(6, 7)}`];
+        }
         isStudent ? addStudent(payload) : addTeacher(payload);
     };
 
@@ -84,7 +88,8 @@ class ClassItem extends React.Component {
 ClassItem.propTypes = {
     classItem: PropTypes.object.isRequired,
     addStudent: PropTypes.func.isRequired,
-    addTeacher: PropTypes.func.isRequired
+    addTeacher: PropTypes.func.isRequired,
+    subjects: PropTypes.object.isRequired
 };
 
 export default ClassItem;

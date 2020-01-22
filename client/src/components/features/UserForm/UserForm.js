@@ -122,7 +122,7 @@ class UserForm extends React.Component {
     render() {
         const {login, register, isVisible, userType, subject, subjectVisible} = this.state;
         const {handleTextField, confirmData, countVisible, handleSelectType} = this;
-        const {isLogin} = this.props;
+        const {isLogin, subjects} = this.props;
         const {pending, error, success} = this.props.request;
 
         if (pending) {
@@ -153,14 +153,12 @@ class UserForm extends React.Component {
                         </select>
                         <select disabled={!subjectVisible} value={subject} name='subject' onChange={handleSelectType}>
                             <optgroup label="Teacher's Subject">
-                                <option value='english'>English</option>
-                                <option value='polish'>Polish</option>
-                                <option value='math'>Math</option>
-                                <option value='biology'>Biology</option>
-                                <option value='history'>History</option>
-                                <option value='geography'>Geography</option>
-                                <option value='physics'>Physics</option>
-                                <option value='chemistry'>Chemistry</option>
+                                {subjects.all.map((subject, i) => {
+                                    return (
+                                    <option key={i} value={subject}>
+                                        {`${subject.substring(0, 1).toUpperCase()}${subject.substring(1, subject.length)}`}
+                                    </option>
+                                    )})}
                             </optgroup>
                         </select>
                     </div>
@@ -190,7 +188,8 @@ UserForm.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     errorRequest: PropTypes.func.isRequired,
     isLogin: PropTypes.bool,
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    subjects: PropTypes.object.isRequired
 };
 
 export default UserForm;

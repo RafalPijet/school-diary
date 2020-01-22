@@ -24,3 +24,4 @@ export const getRatingDescriptions = state => state.values.ratingDescriptions;
 export const getRatingScales = state => state.values.ratingScales;
 export const getSelectedDescription = state => state.values.selectedDescription;
 export const getSelectedScales = state => state.values.selectedScales;
+export const getSubjects = state => state.values.availableSubjects;

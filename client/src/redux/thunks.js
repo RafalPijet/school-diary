@@ -239,10 +239,30 @@ export const getAllStudentsRequest = () => {
 export const addStudentToClassRequest = payload => {
     return async dispatch => {
         dispatch(startWorkingRequest());
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        let student = {
+            classId: payload.classId,
+            user: payload.user
+        };
+        const addRatings = async () => {
+            for (const subject of payload.subjects) {
 
+                try {
+                    let item = {
+                        studentId: payload.user.id,
+                        subject: subject
+                    };
+                    let res = await axios.post(`${API_URL}/rating`, item);
+                    student.user.ratings = [...student.user.ratings, res.data];
+                } catch (err) {
+                    dispatch(errorRequest(err.message));
+                }
+            }
+        };
+        await addRatings();
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.post(`${API_URL}/class/student`, payload);
+            await axios.put(`${API_URL}/student`, student.user);
+            let res = await axios.post(`${API_URL}/class/student`, student);
             dispatch(addUserToClass(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {

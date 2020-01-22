@@ -1,4 +1,18 @@
 const Rating = require('../models/rating.model');
+const uuid = require('uuid');
+
+exports.addNewRating = async (req, res) => {
+
+    try {
+        let rating = new Rating();
+        rating.id = uuid.v4();
+        rating.studentId = req.body.studentId;
+        rating.subject = req.body.subject;
+        res.status(200).json(await rating.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 exports.addNewRatingById = async (req, res) => {
 
@@ -13,7 +27,7 @@ exports.addNewRatingById = async (req, res) => {
 };
 
 exports.deleteRating = async (req, res) => {
-    
+
     try {
         res.status(200).json(await Rating.findOneAndDelete({id: req.params.id}))
     } catch (err) {
