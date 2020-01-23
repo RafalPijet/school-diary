@@ -22,33 +22,45 @@ const reducer = (state = initialState, action) => {
         case SELECT_CLASS:
             return {...state, selectedClass: action.diary};
         case ADD_RATING_TO_STUDENT:
-            let selectedStudent = state.selectedClass.students.find(student => student.id === action.rating.studentId);
-            selectedStudent.ratings = selectedStudent.ratings.map(rating => {
-
-                if (rating.id === action.rating.id) {
-                    return action.rating
-                } else {
-                    return rating
+            return {
+                ...state, selectedClass: {
+                    ...state.selectedClass, students: state.selectedClass.students.map(student => {
+                        if (student.id === action.rating.studentId) {
+                            student.ratings = student.ratings.map(rating => {
+                                if (rating.id === action.rating.id) {
+                                    return action.rating;
+                                } else {
+                                    return rating;
+                                }
+                            });
+                            return student;
+                        } else {
+                            return student;
+                        }
+                    })
                 }
-            });
-            break;
+            };
         case ADD_USER_TO_CLASS:
-            return {...state, allClasses: state.allClasses.map(item => {
+            return {
+                ...state, allClasses: state.allClasses.map(item => {
 
-                if (item.id === action.classContent.id) {
-                    return action.classContent
-                } else {
-                    return item
-                }
-            })};
+                    if (item.id === action.classContent.id) {
+                        return action.classContent
+                    } else {
+                        return item
+                    }
+                })
+            };
         case UPDATE_CLASS:
-            return {...state, allClasses: state.allClasses.map(item => {
-                if (item.id === action.classItem.id) {
-                    return action.classItem;
-                } else {
-                    return item;
-                }
-                })};
+            return {
+                ...state, allClasses: state.allClasses.map(item => {
+                    if (item.id === action.classItem.id) {
+                        return action.classItem;
+                    } else {
+                        return item;
+                    }
+                })
+            };
         default:
             return state;
     }

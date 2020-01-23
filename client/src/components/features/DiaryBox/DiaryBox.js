@@ -8,7 +8,6 @@ class DiaryBox extends React.Component {
 
     render() {
         const {request, selectedClass, teacher} = this.props;
-
         if (request.pending) {
             return (
                 <div className="diary-box-main">

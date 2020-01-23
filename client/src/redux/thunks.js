@@ -138,7 +138,7 @@ export const updateClassRequest = classItem => {
 export const addRatingForStudent = dataPackage => {
     return async dispatch => {
         dispatch(startAddingRequest());
-        console.log(dataPackage);
+        
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
