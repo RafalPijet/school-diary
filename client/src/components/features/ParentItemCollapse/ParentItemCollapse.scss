@@ -2,10 +2,11 @@
 
 .parent-collapse-item {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
-  p {
+  p, span {
     margin: 0;
+    font-size: $base-size;
   }
 }

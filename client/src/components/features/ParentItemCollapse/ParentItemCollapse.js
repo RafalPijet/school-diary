@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import SelectItem from "../../common/SelectItem/SelectItem";
 import './ParentItemCollapse.scss';
-import Button from "../../common/Button/Button";
+// import Button from "../../common/Button/Button";
+import {Button} from "@material-ui/core";
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 import {checkStudentClass} from "../../../utilities/functions";
 
@@ -57,57 +58,49 @@ const ParentItemCollapse = props => {
         }
     };
 
-    if (parentStudents.length) {
-        return (
-            <div className='parent-collapse-item'>
-                <ModalAreYouSure
-                    user={parent}
-                    isOpen={isModalOpen}
-                    isConfirm={modalHandling}
-                    description='Are you sure you want to delete the parent'/>
-                <Button variant='danger' onClick={() => setIsModalOpen(true)}>Remove parent</Button>
-                <SelectItem
-                    list={studentsWithoutParent}
-                    selectName='unassigned students'
-                    buttonName="Assign"
-                    isDisabled={request.adding || studentsWithoutParent.length === 0}
-                    confirmSelect={getNewStudentForParent}
-                />
-                <SelectItem
-                    list={parentStudents}
-                    selectName='assigned students'
-                    buttonName='Unassign'
-                    confirmSelect={removeStudentFromParent}
-                    isDisabled={request.adding}/>
-                <div>
-                    {parentStudents.map((student, i) => {
-                        return (
-                            <p key={i}>
-                                {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
-                            </p>
-                        )
-                    })}
-                </div>
+    return (
+        <div className='parent-collapse-item'>
+            <ModalAreYouSure
+                user={parent}
+                isOpen={isModalOpen}
+                isConfirm={modalHandling}
+                description='Are you sure you want to delete the parent'/>
+            <Button
+                disabled={request.adding}
+                size='small'
+                variant='outlined'
+                color='secondary'
+                onClick={() => setIsModalOpen(true)}
+            >
+                Remove parent
+            </Button>
+            <SelectItem
+                list={studentsWithoutParent}
+                selectName='unassigned students'
+                buttonName="Assign"
+                helperText='assign a student to the parent'
+                isDisabled={request.adding || !studentsWithoutParent.length}
+                confirmSelect={getNewStudentForParent}
+            />
+            <SelectItem
+                list={parentStudents}
+                selectName='assigned students'
+                buttonName='Unassign'
+                helperText='unassign a student to the parent'
+                confirmSelect={removeStudentFromParent}
+                isDisabled={request.adding || !parentStudents.length}/>
+            <div>
+                {parentStudents.length ? parentStudents.map((student, i) => {
+                    return (
+                        <p key={i}>
+                            {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
+                        </p>
+                    )
+                }) : <span>The parent has no student assigned</span>}
             </div>
-        )
-    } else {
-        return (
-            <div className='parent-collapse-item'>
-                <ModalAreYouSure
-                    user={parent}
-                    isOpen={isModalOpen}
-                    isConfirm={modalHandling}
-                    description='Are you sure you want to delete the parent'/>
-                <Button variant='danger' onClick={() => setIsModalOpen(true)}>Remove parent</Button>
-                <SelectItem list={studentsWithoutParent}
-                            selectName='unassigned students'
-                            buttonName="Assign"
-                            isDisabled={request.adding || studentsWithoutParent.length === 0}
-                            confirmSelect={getNewStudentForParent}/>
-                <span>The parent has no student assigned</span>
-            </div>
-        )
-    }
+        </div>
+    )
+
 
 };
 
