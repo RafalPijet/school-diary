@@ -3,6 +3,18 @@ import PropTypes from 'prop-types';
 import MainMenu from '../../layouts/MainMenu/MainMenu';
 import Logo from "../../common/Logo/Logo";
 import logo from '../../../images/logo.png';
+import HomeIcon from '@material-ui/icons/Home';
+import ClassIcon from '@material-ui/icons/Group';
+import ParentsIcon from '@material-ui/icons/Wc';
+import StudentIcon from '@material-ui/icons/Face';
+import TeachersIcon from '@material-ui/icons/SupervisedUserCircle';
+import LogoutIcon from '@material-ui/icons/MeetingRoom';
+import LoginIcon from '@material-ui/icons/ExitToApp';
+import RegIcon from '@material-ui/icons/HowToReg';
+import DataIcon from '@material-ui/icons/Assignment';
+import RatingIcon from '@material-ui/icons/Dvr';
+import DiariesIcon from '@material-ui/icons/LibraryBooks';
+import TodayIcon from '@material-ui/icons/Today';
 import LoggedUser from '../../features/LoggedUser/LoggedUser';
 import '../../features/NavBar/NavBar.scss';
 
@@ -11,30 +23,30 @@ class NavBar extends React.Component {
         super(props);
         this.state = {
             loginLinks: [
-                {path: "/login", title: "LogIn"},
-                {path: "/registration", title: "Registration"}
+                {path: "/login", title: "LogIn", icon: <LoginIcon fontSize='large'/>},
+                {path: "/registration", title: "Registration", icon: <RegIcon fontSize='large'/> }
             ],
             studentLinks: [
-                {path: "/", title: "Home"},
-                {path: "/ratings", title: "Ratings"},
-                {path: "/attendance", title: "Attendance"},
-                {path: "/data", title: "Student Data"},
-                {path: "/teachers", title: "Teachers"},
-                {path: "/logout", title: "LogOut"}
+                {path: "/", title: "Home", icon: <HomeIcon fontSize='large'/>},
+                {path: "/ratings", title: "Ratings", icon: <RatingIcon fontSize='large'/>},
+                {path: "/attendance", title: "Attendance", icon: <TodayIcon fontSize='large'/>},
+                {path: "/data", title: "Student Data", icon: <DataIcon fontSize='large'/>},
+                {path: "/teachers", title: "Teachers", icon: <TeachersIcon fontSize='large'/>},
+                {path: "/logout", title: "LogOut", icon: <LogoutIcon fontSize='large'/>}
             ],
             teacherLinks: [
-                {path: "/", title: "Home"},
-                {path: "/diaries", title: "Class Diaries"},
-                {path: "/data", title: "Teacher data"},
-                {path: "/logout", title: "LogOut"}
+                {path: "/", title: "Home", icon: <HomeIcon  fontSize='large'/>},
+                {path: "/diaries", title: "Class Diaries", icon: <DiariesIcon fontSize='large'/>},
+                {path: "/data", title: "Teacher data", icon: <DataIcon fontSize='large'/>},
+                {path: "/logout", title: "LogOut", icon: <LogoutIcon fontSize='large'/>}
             ],
             principalLinks: [
-                {path: "/", title: "Home"},
-                {path: "/classes", title: "Classes"},
-                {path: "/teachers", title: "Teachers"},
-                {path: "/students", title: "Students"},
-                {path: "/parents", title: "Parents"},
-                {path: "/logout", title: "LogOut"}
+                {path: "/", title: "Home", icon: <HomeIcon fontSize='large'/>},
+                {path: "/classes", title: "Classes", icon: <ClassIcon fontSize='large'/>},
+                {path: "/teachers", title: "Teachers", icon: <TeachersIcon fontSize='large'/>},
+                {path: "/students", title: "Students", icon: <StudentIcon fontSize='large'/>},
+                {path: "/parents", title: "Parents", icon: <ParentsIcon fontSize='large'/>},
+                {path: "/logout", title: "LogOut", icon: <LogoutIcon fontSize='large'/>}
             ],
             activeLink: []
         };

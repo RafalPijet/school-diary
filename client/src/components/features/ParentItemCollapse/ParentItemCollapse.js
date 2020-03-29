@@ -69,7 +69,7 @@ const ParentItemCollapse = props => {
                 disabled={request.adding}
                 size='small'
                 variant='outlined'
-                color='secondary'
+                color='primary'
                 onClick={() => setIsModalOpen(true)}
             >
                 Remove parent

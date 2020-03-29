@@ -10,7 +10,8 @@
 }
 
 .parent-collapse {
-  background-image: linear-gradient($color-back-list, #fff 30%, #fff 70%, $color-back-list);
+  //background-image: linear-gradient($color-back-list, #fff 30%, #fff 70%, $color-back-list);
+  background-color: $color-back-list;
 }
 
 .parent-item-card {

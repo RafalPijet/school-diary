@@ -9,8 +9,8 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1),
         minWidth: 120,
     },
-    selectEmpty: {
-        marginTop: theme.spacing(2),
+    selectContent: {
+        color: '#f1f2f6'
     },
 }));
 
@@ -35,7 +35,9 @@ const SelectItem = props => {
         <div className='select-item-main'>
             <FormControl className={classes.formControl}>
                 <InputLabel id={selectName}>{selectName}</InputLabel>
+
                 <Select
+                    // className={classes.selectContent}
                     labelId={selectName}
                     id={`select-${selectName}`}
                     disabled={isDisabled}
@@ -50,9 +52,10 @@ const SelectItem = props => {
                         </MenuItem>
                     })}
                 </Select>
+
                 <FormHelperText>{helperText}</FormHelperText>
             </FormControl>
-            <Button size='small' disabled={isDisabled} variant='outlined' color='primary'
+            <Button size='small' disabled={isDisabled} variant='outlined' color='secondary'
                     onClick={buttonHandling}>{buttonName}</Button>
         </div>
     )
