@@ -1,11 +1,12 @@
 .logo-200 {
-  width: 320px;
-  height: 90px;
+  width: 170px;
+  height: 65px;
   margin: 0;
 }
 
 .navbar-main {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 

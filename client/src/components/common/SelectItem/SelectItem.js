@@ -55,7 +55,7 @@ const SelectItem = props => {
 
                 <FormHelperText>{helperText}</FormHelperText>
             </FormControl>
-            <Button size='small' disabled={isDisabled} variant='outlined' color='secondary'
+            <Button size='small' disabled={isDisabled} variant='outlined' color='primary'
                     onClick={buttonHandling}>{buttonName}</Button>
         </div>
     )

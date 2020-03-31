@@ -1,4 +1,5 @@
 import {
+    SET_IS_DARK,
     SET_IS_PLUS,
     SET_IS_NEW_RATING,
     SET_RATING_VALUE,
@@ -7,6 +8,7 @@ import {
 } from "../actions/valuesActions";
 
 const initialState = {
+    isDark: true,
     isPlus: null,
     isNewRating: {isNew: false, studentId: ""},
     ratingValue: "",
@@ -35,6 +37,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case SET_IS_DARK:
+            return {...state, isDark: action.isDark};
         case SET_IS_PLUS:
             return {...state, isPlus: (action.isPlus !== "" ? JSON.parse(action.isPlus) : null)};
         case SET_IS_NEW_RATING:

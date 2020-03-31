@@ -2,6 +2,7 @@ import React from 'react';
 import {Switch, Route} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {getLogin, getUser} from "./redux/actions/usersActions";
+import {getIsDark} from "./redux/actions/valuesActions";
 import MainLayout from './components/layouts/MainLayout/MainLayout';
 import Welcome from './components/pages/Welcome/Welcome';
 import Login from './components/pages/Login/Login';
@@ -24,11 +25,11 @@ import Logout from './components/pages/Logout/Logout';
 
 class App extends React.Component {
   render() {
-      const {isLogin, loggedUser} = this.props;
+      const {isLogin, loggedUser, isDark} = this.props;
 
       if (isLogin && loggedUser.status === 'student') {
           return (
-              <MainLayout isLogin={isLogin} loggedUser={loggedUser}>
+              <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                   <Switch>
                       <Route path='/' exact component={Home}/>
                       <Route path='/ratings' exact component={StudentRatings}/>
@@ -42,7 +43,7 @@ class App extends React.Component {
           )
       } else if (isLogin && loggedUser.status === 'teacher') {
           return (
-              <MainLayout isLogin={isLogin} loggedUser={loggedUser}>
+              <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                   <Switch>
                       <Route path='/' exact component={HomeTeacher}/>
                       <Route path='/diaries' exact component={ClassDiaries}/>
@@ -54,7 +55,7 @@ class App extends React.Component {
           )
       } else if (isLogin && loggedUser.status === 'principal') {
           return (
-              <MainLayout isLogin={isLogin} loggedUser={loggedUser}>
+              <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                   <Switch>
                       <Route path='/' exact component={HomePrincipal}/>
                       <Route path='/classes' exact component={Classes}/>
@@ -67,7 +68,7 @@ class App extends React.Component {
           )
       } else {
           return (
-              <MainLayout isLogin={isLogin}>
+              <MainLayout isLogin={isLogin} isDark={isDark}>
                   <Switch>
                       <Route path='/' exact component={Welcome}/>
                       <Route path='/login' exact component={Login}/>
@@ -82,6 +83,7 @@ class App extends React.Component {
 
 const mapStateToProps = state => ({
     isLogin: getLogin(state),
-    loggedUser: getUser(state)
+    loggedUser: getUser(state),
+    isDark: getIsDark(state)
 });
 export default connect(mapStateToProps)(App);

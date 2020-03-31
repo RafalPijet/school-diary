@@ -1,18 +1,26 @@
 import React from 'react';
 import {MuiThemeProvider, createMuiTheme} from "@material-ui/core";
+import {Grid} from '@material-ui/core';
 import PageContainer from '../PageContainer/PageContainter';
 import NavBar from '../../features/NavBar/NavBar';
+import LoggedUser from "../../features/LoggedUser/LoggedUserContainer";
 import AppThemeOptions from './../../../utilities/theme';
 
-const MainLayout = ({children, isLogin, loggedUser}) => {
-    const muiTheme = createMuiTheme(AppThemeOptions['dark']);
+const MainLayout = ({children, isLogin, loggedUser, isDark}) => {
+    const muiTheme = createMuiTheme(AppThemeOptions[`${isDark ? 'dark' : 'light'}`]);
     return (
-        <PageContainer>
-            <MuiThemeProvider theme={muiTheme}>
-                <NavBar isLogin={isLogin} loggedUser={loggedUser}/>
-                {children}
-            </MuiThemeProvider>
-        </PageContainer>
+        <MuiThemeProvider theme={muiTheme}>
+            <PageContainer>
+                <Grid item lg={2}>
+                    <NavBar isLogin={isLogin} loggedUser={loggedUser}/>
+                </Grid>
+                <Grid item lg={10}>
+                    <LoggedUser/>
+                    {children}
+                </Grid>
+            </PageContainer>
+        </MuiThemeProvider>
+
     )
 };
 

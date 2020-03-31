@@ -16,7 +16,7 @@ const appThemeOptions = {
             },
             secondary: {
                 light: red[200],
-                main: red[400],
+                main: '#009dde',
                 dark: red[600]
             },
         },
@@ -31,7 +31,7 @@ const appThemeOptions = {
             },
             secondary: {
                 light: grey[200],
-                main: grey[400],
+                main: '#009dde',
                 dark: grey[600]
             },
         },
