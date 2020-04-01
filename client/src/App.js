@@ -23,63 +23,62 @@ import Students from './components/pages/Students/Students';
 import Parents from './components/pages/Parents/Parents';
 import Logout from './components/pages/Logout/Logout';
 
-class App extends React.Component {
-  render() {
-      const {isLogin, loggedUser, isDark} = this.props;
+const App = props => {
+    const {isLogin, loggedUser, isDark} = props;
 
-      if (isLogin && loggedUser.status === 'student') {
-          return (
-              <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
-                  <Switch>
-                      <Route path='/' exact component={Home}/>
-                      <Route path='/ratings' exact component={StudentRatings}/>
-                      <Route path='/attendance' exact component={StudentAttendance}/>
-                      <Route path='/data' exact component={StudentData}/>
-                      <Route path='/teachers' exact component={Teachers}/>
-                      <Route path='/logout' exact component={Logout}/>
-                      <Route component={PageNotFound}/>
-                  </Switch>
-              </MainLayout>
-          )
-      } else if (isLogin && loggedUser.status === 'teacher') {
-          return (
-              <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
-                  <Switch>
-                      <Route path='/' exact component={HomeTeacher}/>
-                      <Route path='/diaries' exact component={ClassDiaries}/>
-                      <Route path='/data' exact component={TeacherData}/>
-                      <Route path='/logout' exact component={Logout}/>
-                      <Route component={PageNotFound}/>
-                  </Switch>
-              </MainLayout>
-          )
-      } else if (isLogin && loggedUser.status === 'principal') {
-          return (
-              <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
-                  <Switch>
-                      <Route path='/' exact component={HomePrincipal}/>
-                      <Route path='/classes' exact component={Classes}/>
-                      <Route path='/teachers' exact component={TeachersConfig}/>
-                      <Route path='/students' exact component={Students}/>
-                      <Route path='/parents' exact component={Parents}/>
-                      <Route path='/logout' exact component={Logout}/>
-                  </Switch>
-              </MainLayout>
-          )
-      } else {
-          return (
-              <MainLayout isLogin={isLogin} isDark={isDark}>
-                  <Switch>
-                      <Route path='/' exact component={Welcome}/>
-                      <Route path='/login' exact component={Login}/>
-                      <Route path='/registration' exact component={Registration}/>
-                      <Route component={PageNotFound}/>
-                  </Switch>
-              </MainLayout>
-          );
-      }
-  }
-}
+    if (isLogin && loggedUser.status === 'student') {
+        return (
+            <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
+                <Switch>
+                    <Route path='/' exact component={Home}/>
+                    <Route path='/ratings' exact component={StudentRatings}/>
+                    <Route path='/attendance' exact component={StudentAttendance}/>
+                    <Route path='/data' exact component={StudentData}/>
+                    <Route path='/teachers' exact component={Teachers}/>
+                    <Route path='/logout' exact component={Logout}/>
+                    <Route component={PageNotFound}/>
+                </Switch>
+            </MainLayout>
+        )
+    } else if (isLogin && loggedUser.status === 'teacher') {
+        return (
+            <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
+                <Switch>
+                    <Route path='/' exact component={HomeTeacher}/>
+                    <Route path='/diaries' exact component={ClassDiaries}/>
+                    <Route path='/data' exact component={TeacherData}/>
+                    <Route path='/logout' exact component={Logout}/>
+                    <Route component={PageNotFound}/>
+                </Switch>
+            </MainLayout>
+        )
+    } else if (isLogin && loggedUser.status === 'principal') {
+        return (
+            <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
+                <Switch>
+                    <Route path='/' exact component={HomePrincipal}/>
+                    <Route path='/classes' exact component={Classes}/>
+                    <Route path='/teachers' exact component={TeachersConfig}/>
+                    <Route path='/students' exact component={Students}/>
+                    <Route path='/parents' exact component={Parents}/>
+                    <Route path='/logout' exact component={Logout}/>
+                    <Route component={PageNotFound}/>
+                </Switch>
+            </MainLayout>
+        )
+    } else {
+        return (
+            <MainLayout isLogin={isLogin} isDark={isDark}>
+                <Switch>
+                    <Route path='/' exact component={Welcome}/>
+                    <Route path='/login' exact component={Login}/>
+                    <Route path='/registration' exact component={Registration}/>
+                    <Route component={PageNotFound}/>
+                </Switch>
+            </MainLayout>
+        );
+    }
+};
 
 const mapStateToProps = state => ({
     isLogin: getLogin(state),

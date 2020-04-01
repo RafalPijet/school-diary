@@ -20,6 +20,11 @@ const appThemeOptions = {
                 dark: red[600]
             },
         },
+        typography: {
+            subtitle2: {
+                fontWeight: 800
+            }
+        }
     },
     [AppTheme.DARK]: {
         palette: {
@@ -32,9 +37,14 @@ const appThemeOptions = {
             secondary: {
                 light: grey[200],
                 main: '#009dde',
-                dark: grey[600]
+                dark: grey[700]
             },
         },
+        typography: {
+            subtitle2: {
+                fontWeight: 800
+            }
+        }
     }
 };
 

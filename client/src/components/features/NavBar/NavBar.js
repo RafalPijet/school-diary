@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: theme.spacing(2),
-        height: '116px'
+        height: '105px'
     },
     paperMenu: {
         marginBottom: theme.spacing(2)
