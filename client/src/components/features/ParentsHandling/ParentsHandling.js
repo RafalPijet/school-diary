@@ -8,6 +8,9 @@ import ParentItem from '../ParentItem/ParentItem';
 import {style} from "../../../styles/global";
 
 const useStyles = makeStyles(theme => ({
+    root: {
+        backgroundColor: theme.palette.secondary.light
+    },
     info: {
         padding: `${style.smallSize} ${theme.spacing(20)}px 0 ${theme.spacing(4)}px`,
         display: 'flex-inline',
@@ -52,7 +55,7 @@ const ParentsHandling = props => {
         return <Spinner/>
     } else if (request.success) {
         return (
-            <Paper elevation={3}>
+            <Paper variant='outlined' className={classes.root}>
                 <Grid container className={classes.info}>
                     <Typography variant='subtitle2' color='primary'>Pos</Typography>
                     <Typography className={classes.correctFourth} variant='subtitle2' color='primary'>Last name</Typography>
@@ -60,7 +63,6 @@ const ParentsHandling = props => {
                     <Typography className={classes.correctSecond} variant='subtitle2' color='primary'>Birth date</Typography>
                     <Typography className={classes.correctFirst} variant='subtitle2' color='primary'>Email</Typography>
                     <Typography variant='subtitle2' color='primary'>Students</Typography>
-
                 </Grid>
                 <Grid container className={classes.content}>
                     {parents.map((parent, i) => {

@@ -18,7 +18,10 @@ const useStyles = makeStyles(theme => ({
     select: {
         width: '100%',
         margin: `${theme.spacing(1)}px 0`
-    }
+    },
+    selected: {
+    fontWeight: '800'
+}
 }));
 
 const ParentItem = props => {
@@ -38,30 +41,60 @@ const ParentItem = props => {
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                     <Grid container>
                         <Grid item lg={1}>
-                            <Typography align='left' variant='subtitle1' color='primary'>{i + 1}</Typography>
+                            <Typography
+                                className={selectedItem === i ? classes.selected : ''}
+                                align='left'
+                                variant='subtitle1'
+                                color='primary'>
+                                {i + 1}
+                            </Typography>
                         </Grid>
                         <Grid item lg={2}>
-                            <Typography align='left' variant='subtitle1' color='primary'>{parent.lastName}</Typography>
+                            <Typography
+                                className={selectedItem === i ? classes.selected : ''}
+                                align='left'
+                                variant='subtitle1'
+                                color='primary'>
+                                {parent.lastName}
+                            </Typography>
                         </Grid>
                         <Grid item lg={2}>
-                            <Typography align='left' variant='subtitle1' color='primary'>{parent.firstName}</Typography>
+                            <Typography
+                                className={selectedItem === i ? classes.selected : ''}
+                                align='left'
+                                variant='subtitle1'
+                                color='primary'>
+                                {parent.firstName}
+                            </Typography>
                         </Grid>
                         <Grid item lg={2}>
-                            <Typography align='center' variant='subtitle1' color='primary'>{parent.birthDate.substring(0, 10)}</Typography>
+                            <Typography
+                                className={selectedItem === i ? classes.selected : ''}
+                                align='center'
+                                variant='subtitle1'
+                                color='primary'>
+                                {parent.birthDate.substring(0, 10)}
+                            </Typography>
                         </Grid>
                         <Grid item lg={3}>
-                            <Typography align='center' variant='subtitle1' color='primary'><Link href={`mailto:${parent.email}`}>{parent.email}</Link></Typography>
+                            <Typography
+                                className={selectedItem === i ? classes.selected : ''}
+                                align='center'
+                                variant='subtitle1'
+                                color='primary'>
+                                <Link href={`mailto:${parent.email}`}>{parent.email}</Link>
+                            </Typography>
                         </Grid>
                         <Grid item lg={1}>
-                            <Typography align='center' variant='subtitle1' color='primary'>{parent.students.length}</Typography>
+                            <Typography
+                                className={selectedItem === i ? classes.selected : ''}
+                                align='center'
+                                variant='subtitle1'
+                                color='primary'>
+                                {parent.students.length}
+                            </Typography>
                         </Grid>
                     </Grid>
-                    {/*<span className='text-center col-1 '>{i + 1}</span>*/}
-                    {/*<span className='text-left col-2'>{parent.lastName}</span>*/}
-                    {/*<span className='text-left col-2'>{parent.firstName}</span>*/}
-                    {/*<span className='text-center col-2'>{parent.birthDate.substring(0, 10)}</span>*/}
-                    {/*<span className='text-center col-4'><a href={`mailto:${parent.email}`}>{parent.email}</a></span>*/}
-                    {/*<span className='text-center col-1'>{parent.students.length}</span>*/}
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                     <ParentItemCollapse parent={parent}/>

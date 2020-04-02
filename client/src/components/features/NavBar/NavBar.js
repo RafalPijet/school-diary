@@ -54,10 +54,8 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: theme.spacing(2),
-        height: '105px'
-    },
-    paperMenu: {
-        marginBottom: theme.spacing(2)
+        height: '105px',
+        backgroundColor: theme.palette.secondary.light
     }
 }));
 
@@ -84,7 +82,7 @@ const NavBar = props => {
             <Paper elevation={9} className={classes.paperLogo}>
                 <Logo image={logo} name='logo' style='logo-200'/>
             </Paper>
-            <Paper elevation={9} className={classes.paperMenu}>
+            <Paper elevation={9}>
                 <MainMenu links={activeLink}/>
             </Paper>
         </>

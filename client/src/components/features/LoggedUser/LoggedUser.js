@@ -13,7 +13,8 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-between',
         marginBottom: theme.spacing(1),
         padding: `${style.smallSize}`,
-        height: '37px'
+        height: '37px',
+        backgroundColor: theme.palette.secondary.light
     },
     iconOnLine: {
         color: `${style.colorOnLine}`

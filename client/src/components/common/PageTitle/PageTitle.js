@@ -7,7 +7,8 @@ import {style} from "../../../styles/global";
 
 const useStyles = makeStyles(theme => ({
     root: {
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
+        backgroundColor: theme.palette.secondary.light
     },
     info: {
         padding: style.baseSize,

@@ -6,18 +6,19 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import {Redirect} from 'react-router-dom';
 import './MainMenu.scss';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     root: {
         height: 600,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: theme.palette.secondary.light
     },
     button: {
         width: '100%'
     }
-});
+}));
 
 const MainMenu = props => {
     const {links} = props;

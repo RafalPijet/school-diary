@@ -1,17 +1,41 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import SelectItem from "../../common/SelectItem/SelectItem";
-import './ParentItemCollapse.scss';
-// import Button from "../../common/Button/Button";
-import {Button} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {Paper, Typography} from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fade from '@material-ui/core/Fade';
+// import './ParentItemCollapse.scss';
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 import {checkStudentClass} from "../../../utilities/functions";
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    button: {
+        color: theme.palette.action.light
+    },
+    info: {
+        backgroundColor: theme.palette.secondary.dark,
+        width: '240px',
+        height: '88px',
+        padding: theme.spacing(1),
+        overflow: 'auto'
+    }
+}));
 
 const ParentItemCollapse = props => {
     const {parent, allClasses, allStudents, updateUser, updateStudent, request, deleteParent} = props;
     const [parentStudents, setParentStudents] = useState([]);
     const [studentsWithoutParent, setStudentsWithoutParent] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const classes = useStyles();
 
     useEffect(() => {
         let parentStudents = [];
@@ -47,6 +71,7 @@ const ParentItemCollapse = props => {
 
     const modalHandling = isDelete => {
         setIsModalOpen(false);
+
         if (isDelete) {
             if (parent.students.length) {
                 parent.students.forEach(item => {
@@ -59,46 +84,62 @@ const ParentItemCollapse = props => {
     };
 
     return (
-        <div className='parent-collapse-item'>
+        <>
+            <div className={classes.root}>
+                <Tooltip
+                    disabled={request.adding}
+                    title='Remove parent'
+                    arrow
+                    placement='top'
+                    TransitionComponent={Fade}
+                    TransitionProps={{timeout: 1000}}
+                >
+                <span>
+                    <IconButton
+                        disabled={request.adding}
+                        aria-label='remove'
+                        className={classes.button}
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                    <DeleteIcon fontSize='large'/>
+
+                </IconButton>
+                </span>
+                </Tooltip>
+                <SelectItem
+                    list={studentsWithoutParent}
+                    isAdd={true}
+                    selectName='unassigned students'
+                    buttonName="Assign"
+                    helperText='assign a student to the parent'
+                    isDisabled={request.adding || !studentsWithoutParent.length}
+                    confirmSelect={getNewStudentForParent}
+                />
+                <SelectItem
+                    list={parentStudents}
+                    isAdd={false}
+                    selectName='assigned students'
+                    buttonName='Unassign'
+                    helperText='unassign a student to the parent'
+                    confirmSelect={removeStudentFromParent}
+                    isDisabled={request.adding || !parentStudents.length}/>
+                <Paper variant='outlined' className={classes.info}>
+                    {parentStudents.length ? parentStudents.map((student, i) => {
+                        return (
+                            <Typography key={i} variant='subtitle1'>
+                                {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
+                            </Typography>
+                        )
+                    }) : <Typography>The parent has no student assigned</Typography>}
+                </Paper>
+            </div>
             <ModalAreYouSure
                 user={parent}
                 isOpen={isModalOpen}
                 isConfirm={modalHandling}
-                description='Are you sure you want to delete the parent'/>
-            <Button
-                disabled={request.adding}
-                size='small'
-                variant='outlined'
-                color='primary'
-                onClick={() => setIsModalOpen(true)}
-            >
-                Remove parent
-            </Button>
-            <SelectItem
-                list={studentsWithoutParent}
-                selectName='unassigned students'
-                buttonName="Assign"
-                helperText='assign a student to the parent'
-                isDisabled={request.adding || !studentsWithoutParent.length}
-                confirmSelect={getNewStudentForParent}
+                description='Are you sure you want to delete the parent'
             />
-            <SelectItem
-                list={parentStudents}
-                selectName='assigned students'
-                buttonName='Unassign'
-                helperText='unassign a student to the parent'
-                confirmSelect={removeStudentFromParent}
-                isDisabled={request.adding || !parentStudents.length}/>
-            <div>
-                {parentStudents.length ? parentStudents.map((student, i) => {
-                    return (
-                        <p key={i}>
-                            {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
-                        </p>
-                    )
-                }) : <span>The parent has no student assigned</span>}
-            </div>
-        </div>
+        </>
     )
 
 

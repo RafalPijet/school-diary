@@ -1,4 +1,4 @@
-import { grey, red } from "@material-ui/core/colors";
+import { grey, red, green } from "@material-ui/core/colors";
 
 const AppTheme = {
     DARK: 'dark',
@@ -10,15 +10,20 @@ const appThemeOptions = {
         palette: {
             type: 'light',
             primary: {
-                light: red[200],
+                light: grey[100],
                 main: '#000',
-                dark: red[600]
+                dark: grey[200]
             },
             secondary: {
-                light: red[200],
+                light: grey[300],
                 main: '#009dde',
-                dark: red[600]
+                dark: grey[200]
             },
+            action: {
+                light: red[500],
+                main: red[500],
+                dark: green[500]
+            }
         },
         typography: {
             subtitle2: {
@@ -35,10 +40,15 @@ const appThemeOptions = {
                 dark: grey[600]
             },
             secondary: {
-                light: grey[200],
+                light: grey[800],
                 main: '#009dde',
                 dark: grey[700]
             },
+            action: {
+                light: red[300],
+                main: red[500],
+                dark: green[400]
+            }
         },
         typography: {
             subtitle2: {
