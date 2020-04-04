@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
 import SelectRegister from "../../common/SelectRegister/SelectRegister";
-import TextField from '../../common/TextField/TextField';
+// import TextField from '../../common/TextField/TextField';
+import {TextField} from "@material-ui/core";
 import {Redirect} from "react-router";
-import Button from '../../common/Button/Button';
+import DoneIcon from '@material-ui/icons/Done';
+import Fab from '@material-ui/core/Fab';
+// import Button from '../../common/Button/Button';
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
 import {style} from "../../../styles/global";
@@ -20,12 +23,25 @@ const useStyles = makeStyles({
         height: style.contentHeight
     },
     selectRow: {
-        display: 'flex',
+        display: 'inherit',
         justifyContent: 'space-between',
+        width: '400px',
+        margin: '5px 0'
+    },
+    textRow: {
+        display: 'inherit',
+        flexDirection: 'inherit',
+        justifyContent: 'center',
         width: '400px'
     },
     select: {
         minWidth: '150px'
+    },
+    margin: {
+        margin: '5px 0'
+    },
+    button: {
+        marginTop: '50px'
     }
 });
 
@@ -132,21 +148,8 @@ const UserForm = props => {
                 password: ''
             })
         }, 3000);
-        // const {resetRequest} = this.props;
-        // setTimeout(() => this.setState({
-        //     isVisible: false,
-        //     login: {
-        //         email: `${(error === 'Wrong password!') ? email : ''}`,
-        //         password: ''
-        //     }
-        // }), 3000);
         setTimeout(() => resetRequest(), 4000);
     };
-
-    // const {login, register, isVisible, userType, subject, subjectVisible} = this.state;
-    // const {handleTextField, confirmData, countVisible, handleSelectType} = this;
-    // const {isLogin, subjects} = this.props;
-    // const {pending, error, success} = this.props.request;
 
     if (pending) {
         return <Spinner/>
@@ -167,7 +170,7 @@ const UserForm = props => {
     } else {
         return (
             <Paper variant='outlined' className={classes.root}>
-                <div className={classes.selectRow} hidden={isLogin}>
+                <div hidden={isLogin} className={classes.selectRow} hidden={isLogin}>
                     <SelectRegister
                         className={classes.select}
                         selectTitle='user type'
@@ -181,38 +184,43 @@ const UserForm = props => {
                         options={subjects.all}
                         takeSelected={handleSubjectType}
                     />
-                    {/*<select value={userType} name='userType' onChange={handleUserType}>*/}
-                    {/*    <optgroup label='User Type'>*/}
-                    {/*        <option value='parent'>Parent</option>*/}
-                    {/*        <option value='teacher'>Teacher</option>*/}
-                    {/*    </optgroup>*/}
-                    {/*</select>*/}
-                    {/*<select disabled={!isSubjectVisible} value={subject} name='subject' onChange={handleSubjectType}>*/}
-                    {/*    <optgroup label="Teacher's Subject">*/}
-                    {/*        {subjects.all.map((subject, i) => {*/}
-                    {/*            return (*/}
-                    {/*                <option key={i} value={subject}>*/}
-                    {/*                    {`${subject.substring(0, 1).toUpperCase()}${subject.substring(1, subject.length)}`}*/}
-                    {/*                </option>*/}
-                    {/*            )*/}
-                    {/*        })}*/}
-                    {/*    </optgroup>*/}
-                    {/*</select>*/}
                 </div>
+                <div hidden={isLogin} className={classes.textRow}>
+                    <TextField label='first name' name='firstName' value={register.firstName}
+                               onChange={handleTextField} className={classes.margin}/>
+                    <TextField label='last name' name='lastName' value={register.lastName}
+                               onChange={handleTextField} className={classes.margin}/>
+                    <TextField label='phone number' name='telephone' value={register.telephone}
+                               onChange={handleTextField} className={classes.margin}/>
+                </div>
+                <div className={classes.textRow}>
+                    <TextField label='email' name='email' value={isLogin ? login.email : register.email}
+                               onChange={handleTextField} className={classes.margin}/>
+                    <TextField label='password' name='password' value={isLogin ? login.password : register.password}
+                               type='password' onChange={handleTextField} className={classes.margin}/>
+                </div>
+                <div hidden={isLogin} className={classes.textRow}>
+                    <TextField label='confirm password' name='confirm' value={isLogin ? login.confirm : register.confirm}
+                               type='password' onChange={handleTextField} className={classes.margin}/>
+                </div>
+                <Fab color='primary' className={classes.button} aria-label='add' onClick={() => console.log('wow')}>
+                    <DoneIcon/>
+                </Fab>
 
-                <TextField hidden={isLogin} label='first name' name='firstName' value={register.firstName}
-                           onChange={handleTextField}/>
-                <TextField hidden={isLogin} label='last name' name='lastName' value={register.lastName}
-                           onChange={handleTextField}/>
-                <TextField hidden={isLogin} label='birth date' name='birthDate' value={register.telephone}
-                           onChange={handleTextField} type='date'/>
-                <TextField label='email' name='email' value={isLogin ? login.email : register.email}
-                           onChange={handleTextField} type='email'/>
-                <TextField label='password' name='password' value={isLogin ? login.password : register.password}
-                           onChange={handleTextField} type='password'/>
-                <TextField hidden={isLogin} label='confirm password' name='confirm' value={register.confirm}
-                           onChange={handleTextField} type='password'/>
-                <Button variant="primary" onClick={confirmData}>Send</Button>
+
+                {/*<TextField hidden={isLogin} label='first name' name='firstName' value={register.firstName}*/}
+                {/*           onChange={handleTextField}/>*/}
+                {/*<TextField hidden={isLogin} label='last name' name='lastName' value={register.lastName}*/}
+                {/*           onChange={handleTextField}/>*/}
+                {/*<TextField hidden={isLogin} label='birth date' name='birthDate' value={register.telephone}*/}
+                {/*           onChange={handleTextField} type='date'/>*/}
+                {/*<TextField label='email' name='email' value={isLogin ? login.email : register.email}*/}
+                {/*           onChange={handleTextField} type='email'/>*/}
+                {/*<TextField label='password' name='password' value={isLogin ? login.password : register.password}*/}
+                {/*           onChange={handleTextField} type='password'/>*/}
+                {/*<TextField hidden={isLogin} label='confirm password' name='confirm' value={register.confirm}*/}
+                {/*           onChange={handleTextField} type='password'/>*/}
+                {/*<Button variant="primary" onClick={confirmData}>Send</Button>*/}
             </Paper>
         )
     }
