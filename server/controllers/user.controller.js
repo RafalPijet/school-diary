@@ -62,7 +62,7 @@ exports.getParents = async (req, res) => {
 
     try {
         let users = await User.find();
-        let parents = users.filter(user => user.status === 'student');
+        let parents = users.filter(user => user.status === 'parent');
         res.status(200).json(parents)
     } catch (err) {
         res.status(500).json(err);

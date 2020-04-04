@@ -20,8 +20,8 @@ const useStyles = makeStyles(theme => ({
         margin: `${theme.spacing(1)}px 0`
     },
     selected: {
-    fontWeight: '800'
-}
+        fontWeight: '800'
+    }
 }));
 
 const ParentItem = props => {
@@ -49,31 +49,44 @@ const ParentItem = props => {
                                 {i + 1}
                             </Typography>
                         </Grid>
-                        <Grid item lg={2}>
-                            <Typography
-                                className={selectedItem === i ? classes.selected : ''}
-                                align='left'
-                                variant='subtitle1'
-                                color='primary'>
-                                {parent.lastName}
-                            </Typography>
-                        </Grid>
-                        <Grid item lg={2}>
-                            <Typography
-                                className={selectedItem === i ? classes.selected : ''}
-                                align='left'
-                                variant='subtitle1'
-                                color='primary'>
-                                {parent.firstName}
-                            </Typography>
-                        </Grid>
+                        {selectedItem === i ?
+                            (<Grid item lg={4}>
+                                <Typography
+                                    className={classes.selected}
+                                    align='left'
+                                    variant='subtitle1'
+                                    color='primary'>
+                                    {`${parent.lastName} ${parent.firstName}`}
+                                </Typography>
+                            </Grid>) :
+                            (<>
+                                    <Grid item lg={2}>
+                                        <Typography
+                                            align='left'
+                                            variant='subtitle1'
+                                            color='primary'>
+                                            {parent.lastName.length > 12 ? `${parent.lastName.substring(0, 13)}...` :
+                                                parent.lastName}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item lg={2}>
+                                        <Typography
+                                            align='left'
+                                            variant='subtitle1'
+                                            color='primary'>
+                                            {parent.firstName.length > 12 ? `${parent.firstName.substring(0, 13)}...` :
+                                                parent.firstName}
+                                        </Typography>
+                                    </Grid>
+                                </>
+                            )}
                         <Grid item lg={2}>
                             <Typography
                                 className={selectedItem === i ? classes.selected : ''}
                                 align='center'
                                 variant='subtitle1'
                                 color='primary'>
-                                {parent.birthDate.substring(0, 10)}
+                                {parent.telephone}
                             </Typography>
                         </Grid>
                         <Grid item lg={3}>

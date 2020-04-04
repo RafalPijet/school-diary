@@ -7,7 +7,7 @@ const User = new Schema({
     subject: {type: "String", required: false},
     firstName: {type: "String", required: true},
     lastName: {type: "String", required: true},
-    birthDate: {type: "Date", required: true},
+    telephone: {type: "String", required: true},
     email: {type: "String", required: true, unique: true},
     password: {type: "String", required: true},
     students: [{type: Schema.ObjectId, ref: "Student"}]

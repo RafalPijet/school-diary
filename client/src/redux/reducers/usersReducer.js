@@ -8,18 +8,18 @@ import {
 } from "../actions/usersActions";
 
 const initialState = {
-    isLogin: true,
+    isLogin: false,
     teachers: [],
     parents: [],
     user: {
         students: [],
-        _id: "5dde40899f03ed9b4de5e5f1)",
-        id: "437be7cc-7609-4a23-83e0-6d0ec8a07161",
+        _id: "5e88438975b10f84cc3767e0",
+        id: "6bba8934-a215-4e75-ad28-8e4fb887187c",
         status: "principal",
         subject: "",
         firstName: "Rafal",
         lastName: "Pijet",
-        birthDate: "2019-11-27T15:43:46.729Z",
+        telephone: "600 391 395",
         email: "principal@gmail.com",
         password: "qqq",
         __v: 0

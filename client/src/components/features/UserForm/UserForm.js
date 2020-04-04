@@ -1,59 +1,76 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {makeStyles} from "@material-ui/core/styles";
+import {Paper} from "@material-ui/core";
+import SelectRegister from "../../common/SelectRegister/SelectRegister";
 import TextField from '../../common/TextField/TextField';
 import {Redirect} from "react-router";
 import Button from '../../common/Button/Button';
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
-import './UserForm.scss';
+import {style} from "../../../styles/global";
+// import './UserForm.scss';
 
-class UserForm extends React.Component {
-    state = {
-        login: {
-            email: '',
-            password: ''
-        },
-        register: {
-            firstName: '',
-            lastName: '',
-            birthDate: 'yyyy-mm-dd',
-            email: '',
-            password: '',
-            confirm: ''
-        },
-        isVisible: true,
-        userType: 'student',
-        subject: 'english',
-        subjectVisible: false
-    };
-
-    componentDidMount() {
-        this.props.resetRequest();
+const useStyles = makeStyles({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: style.contentHeight
+    },
+    selectRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '400px'
+    },
+    select: {
+        minWidth: '150px'
     }
+});
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.request.error === null) {
-            this.setState({isVisible: true});
-        }
-    }
+const UserForm = props => {
+    const {isLogin, subjects, resetRequest, loadUser, errorRequest, addUser} = props;
+    const {pending, error, success} = props.request;
+    const [login, setLogin] = useState({
+        email: '',
+        password: ''
+    });
+    const [register, setRegister] = useState({
+        firstName: '',
+        lastName: '',
+        telephone: '',
+        email: '',
+        password: '',
+        confirm: ''
+    });
+    const [isVisible, setIsVisible] = useState(true);
+    const [userType, setUserType] = useState('parent');
+    const [subject, setSubject] = useState(subjects.all[0]);
+    const [isSubjectVisible, setIsSubjectVisible] = useState(false);
+    const classes = useStyles();
 
-    handleTextField = event => {
-        const {isLogin} = this.props;
-        const {login, register} = this.state;
-        isLogin ? this.setState({login: {...login, [event.target.name]: event.target.value}}) :
-            this.setState({register: {...register, [event.target.name]: event.target.value}});
+    useEffect(() => {
+        if (pending || error !== null || success !== null) resetRequest();
+        if (error === null) setIsVisible(true);
+    }, [pending, error, success]);
+
+    const handleTextField = event => {
+        isLogin ? setLogin({...login, [event.target.name]: event.target.value}) :
+            setRegister({...register, [event.target.name]: event.target.value});
 
     };
 
-    handleSelectType = async event => {
-        await this.setState({[event.target.name]: event.target.value});
-        this.state.userType === 'teacher' ? this.setState({subjectVisible: true}) :
-            this.setState({subjectVisible: false});
+    const handleUserType = userType => {
+        setUserType(userType);
+        setIsSubjectVisible(userType === 'teacher');
     };
 
-    confirmData = event => {
-        const {loadUser, addUser, isLogin, errorRequest, resetRequest} = this.props;
-        const {login, register, userType, subject, subjectVisible} = this.state;
+    const handleSubjectType = subject => {
+        setSubject(subject);
+    };
+
+    const confirmData = event => {
         event.preventDefault();
 
         if (isLogin) {
@@ -76,7 +93,7 @@ class UserForm extends React.Component {
                             if (new Date(register.birthDate) < new Date()) {
                                 let user = {
                                     status: userType,
-                                    subject: subjectVisible ? subject : '',
+                                    subject: isSubjectVisible ? subject : '',
                                     firstName: register.firstName,
                                     lastName: register.lastName,
                                     birthDate: new Date(register.birthDate),
@@ -106,81 +123,101 @@ class UserForm extends React.Component {
         }
     };
 
-    countVisible = error => {
-        const {email} = this.state.login;
-        const {resetRequest} = this.props;
-        setTimeout(() => this.setState({
-            isVisible: false,
-            login: {
-                email: `${(error === 'Wrong password!') ? email : ''}`,
+    const countVisible = error => {
+        const {email} = login;
+        setTimeout(() => {
+            setIsVisible(false);
+            setLogin({
+                ...login, email: `${(error === 'Wrong password!') ? email : ''}`,
                 password: ''
-            }
-        }), 3000);
+            })
+        }, 3000);
+        // const {resetRequest} = this.props;
+        // setTimeout(() => this.setState({
+        //     isVisible: false,
+        //     login: {
+        //         email: `${(error === 'Wrong password!') ? email : ''}`,
+        //         password: ''
+        //     }
+        // }), 3000);
         setTimeout(() => resetRequest(), 4000);
     };
 
-    render() {
-        const {login, register, isVisible, userType, subject, subjectVisible} = this.state;
-        const {handleTextField, confirmData, countVisible, handleSelectType} = this;
-        const {isLogin, subjects} = this.props;
-        const {pending, error, success} = this.props.request;
+    // const {login, register, isVisible, userType, subject, subjectVisible} = this.state;
+    // const {handleTextField, confirmData, countVisible, handleSelectType} = this;
+    // const {isLogin, subjects} = this.props;
+    // const {pending, error, success} = this.props.request;
 
-        if (pending) {
-            return <Spinner/>
-        } else if (!pending && success) {
+    if (pending) {
+        return <Spinner/>
+    } else if (!pending && success) {
 
-            if (!isLogin) {
-                return <Alert variant='success' isVisible={isVisible}>
-                    {`The ${userType === 'student' ? 'parent' : userType} has been registered`}</Alert>
-            } else {
-
-                return <Redirect to='/'/>
-            }
-        } else if (!pending && error) {
-            countVisible(error);
-            return <Alert variant={error === 'User don\'t exist!!!' ? 'warning' : 'error'}
-                          isVisible={isVisible}>{error}
-            </Alert>
+        if (!isLogin) {
+            return <Alert variant='success' isVisible={isVisible}>
+                {`The ${userType === 'parent' ? 'parent' : userType} has been registered`}</Alert>
         } else {
-            return (
-                <form className='form-main'>
-                    <div className='user-type' hidden={isLogin}>
-                        <select value={userType} name='userType' onChange={handleSelectType}>
-                            <optgroup label='User Type'>
-                                <option value='student'>Student</option>
-                                <option value='teacher'>Teacher</option>
-                            </optgroup>
-                        </select>
-                        <select disabled={!subjectVisible} value={subject} name='subject' onChange={handleSelectType}>
-                            <optgroup label="Teacher's Subject">
-                                {subjects.all.map((subject, i) => {
-                                    return (
-                                    <option key={i} value={subject}>
-                                        {`${subject.substring(0, 1).toUpperCase()}${subject.substring(1, subject.length)}`}
-                                    </option>
-                                    )})}
-                            </optgroup>
-                        </select>
-                    </div>
 
-                    <TextField hidden={isLogin} label='first name' name='firstName' value={register.firstName}
-                               onChange={handleTextField}/>
-                    <TextField hidden={isLogin} label='last name' name='lastName' value={register.lastName}
-                               onChange={handleTextField}/>
-                    <TextField hidden={isLogin} label='birth date' name='birthDate' value={register.birthDate}
-                               onChange={handleTextField} type='date'/>
-                    <TextField label='email' name='email' value={isLogin ? login.email : register.email}
-                               onChange={handleTextField} type='email'/>
-                    <TextField label='password' name='password' value={isLogin ? login.password : register.password}
-                               onChange={handleTextField} type='password'/>
-                    <TextField hidden={isLogin} label='confirm password' name='confirm' value={register.confirm}
-                               onChange={handleTextField} type='password'/>
-                    <Button variant="primary" onClick={confirmData}>Send</Button>
-                </form>
-            )
+            return <Redirect to='/'/>
         }
+    } else if (!pending && error) {
+        countVisible(error);
+        return <Alert variant={error === 'User don\'t exist!!!' ? 'warning' : 'error'}
+                      isVisible={isVisible}>{error}
+        </Alert>
+    } else {
+        return (
+            <Paper variant='outlined' className={classes.root}>
+                <div className={classes.selectRow} hidden={isLogin}>
+                    <SelectRegister
+                        className={classes.select}
+                        selectTitle='user type'
+                        options={['parent', 'teacher']}
+                        takeSelected={handleUserType}
+                    />
+                    <SelectRegister
+                        className={classes.select}
+                        selectTitle='subject'
+                        isDisabled={!isSubjectVisible}
+                        options={subjects.all}
+                        takeSelected={handleSubjectType}
+                    />
+                    {/*<select value={userType} name='userType' onChange={handleUserType}>*/}
+                    {/*    <optgroup label='User Type'>*/}
+                    {/*        <option value='parent'>Parent</option>*/}
+                    {/*        <option value='teacher'>Teacher</option>*/}
+                    {/*    </optgroup>*/}
+                    {/*</select>*/}
+                    {/*<select disabled={!isSubjectVisible} value={subject} name='subject' onChange={handleSubjectType}>*/}
+                    {/*    <optgroup label="Teacher's Subject">*/}
+                    {/*        {subjects.all.map((subject, i) => {*/}
+                    {/*            return (*/}
+                    {/*                <option key={i} value={subject}>*/}
+                    {/*                    {`${subject.substring(0, 1).toUpperCase()}${subject.substring(1, subject.length)}`}*/}
+                    {/*                </option>*/}
+                    {/*            )*/}
+                    {/*        })}*/}
+                    {/*    </optgroup>*/}
+                    {/*</select>*/}
+                </div>
+
+                <TextField hidden={isLogin} label='first name' name='firstName' value={register.firstName}
+                           onChange={handleTextField}/>
+                <TextField hidden={isLogin} label='last name' name='lastName' value={register.lastName}
+                           onChange={handleTextField}/>
+                <TextField hidden={isLogin} label='birth date' name='birthDate' value={register.telephone}
+                           onChange={handleTextField} type='date'/>
+                <TextField label='email' name='email' value={isLogin ? login.email : register.email}
+                           onChange={handleTextField} type='email'/>
+                <TextField label='password' name='password' value={isLogin ? login.password : register.password}
+                           onChange={handleTextField} type='password'/>
+                <TextField hidden={isLogin} label='confirm password' name='confirm' value={register.confirm}
+                           onChange={handleTextField} type='password'/>
+                <Button variant="primary" onClick={confirmData}>Send</Button>
+            </Paper>
+        )
     }
-}
+
+};
 
 UserForm.propTypes = {
     loadUser: PropTypes.func.isRequired,

@@ -13,31 +13,31 @@ const loadTestData = async () => {
             console.log('No users. Loading data...');
             const user = new User({
                 id: uuid.v4(),
-                status: 'student',
+                status: 'parent',
                 subject: '',
                 firstName: 'John',
                 lastName: 'Travolta',
-                birthDate: Date.now(),
+                telephone: '601 234 657',
                 email: 'travolta@gmail.com',
                 password: 'qqq'
             });
             const user4 = new User({
                 id: uuid.v4(),
-                status: 'student',
+                status: 'parent',
                 subject: '',
                 firstName: 'Jack',
                 lastName: 'Nicolson',
-                birthDate: Date.now(),
+                telephone: '501 567 345',
                 email: 'nicolson@gmail.com',
                 password: 'qqq'
             });
             const user5 = new User({
                 id: uuid.v4(),
-                status: 'student',
+                status: 'parent',
                 subject: '',
                 firstName: 'Robert',
                 lastName: 'De Niro',
-                birthDate: Date.now(),
+                telephone: '602 123 456',
                 email: 'deniro@gmail.com',
                 password: 'qqq'
             });
@@ -47,7 +47,7 @@ const loadTestData = async () => {
                 subject: '',
                 firstName: 'Rafal',
                 lastName: 'Pijet',
-                birthDate: Date.now(),
+                telephone: '600 391 395',
                 email: 'principal@gmail.com',
                 password: 'qqq'
             });
@@ -147,7 +147,7 @@ const loadTestData = async () => {
                 subject: 'math',
                 firstName: 'David',
                 lastName: 'Gahan',
-                birthDate: Date.now(),
+                telephone: '508 567 899',
                 email: 'david@gmail.com',
                 password: 'qqq',
                 students: []
@@ -158,7 +158,7 @@ const loadTestData = async () => {
                 subject: 'english',
                 firstName: 'Martin',
                 lastName: 'L.Gore',
-                birthDate: Date.now(),
+                telephone: '608 454 267',
                 email: 'martin@gmail.com',
                 password: 'qqq',
                 students: []

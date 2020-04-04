@@ -3,5 +3,6 @@ export const style = {
     smallSize: '5px',
     bigSize: '25px',
     colorOnLine: '#32ff7e',
-    colorOffLine: '#a4b0be'
+    colorOffLine: '#a4b0be',
+    contentHeight: '600px'
 };

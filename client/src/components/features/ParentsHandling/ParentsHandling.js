@@ -60,7 +60,7 @@ const ParentsHandling = props => {
                     <Typography variant='subtitle2' color='primary'>Pos</Typography>
                     <Typography className={classes.correctFourth} variant='subtitle2' color='primary'>Last name</Typography>
                     <Typography className={classes.correctThird} variant='subtitle2' color='primary'>First name</Typography>
-                    <Typography className={classes.correctSecond} variant='subtitle2' color='primary'>Birth date</Typography>
+                    <Typography className={classes.correctSecond} variant='subtitle2' color='primary'>Phone</Typography>
                     <Typography className={classes.correctFirst} variant='subtitle2' color='primary'>Email</Typography>
                     <Typography variant='subtitle2' color='primary'>Students</Typography>
                 </Grid>

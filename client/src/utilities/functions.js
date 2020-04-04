@@ -35,3 +35,4 @@ export const prepareStudentsData = (students, classes) => {
     });
     return studentsList;
 };
+
