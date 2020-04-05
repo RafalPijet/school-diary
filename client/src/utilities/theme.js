@@ -12,7 +12,7 @@ const appThemeOptions = {
             primary: {
                 light: grey[100],
                 main: '#000',
-                dark: grey[200]
+                dark: green[200]
             },
             secondary: {
                 light: grey[300],
@@ -37,7 +37,7 @@ const appThemeOptions = {
             primary: {
                 light: grey[400],
                 main: grey[100],
-                dark: grey[600]
+                dark: green[600]
             },
             secondary: {
                 light: grey[800],

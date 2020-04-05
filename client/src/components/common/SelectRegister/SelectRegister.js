@@ -1,19 +1,33 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {makeStyles} from "@material-ui/core/styles";
 import {InputLabel, MenuItem, FormControl, Select} from "@material-ui/core";
+
+const useStyles = makeStyles(theme => ({
+    disabled: {
+        color: theme.palette.secondary.dark
+    }
+}));
 
 const SelectRegister = props => {
     const {selectTitle, isDisabled, options, takeSelected, ...otherProps} = props;
-    const [selectedItem, setSelectedItem] = useState('');
+    const [selectedItem, setSelectedItem] = useState(isDisabled === undefined ? options[0] : '');
+    const classes = useStyles();
 
     useEffect(() => {
+
+        if (isDisabled !== undefined && isDisabled) {
+            setSelectedItem('')
+        }
         takeSelected(selectedItem);
-        console.log('wow');
-    }, [selectedItem]);
+    }, [selectedItem, isDisabled, takeSelected]);
 
     return (
         <FormControl>
-            <InputLabel id={selectTitle}>{selectTitle}</InputLabel>
+            <InputLabel
+                className={isDisabled ? classes.disabled : ''}
+                id={selectTitle}>{selectTitle}
+            </InputLabel>
             <Select
                 {...otherProps}
                 labelId={selectTitle}

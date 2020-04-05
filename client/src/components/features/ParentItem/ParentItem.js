@@ -53,7 +53,7 @@ const ParentItem = props => {
                             (<Grid item lg={4}>
                                 <Typography
                                     className={classes.selected}
-                                    align='left'
+                                    align='center'
                                     variant='subtitle1'
                                     color='primary'>
                                     {`${parent.lastName} ${parent.firstName}`}

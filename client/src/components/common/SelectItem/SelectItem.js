@@ -52,6 +52,7 @@ const SelectItem = props => {
                 <Select
                     labelId={selectName}
                     id={`select-${selectName}`}
+                    color='primary'
                     disabled={isDisabled}
                     value={selectedItem ? JSON.stringify(selectedItem) : ''}
                     onChange={changeHandling}
