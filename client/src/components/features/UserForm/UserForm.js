@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
+import MaskedInput from "react-text-mask/dist/reactTextMask";
 import SelectRegister from "../../common/SelectRegister/SelectRegister";
 import {TextField} from "@material-ui/core";
 import {Redirect} from "react-router";
@@ -42,6 +43,26 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const TextMaskCustom = props => {
+    const {inputRef, ...other} = props;
+
+    return (
+        <MaskedInput
+            {...other}
+            ref={(ref) => {
+                inputRef(ref ? ref.inputElement : null);
+            }}
+            mask={['(', /[0]/, /[0]/, /[0-9]/, /[0-9]/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]}
+            placeholderChar={'\u2000'}
+            showMask
+        />
+    );
+};
+
+TextMaskCustom.propTypes = {
+    inputRef: PropTypes.func.isRequired,
+};
+
 const UserForm = props => {
     const {isLogin, subjects, resetRequest, loadUser, errorRequest, addUser} = props;
     const {pending, error, success} = props.request;
@@ -52,7 +73,7 @@ const UserForm = props => {
     const [register, setRegister] = useState({
         firstName: '',
         lastName: '',
-        telephone: '',
+        telephone: '(0048)',
         email: '',
         password: '',
         confirm: ''
@@ -61,11 +82,28 @@ const UserForm = props => {
     const [subject, setSubject] = useState('');
     const [isSubjectsDisabled, setIsSubjectsDisabled] = useState(true);
     const [isAccept, setIsAccept] = useState(false);
+    const [isError, setIsError] = useState({
+        email: false,
+        confirm: false
+    });
     const classes = useStyles();
 
     useEffect(() => {
         setIsSubjectsDisabled(userType === 'parent');
-    }, [userType]);
+
+        if (isLogin) {
+            let {email, password} = login;
+            setIsAccept(email.length > 0 && password.length > 0)
+        } else {
+            let {firstName, lastName, telephone, email, password, confirm} = register;
+            setIsAccept(firstName.length > 0 && lastName.length > 0 && telephone.length === 18 && email.length > 0
+                && (password === confirm && password.length > 0 && confirm.length > 0) &&
+                (userType === 'teacher' ? subject.length > 0 : userType.length > 0)
+                && !isError.confirm && !isError.email)
+        }
+    }, [userType, login.email, login.password, register.firstName, register.lastName, register,
+        register.telephone, register.email, register.password, register.confirm, subject, isLogin, login,
+        isError.email, isError.confirm]);
 
     const handleTextField = event => {
         isLogin ? setLogin({...login, [event.target.name]: event.target.value}) :
@@ -103,18 +141,25 @@ const UserForm = props => {
                            onChange={handleTextField} className={classes.margin}/>
                 <TextField label='last name' name='lastName' value={register.lastName}
                            onChange={handleTextField} className={classes.margin}/>
-                <TextField type='number' label='phone number' name='telephone' value={register.telephone}
+                <TextField label='phone number' name='telephone' value={register.telephone}
+                           InputProps={{inputComponent: TextMaskCustom}}
                            onChange={handleTextField} className={classes.margin}/>
             </div>
             <div className={classes.textRow}>
-                <TextField error helperText='Incorrect entry' label='email' name='email'
-                           value={isLogin ? login.email : register.email}
+                <TextField error={isError.email} helperText={isError.email ? 'Incorrect entry' : ''}
+                           label='email' name='email' value={isLogin ? login.email : register.email}
+                           onBlur={event => setIsError({...isError, email: !event.target.value.includes('@')})}
                            onChange={handleTextField} className={classes.margin}/>
                 <TextField label='password' name='password' value={isLogin ? login.password : register.password}
                            type='password' onChange={handleTextField} className={classes.margin}/>
             </div>
             <div hidden={isLogin} className={classes.textRow}>
-                <TextField label='confirm password' name='confirm' value={isLogin ? login.confirm : register.confirm}
+                <TextField error={isError.confirm} helperText={isError.confirm ? 'other than password' : ''}
+                           label='confirm password' name='confirm' value={register.confirm}
+                           onBlur={event => setIsError({
+                               ...isError,
+                               confirm: event.target.value !== register.password
+                           })}
                            type='password' onChange={handleTextField} className={classes.margin}/>
             </div>
             <Fab
