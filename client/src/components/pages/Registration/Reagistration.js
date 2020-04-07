@@ -5,7 +5,7 @@ import UserForm from '../../features/UserForm/UserFormContainer';
 const Registration = () => (
     <div>
         <PageTitle>Registration</PageTitle>
-        <UserForm/>
+        <UserForm isLogin={false}/>
     </div>
 );
 

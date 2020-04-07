@@ -1,44 +1,88 @@
-import React from 'react';
-import {Animated} from "react-animated-css";
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {FaMeh, FaGrinAlt, FaGrimace, FaFlushed, FaInfoCircle} from "react-icons/fa";
-import {IconContext} from "react-icons";
-import './Alert.scss';
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import Slide from '@material-ui/core/Slide';
+import DoneIcon from '@material-ui/icons/Done';
+import ErrorIcon from '@material-ui/icons/Error';
+import Typography from "@material-ui/core/Typography";
 
-const Alert = ({variant = '', children, isVisible, ...otherProps}) => {
+const SlideTransition = props => {
+    return <Slide {...props} direction='left'/>
+};
 
-    const icon = () => {
-        switch (variant) {
-            case 'info':
-                return <FaInfoCircle/>
-            case 'success':
-                return <FaGrinAlt/>
-            case 'error':
-                return <FaGrimace/>
-            case 'warning':
-                return <FaFlushed/>
-            default:
-                return <FaMeh/>
-        }
-    };
+const useStyles = makeStyles(theme => ({
+    rootMessage: {
+        backgroundColor: 'inherit',
+        color: '#fff'
+    },
+    success: {
+        backgroundColor: theme.palette.action.dark
+    },
+    error: {
+        backgroundColor: theme.palette.action.light
+    },
+    row: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+}));
+
+const MessageContent = props => {
+    const {message, className, variant} = props;
+    const classes = useStyles();
+    return (
+        <div className={classes.row}>
+            {variant === 'success' ? <DoneIcon className={className} /> :
+                <ErrorIcon className={className} />}
+            <Typography
+                className={className}
+                style={{paddingLeft: '10px'}}
+            >
+                {message}
+            </Typography>
+        </div>
+    )
+};
+
+const Alert = props => {
+    const {message, isOpenAlert, variant, handleCloseHandling} = props;
+    const [isOpen, setIsOpen] = useState(false);
+    const classes = useStyles();
+
+    useEffect(() => {
+        setIsOpen(isOpenAlert)
+    }, [isOpenAlert]);
 
     return (
-        <Animated className='alert-container' animationIn='bounceIn' animationOut='fadeOut' isVisible={isVisible}>
-            <div className={`alert-main alert-main--${variant}`} {...otherProps}>
-                <IconContext.Provider value={{size: '2em'}}>
-                    <div>
-                        {icon()}
-                    </div>
-                </IconContext.Provider>
-                <span>{children}</span>
-            </div>
-        </Animated>
+        <div>
+            <Snackbar
+                open={isOpen}
+                anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+                TransitionComponent={SlideTransition}
+                autoHideDuration={5000}
+                onClose={() => setIsOpen(false)}
+                onExited={handleCloseHandling}
+            >
+                <SnackbarContent
+                    className={classes[variant]}
+                    message={<MessageContent
+                        message={message}
+                        variant={variant}
+                        className={classes.rootMessage}/>}
+                />
+            </Snackbar>
+        </div>
     )
 };
 
 Alert.propTypes = {
+    message: PropTypes.string.isRequired,
+    isOpenAlert: PropTypes.bool.isRequired,
     variant: PropTypes.string.isRequired,
-    children: PropTypes.string
+    handleCloseHandling: PropTypes.func
 };
 
 export default Alert;

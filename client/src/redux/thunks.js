@@ -50,7 +50,7 @@ export const addUser = user => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await axios.post(`${API_URL}/users`, user);
             dispatch(stopRequest());
         } catch (err) {

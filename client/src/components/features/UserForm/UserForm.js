@@ -9,6 +9,7 @@ import {Redirect} from "react-router";
 import DoneIcon from '@material-ui/icons/Done';
 import Fab from '@material-ui/core/Fab';
 import Spinner from '../../common/Spinner/Spinner';
+import Alert from "../../common/Alert/Alert";
 import {style} from "../../../styles/global";
 
 const useStyles = makeStyles(theme => ({
@@ -52,7 +53,7 @@ const TextMaskCustom = props => {
             ref={(ref) => {
                 inputRef(ref ? ref.inputElement : null);
             }}
-            mask={['(', /[0]/, /[0]/, /[0-9]/, /[0-9]/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]}
+            mask={['(', '0', '0', /[0-9]/, /[0-9]/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]}
             placeholderChar={'\u2000'}
             showMask
         />
@@ -82,9 +83,11 @@ const UserForm = props => {
     const [subject, setSubject] = useState('');
     const [isSubjectsDisabled, setIsSubjectsDisabled] = useState(true);
     const [isAccept, setIsAccept] = useState(false);
+    const [isAlert, setIsAlert] = useState(false);
     const [isError, setIsError] = useState({
         email: false,
-        confirm: false
+        confirm: false,
+        phone: false
     });
     const classes = useStyles();
 
@@ -93,7 +96,12 @@ const UserForm = props => {
 
         if (isLogin) {
             let {email, password} = login;
-            setIsAccept(email.length > 0 && password.length > 0)
+            setIsAccept(email.length > 0 && password.length > 0);
+
+            if (success) {
+                console.log('success');
+                setIsAlert(true);
+            }
         } else {
             let {firstName, lastName, telephone, email, password, confirm} = register;
             setIsAccept(firstName.length > 0 && lastName.length > 0 && telephone.length === 18 && email.length > 0
@@ -101,9 +109,10 @@ const UserForm = props => {
                 (userType === 'teacher' ? subject.length > 0 : userType.length > 0)
                 && !isError.confirm && !isError.email)
         }
+
     }, [userType, login.email, login.password, register.firstName, register.lastName, register,
         register.telephone, register.email, register.password, register.confirm, subject, isLogin, login,
-        isError.email, isError.confirm]);
+        isError.email, isError.confirm, success]);
 
     const handleTextField = event => {
         isLogin ? setLogin({...login, [event.target.name]: event.target.value}) :
@@ -119,61 +128,116 @@ const UserForm = props => {
         setSubject(subject);
     };
 
-    return (
-        <Paper variant='outlined' className={classes.root}>
-            <div hidden={isLogin} className={classes.selectRow}>
-                <SelectRegister
-                    className={classes.select}
-                    selectTitle='user type'
-                    options={['parent', 'teacher']}
-                    takeSelected={handleUserType}
-                />
-                <SelectRegister
-                    className={classes.select}
-                    selectTitle='subject'
-                    isDisabled={isSubjectsDisabled}
-                    options={subjects.all}
-                    takeSelected={handleSubjectType}
-                />
-            </div>
-            <div hidden={isLogin} className={classes.textRow}>
-                <TextField label='first name' name='firstName' value={register.firstName}
-                           onChange={handleTextField} className={classes.margin}/>
-                <TextField label='last name' name='lastName' value={register.lastName}
-                           onChange={handleTextField} className={classes.margin}/>
-                <TextField label='phone number' name='telephone' value={register.telephone}
-                           InputProps={{inputComponent: TextMaskCustom}}
-                           onChange={handleTextField} className={classes.margin}/>
-            </div>
-            <div className={classes.textRow}>
-                <TextField error={isError.email} helperText={isError.email ? 'Incorrect entry' : ''}
-                           label='email' name='email' value={isLogin ? login.email : register.email}
-                           onBlur={event => setIsError({...isError, email: !event.target.value.includes('@')})}
-                           onChange={handleTextField} className={classes.margin}/>
-                <TextField label='password' name='password' value={isLogin ? login.password : register.password}
-                           type='password' onChange={handleTextField} className={classes.margin}/>
-            </div>
-            <div hidden={isLogin} className={classes.textRow}>
-                <TextField error={isError.confirm} helperText={isError.confirm ? 'other than password' : ''}
-                           label='confirm password' name='confirm' value={register.confirm}
-                           onBlur={event => setIsError({
-                               ...isError,
-                               confirm: event.target.value !== register.password
-                           })}
-                           type='password' onChange={handleTextField} className={classes.margin}/>
-            </div>
-            <Fab
-                color='primary'
-                className={classes.button}
-                aria-label='add'
-                onClick={() => console.log('wow')}
-                disabled={!isAccept}
-            >
-                <DoneIcon/>
-            </Fab>
+    const handleCloseHandling = () => {
+        setIsAlert(false);
 
+        setLogin({
+                email: 'WOW',
+                password: 'register.password'
+            });
+    };
+
+    const sendData = () => {
+
+        if (isLogin) {
+            const {email, password} = login;
+            let data = {email, password};
+            console.log(data);
+        } else {
+            const {firstName, lastName, telephone, email, password} = register;
+            let data = {
+                status: userType,
+                subject,
+                firstName,
+                lastName,
+                telephone,
+                email,
+                password
+            };
+            addUser(data);
+        }
+    };
+
+    if (pending) {
+        return <Paper variant='outlined' className={classes.root}>
+            <Spinner/>
         </Paper>
-    )
+    } if (success) {
+
+        return <Redirect to='/login'/>
+    } else {
+        return (
+            <Paper variant='outlined' className={classes.root}>
+                <div hidden={isLogin} className={classes.selectRow}>
+                    <SelectRegister
+                        className={classes.select}
+                        selectTitle='user type'
+                        options={['parent', 'teacher']}
+                        takeSelected={handleUserType}
+                    />
+                    <SelectRegister
+                        className={classes.select}
+                        selectTitle='subject'
+                        isDisabled={isSubjectsDisabled}
+                        options={subjects.all}
+                        takeSelected={handleSubjectType}
+                    />
+                </div>
+                <div hidden={isLogin} className={classes.textRow}>
+                    <TextField label='first name' name='firstName' value={register.firstName}
+                               onChange={handleTextField} className={classes.margin}/>
+                    <TextField label='last name' name='lastName' value={register.lastName}
+                               onChange={handleTextField} className={classes.margin}/>
+                    <TextField label='phone number' name='telephone' value={register.telephone}
+                               error={isError.phone} helperText={isError.phone ? 'Incorrect entry' : ''}
+                               InputProps={{inputComponent: TextMaskCustom}}
+                               onBlur={event => {
+                                   setRegister({...register, telephone: event.target.value.trim()});
+                                   setIsError({...isError, phone: event.target.value.trim().length !== 18});
+                               }}
+                               onChange={handleTextField} className={classes.margin}/>
+                </div>
+                <div className={classes.textRow}>
+                    <TextField error={isError.email} helperText={isError.email ? 'Incorrect entry' : ''}
+                               label='email' name='email' value={isLogin ? login.email : register.email}
+                               onBlur={event => setIsError({...isError, email: !event.target.value.includes('@')})}
+                               onChange={handleTextField} className={classes.margin}/>
+                    <TextField label='password' name='password' value={isLogin ? login.password : register.password}
+                               type='password' onChange={handleTextField} className={classes.margin}/>
+                </div>
+                <div hidden={isLogin} className={classes.textRow}>
+                    <TextField error={isError.confirm} helperText={isError.confirm ? 'other than password' : ''}
+                               label='confirm password' name='confirm' value={register.confirm}
+                               onBlur={event => setIsError({
+                                   ...isError,
+                                   confirm: event.target.value !== register.password
+                               })}
+                               type='password' onChange={handleTextField} className={classes.margin}/>
+                </div>
+                <Fab
+                    color='primary'
+                    className={classes.button}
+                    aria-label='add'
+                    onClick={sendData}
+                    disabled={!isAccept}
+                >
+                    <DoneIcon/>
+                </Fab>
+                <Fab
+                    aria-label='test'
+                    onClick={() => setIsAlert(true)}
+                >
+                    <DoneIcon/>
+                </Fab>
+                <Alert
+                    message='Test'
+                    variant='success'
+                    isOpenAlert={isAlert}
+                    handleCloseHandling={handleCloseHandling}
+                />
+            </Paper>
+        )
+    }
 };
 
 UserForm.propTypes = {
