@@ -1,5 +1,6 @@
 import {
     SET_LOGIN,
+    SET_REGISTER,
     SET_USER,
     LOAD_TEACHERS,
     LOAD_PARENTS,
@@ -9,6 +10,7 @@ import {
 
 const initialState = {
     isLogin: false,
+    register: {email: {}, password: {}},
     teachers: [],
     parents: [],
     user: {
@@ -30,6 +32,8 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_LOGIN:
             return {...state, isLogin: action.isLogin};
+        case SET_REGISTER:
+            return {...state, register: {email: action.login.email, password: action.login.password}};
         case SET_USER:
             return {...state, user: action.user};
         case LOAD_TEACHERS:

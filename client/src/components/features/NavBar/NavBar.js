@@ -66,7 +66,7 @@ const NavBar = props => {
     const classes = useStyles();
 
     useEffect(() => {
-        if (isLogin && loggedUser.status === 'student') {
+        if (isLogin && loggedUser.status === 'parent') {
             setActiveLink(studentLinks);
         } else if (isLogin && loggedUser.status === 'teacher') {
             setActiveLink(teacherLinks);

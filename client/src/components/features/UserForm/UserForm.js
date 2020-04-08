@@ -65,7 +65,7 @@ TextMaskCustom.propTypes = {
 };
 
 const UserForm = props => {
-    const {isLogin, subjects, resetRequest, loadUser, errorRequest, addUser} = props;
+    const {isLogin, subjects, resetRequest, loadUser, addUser, registerAfter, setRegisterAfter} = props;
     const {pending, error, success} = props.request;
     const [login, setLogin] = useState({
         email: '',
@@ -98,10 +98,17 @@ const UserForm = props => {
             let {email, password} = login;
             setIsAccept(email.length > 0 && password.length > 0);
 
-            if (success) {
-                console.log('success');
+            if (Object.values(registerAfter.email).length && Object.values(registerAfter.password).length) {
+                setLogin({
+                    email: registerAfter.email,
+                    password: registerAfter.password
+                });
+                setRegisterAfter({email: {}, password: {}});
                 setIsAlert(true);
             }
+            setIsAccept(false);
+
+            if (!isAlert) setIsAccept(login.email.length > 0 && login.password.length > 0);
         } else {
             let {firstName, lastName, telephone, email, password, confirm} = register;
             setIsAccept(firstName.length > 0 && lastName.length > 0 && telephone.length === 18 && email.length > 0
@@ -110,9 +117,14 @@ const UserForm = props => {
                 && !isError.confirm && !isError.email)
         }
 
+        if (error !== null) {
+            setIsAlert(true);
+        }
+
     }, [userType, login.email, login.password, register.firstName, register.lastName, register,
         register.telephone, register.email, register.password, register.confirm, subject, isLogin, login,
-        isError.email, isError.confirm, success]);
+        isError.email, isError.confirm, registerAfter.email, registerAfter.password, error, isAlert,
+        setRegisterAfter]);
 
     const handleTextField = event => {
         isLogin ? setLogin({...login, [event.target.name]: event.target.value}) :
@@ -130,19 +142,16 @@ const UserForm = props => {
 
     const handleCloseHandling = () => {
         setIsAlert(false);
+        setIsAccept(true);
 
-        setLogin({
-                email: 'WOW',
-                password: 'register.password'
-            });
+        if (error !== null) resetRequest();
     };
 
     const sendData = () => {
 
         if (isLogin) {
             const {email, password} = login;
-            let data = {email, password};
-            console.log(data);
+            loadUser({email, password})
         } else {
             const {firstName, lastName, telephone, email, password} = register;
             let data = {
@@ -154,6 +163,7 @@ const UserForm = props => {
                 email,
                 password
             };
+            setRegisterAfter({email, password});
             addUser(data);
         }
     };
@@ -162,9 +172,10 @@ const UserForm = props => {
         return <Paper variant='outlined' className={classes.root}>
             <Spinner/>
         </Paper>
-    } if (success) {
-
-        return <Redirect to='/login'/>
+    }
+    if (success) {
+        resetRequest();
+        return !isLogin ? <Redirect to='/login'/> : <Redirect to='/'/>
     } else {
         return (
             <Paper variant='outlined' className={classes.root}>
@@ -223,15 +234,9 @@ const UserForm = props => {
                 >
                     <DoneIcon/>
                 </Fab>
-                <Fab
-                    aria-label='test'
-                    onClick={() => setIsAlert(true)}
-                >
-                    <DoneIcon/>
-                </Fab>
                 <Alert
-                    message='Test'
-                    variant='success'
+                    message={`${error !== null ? error : 'The user has been registered'}`}
+                    variant={`${error !== null ? 'error' : 'success'}`}
                     isOpenAlert={isAlert}
                     handleCloseHandling={handleCloseHandling}
                 />
@@ -244,10 +249,11 @@ UserForm.propTypes = {
     loadUser: PropTypes.func.isRequired,
     addUser: PropTypes.func.isRequired,
     resetRequest: PropTypes.func.isRequired,
-    errorRequest: PropTypes.func.isRequired,
+    setRegisterAfter: PropTypes.func.isRequired,
     isLogin: PropTypes.bool,
     request: PropTypes.object.isRequired,
-    subjects: PropTypes.object.isRequired
+    subjects: PropTypes.object.isRequired,
+    registerAfter: PropTypes.object.isRequired
 };
 
 export default UserForm;
