@@ -1,33 +1,15 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {getTeacherAllClass} from "../../../redux/actions/classActions";
-import {getUser} from "../../../redux/actions/usersActions";
-import {getRequest} from "../../../redux/actions/requestActions";
-import {loadAllClassByTeacherId} from "../../../redux/thunks";
 import PageTitle from '../../common/PageTitle/PageTitle';
-import ClassBoxList from '../../features/ClassBoxList/ClassBoxList';
-import DiaryBox from '../../features/DiaryBox/DiaryBoxContainer';
+import ClassBoxList from '../../features/ClassBoxList/ClassBoxListContainer';
 
-const ClassDiaries = props => {
-    const {loadClasses, user, classes, request} = props;
+const ClassDiaries = () => {
+
     return (
         <div>
             <PageTitle>Class Diaries</PageTitle>
-            <ClassBoxList classes={classes} user={user}
-                          loadClasses={loadClasses} request={request}/>
-            <DiaryBox/>
+            <ClassBoxList />
         </div>
     )
 };
 
-const mapStateToProps = state => ({
-    classes: getTeacherAllClass(state),
-    user: getUser(state),
-    request: getRequest(state)
-});
-
-const mapDispatchToProps = dispatch => ({
-    loadClasses: teacherId => dispatch(loadAllClassByTeacherId(teacherId))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClassDiaries);
+export default ClassDiaries;

@@ -9,20 +9,20 @@ import {
 } from "../actions/usersActions";
 
 const initialState = {
-    isLogin: false,
+    isLogin: true,
     register: {email: {}, password: {}},
     teachers: [],
     parents: [],
     user: {
         students: [],
-        _id: "5e88438975b10f84cc3767e0",
-        id: "6bba8934-a215-4e75-ad28-8e4fb887187c",
-        status: "principal",
-        subject: "",
-        firstName: "Rafal",
-        lastName: "Pijet",
-        telephone: "600 391 395",
-        email: "principal@gmail.com",
+        _id: "5e88438975b10f84cc376807",
+        id: "451d2037-2d47-4694-9cf4-b7dd0120ed01",
+        status: "teacher",
+        subject: "math",
+        firstName: "David",
+        lastName: "Gahan",
+        telephone: "508 567 899",
+        email: "david@gmail.com",
         password: "qqq",
         __v: 0
     }

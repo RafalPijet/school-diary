@@ -54,7 +54,6 @@ export const addUser = user => {
             await axios.post(`${API_URL}/users`, user);
             dispatch(stopRequest());
         } catch (err) {
-            console.log(err.message);
             dispatch(errorRequest(
                 `${err.message.includes('code 500') ? 'Email address already exists' : err.message}`
             ))
