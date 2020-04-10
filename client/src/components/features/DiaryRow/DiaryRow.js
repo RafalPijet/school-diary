@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {UncontrolledTooltip} from 'reactstrap';
 import RatingItem from '../../common/RatingItem/RatingItem';
 import Button from '../../common/Button/Button';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
 import RatingOptions from '../../features/RatingOptions/RatingOptionsContainer';
-import './DiaryRow.scss';
+import Popper from '@material-ui/core/Popper';
+import Fade from '@material-ui/core/Fade';
+
+// import './DiaryRow.scss';
 
 class DiaryRow extends React.Component {
     state = {
@@ -12,7 +16,8 @@ class DiaryRow extends React.Component {
         studentId: "",
         ratingsId: "",
         ratingValue: "",
-        plusOrMinus: ""
+        plusOrMinus: "",
+        anchorEl: null
     };
 
     componentDidMount() {
@@ -38,6 +43,15 @@ class DiaryRow extends React.Component {
             actualizeRatings(nextProps.student, nextProps.teacher);
         }
     }
+
+    handleClick = event => {
+        // console.log(event.currentTarget);
+        this.setState(this.state.anchorEl ? null : event.currentTarget)
+    };
+
+    open = Boolean(this.state.anchorEl);
+
+    id = this.open ? 'transitions-popper' : undefined;
 
     actualizeRatings = (student, teacher) => {
         student.ratings.forEach(item => {
@@ -115,22 +129,22 @@ class DiaryRow extends React.Component {
         const {addRating, enterRating, cancelHandling} = this;
 
         return (
-            <tr>
-                <td style={{width: "1rem"}}>{i + 1}</td>
-                <td style={{width: "20rem"}}>{`${student.firstName} ${student.lastName}`}</td>
-                <td>{studentRatings.map((rating, index) => {
+            <TableRow hover>
+                <TableCell align='center'>{i + 1}</TableCell>
+                <TableCell align='left'>{`${student.firstName} ${student.lastName}`}</TableCell>
+                <TableCell align='left'>{studentRatings.map(rating => {
                     return (
-                        <span key={"item" + index} id={"Tooltip" + index}>
-                            <RatingItem rating={rating} isNewRating={isNewRating}
-                                        setRatingValue={setRatingValue}/>
-                            <UncontrolledTooltip placement='top' target={"Tooltip" + index}>
-                                <div>
-                                    <p className="m-0 text-justify">{`scales: ${rating.scales}`}</p>
-                                    <p className="m-0 text-justify">{`description: ${rating.description}`}</p>
-                                    <p className="m-0 text-justify">{`date: ${!isNewRating.isNew ? rating.date.substring(0, 10) : ""}`}</p>
-                                </div>
-                            </UncontrolledTooltip>
-                        </span>
+                        <React.Fragment key={rating._id}>
+                            <RatingItem rating={rating} onClick={this.handleClick} aria-describedby={this.id}/>
+                            <Popper id={this.id} open={this.open} anchorEl={this.state.anchorEl} transition>
+                                {({ TransitionProps }) => (
+                                    <Fade {...TransitionProps} timeout={350}>
+                                        <div>The content of the Popper.</div>
+                                    </Fade>
+                                )}
+                            </Popper>
+                        </React.Fragment>
+
                     )
                 })}
                     <span className='buttons-main'>
@@ -142,8 +156,8 @@ class DiaryRow extends React.Component {
                     <RatingOptions hidden={!(isNewRating.isNew && isNewRating.studentId === studentId)}
                                    studentId={studentId} cancelHandling={cancelHandling}/>
                 </span>
-                </td>
-            </tr>
+                </TableCell>
+            </TableRow>
         )
     }
 }

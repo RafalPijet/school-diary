@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     root: {
         width: '100%',
         height: '300px',
-        paddingTop: style.baseSize
+        padding: `${style.baseSize} ${style.smallSize}`
     }
 });
 
