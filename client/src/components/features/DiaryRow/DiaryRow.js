@@ -1,166 +1,105 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {makeStyles} from "@material-ui/core/styles";
+import {Paper} from "@material-ui/core";
 import RatingItem from '../../common/RatingItem/RatingItem';
-import Button from '../../common/Button/Button';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/AddCircleOutline';
 import RatingOptions from '../../features/RatingOptions/RatingOptionsContainer';
-import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
+import Zoom from '@material-ui/core/Zoom';
+import Tooltip from "@material-ui/core/Tooltip";
 
-// import './DiaryRow.scss';
-
-class DiaryRow extends React.Component {
-    state = {
-        studentRatings: [],
-        studentId: "",
-        ratingsId: "",
-        ratingValue: "",
-        plusOrMinus: "",
-        anchorEl: null
-    };
-
-    componentDidMount() {
-        const {student, teacher} = this.props;
-        const {actualizeRatings} = this;
-        actualizeRatings(student, teacher)
+const useStyles = makeStyles(theme => ({
+    buttonBox: {
+        display: 'inline-flex',
+        width: '50px',
+        height: '50px',
+        alignItems: 'center',
+        position: 'relative'
+    },
+    adding: {
+        position: 'absolute',
+        left: '-50px',
+        top: '-85px',
+        zIndex: '20',
+        backgroundColor: theme.palette.secondary.dark
+    },
+    buttonAdd: {
+        color: theme.palette.action.dark,
+        transition: '1s'
+    },
+    buttonCancel: {
+        color: theme.palette.action.warning,
+        transform: 'rotate(45deg)',
+        transition: '1s'
     }
+}));
 
-    componentWillReceiveProps(nextProps) {
-        const {actualizeRatings} = this;
+const DiaryRow = props => {
+    const {
+        student, addRating, i, isNewRating, isPlus, teacher, request, ratingValue, selectedDescription,
+        selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales
+    } = props;
+    const [studentRatings, setStudentRatings] = useState([]);
+    const [studentId, setStudentId] = useState('');
+    const [ratingsId, setRatingsId] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const classes = useStyles();
 
-        if (nextProps.isPlus !== null) {
-            nextProps.isPlus ? this.setState({plusOrMinus: "+"}) : this.setState({plusOrMinus: "-"})
-        } else {
-            this.setState({plusOrMinus: ""})
-        }
-
-        if (nextProps.isNewRating.isNew) {
-            this.setState({ratingValue: nextProps.ratingValue});
-        }
-
-        if (!nextProps.isNewRating.isNew) {
-            actualizeRatings(nextProps.student, nextProps.teacher);
-        }
-    }
-
-    handleClick = event => {
-        // console.log(event.currentTarget);
-        this.setState(this.state.anchorEl ? null : event.currentTarget)
-    };
-
-    open = Boolean(this.state.anchorEl);
-
-    id = this.open ? 'transitions-popper' : undefined;
-
-    actualizeRatings = (student, teacher) => {
+    useEffect(() => {
         student.ratings.forEach(item => {
 
             if (teacher.subject === item.subject) {
-                this.setState({
-                    studentRatings: item.ratings,
-                    ratingsId: item.id,
-                    studentId: student.id
-                });
+                setStudentRatings(item.ratings);
+                setRatingsId(item.id);
+                setStudentId(student.id);
             }
         });
-    };
+    }, [teacher, student]);
 
-    addRating = () => {
-        const {teacher, setIsNewRating, isNewRating} = this.props;
-        const {studentId} = this.state;
 
-        if (!isNewRating.isNew) {
-            let rating = {
-                value: "",
-                description: "",
-                scales: 0,
-                date: new Date(),
-                teacher: `${teacher.firstName} ${teacher.lastName}`
-            };
-            this.setState({
-                studentRatings: [...this.state.studentRatings, rating]
-            });
-            setIsNewRating(true, studentId);
-        }
-    };
-
-    cancelHandling = () => {
-        const {studentRatings} = this.state;
-        const {setIsNewRating, setIsPlus, setRatingValue, setDescription, setScales} = this.props;
-        studentRatings.pop();
-        this.setState({studentRatings: studentRatings});
-        setIsNewRating(false, "");
-        setIsPlus(null);
-        setRatingValue("");
-        setDescription("");
-        setScales(1);
-    };
-
-    enterRating = () => {
-        const {ratingValue, plusOrMinus, studentRatings, ratingsId} = this.state;
-        const {
-            setIsNewRating, setIsPlus, setRatingValue, selectedDescription,
-            selectedScales, setDescription, setScales, addRating
-        } = this.props;
-
-        if (ratingValue !== '' && (plusOrMinus !== "+" || ratingValue !== "6")
-            && (plusOrMinus !== "-" || ratingValue !== "1")) {
-            let newRating = studentRatings.pop();
-            newRating.value = ratingValue + plusOrMinus;
-            newRating.description = selectedDescription;
-            newRating.scales = selectedScales;
-            let dataPackage = {
-                rating: newRating,
-                ratingsId: ratingsId
-            };
-            addRating(dataPackage);
-            setIsNewRating(false, "");
-            setIsPlus(null);
-            setRatingValue("");
-            setDescription("");
-            setScales(1);
-        }
-    };
-
-    render() {
-        const {student, i, isNewRating, setRatingValue, request} = this.props;
-        const {studentRatings, studentId} = this.state;
-        const {addRating, enterRating, cancelHandling} = this;
-
-        return (
-            <TableRow hover>
-                <TableCell align='center'>{i + 1}</TableCell>
-                <TableCell align='left'>{`${student.firstName} ${student.lastName}`}</TableCell>
-                <TableCell align='left'>{studentRatings.map(rating => {
-                    return (
-                        <React.Fragment key={rating._id}>
-                            <RatingItem rating={rating} onClick={this.handleClick} aria-describedby={this.id}/>
-                            <Popper id={this.id} open={this.open} anchorEl={this.state.anchorEl} transition>
-                                {({ TransitionProps }) => (
-                                    <Fade {...TransitionProps} timeout={350}>
-                                        <div>The content of the Popper.</div>
-                                    </Fade>
-                                )}
-                            </Popper>
-                        </React.Fragment>
-
-                    )
-                })}
-                    <span className='buttons-main'>
-                    <Button disabled={(isNewRating.isNew && studentId !== isNewRating.studentId) || request.adding}
-                            variant={((isNewRating.isNew && studentId !== isNewRating.studentId) || request.adding) ? "off" : "success"}
-                            title={isNewRating.isNew ? "Enter rating" : "Add rating"}
-                            onClick={(isNewRating.isNew && isNewRating.studentId === studentId) ? enterRating : addRating}>
-                        {(isNewRating.isNew && isNewRating.studentId === studentId) ? 'Enter' : 'Add'}</Button>
-                    <RatingOptions hidden={!(isNewRating.isNew && isNewRating.studentId === studentId)}
-                                   studentId={studentId} cancelHandling={cancelHandling}/>
+    return (
+        <TableRow hover>
+            <TableCell align='center'>{i + 1}</TableCell>
+            <TableCell align='left'>{`${student.firstName} ${student.lastName}`}</TableCell>
+            <TableCell align='left'>{studentRatings.map(rating => {
+                return (
+                    <RatingItem key={rating._id} rating={rating}/>
+                )
+            })}
+                <div className={classes.buttonBox}>
+                <span>
+                    <Tooltip
+                        title={isOpen ? 'cancel adding' : 'add rating'}
+                        arrow
+                        placement='bottom'
+                        TransitionComponent={Fade}
+                        TransitionProps={{timeout: 1000}}
+                    >
+                <span>
+                     <IconButton
+                         aria-label='add'
+                         onClick={() => setIsOpen(!isOpen)}
+                     >
+                    {<AddIcon className={isOpen ? classes.buttonCancel : classes.buttonAdd}/>}
+                    </IconButton>
                 </span>
-                </TableCell>
-            </TableRow>
-        )
-    }
-}
+                </Tooltip>
+                </span>
+                    <Zoom in={isOpen}>
+                        <Paper variant='outlined' elevation={9} className={classes.adding}>
+                            <RatingOptions/>
+                        </Paper>
+                    </Zoom>
+                </div>
+            </TableCell>
+        </TableRow>
+    )
+
+};
 
 DiaryRow.propTypes = {
     student: PropTypes.object.isRequired,

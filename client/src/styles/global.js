@@ -1,6 +1,7 @@
 export const style = {
     baseSize: '14px',
     smallSize: '5px',
+    middleSize: '18px',
     bigSize: '25px',
     colorOnLine: '#32ff7e',
     colorOffLine: '#a4b0be',

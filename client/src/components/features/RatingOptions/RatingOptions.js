@@ -1,98 +1,126 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../common/Button/Button';
-import './RatingsOptions.scss';
+import {makeStyles} from "@material-ui/core/styles";
+import Rating from '@material-ui/lab/Rating';
+import Typography from "@material-ui/core/Typography";
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import {style} from "../../../styles/global";
+import {InputLabel} from "@material-ui/core";
 
-class RatingOptions extends React.Component {
-    state = {
-        halfValue: '',
-        descValue: this.props.ratingDescriptions[0],
-        scaleValue: this.props.ratingScales[0]
-    };
-
-    componentDidMount() {
-        this.setDefaultState();
+const useStyles = makeStyles(theme => ({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '80px',
+        width: '180px'
+    },
+    ratingRow: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+    },
+    valueBox: {
+        display: 'inline-flex',
+        width: '30px',
+        height: '30px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: style.smallSize
+    },
+    ratingValue: {
+        fontSize: style.middleSize,
+        fontWeight: 700,
+        paddingLeft: theme.spacing(1),
+        color: theme.palette.action.dark
     }
+}));
 
-    componentWillReceiveProps(nextProps) {
+const labels = {
+    0.5: '1',
+    1: '1+',
+    1.5: '2-',
+    2: '2',
+    2.5: '2+',
+    3: '3-',
+    3.5: '3',
+    4: '3+',
+    4.5: '4-',
+    5: '4',
+    5.5: '4+',
+    6: '5-',
+    6.5: '5',
+    7: '5+',
+    7.5: '6-',
+    8: '6'
+};
 
-        if (!nextProps.isNewRating.isNew) {
-            this.setState({
-                halfValue: '',
-                descValue: nextProps.ratingDescriptions[0],
-                scaleValue: nextProps.ratingScales[0]
-            });
-            this.setDefaultState();
-        }
-    }
+const RatingOptions = props => {
+    const {ratingScales, ratingDescriptions} = props;
+    const [value, setValue] = useState(3.5);
+    const [hover, setHover] = useState(-1);
+    const [scales, setScales] = useState(ratingScales[0]);
+    const [description, setDescription] = useState(ratingDescriptions[0]);
+    const classes = useStyles();
 
-    setDefaultState = () => {
-        const {setIsPlus, setDescription, setScales} = this.props;
-        const {halfValue, descValue, scaleValue} = this.state;
-        setIsPlus(halfValue);
-        setDescription(descValue);
-        setScales(scaleValue);
-    };
-
-    selectHandling = async event => {
-        const {setIsPlus, setDescription, setScales} = this.props;
-        await this.setState({[event.target.name]: event.target.value});
-        await setIsPlus(this.state.halfValue);
-        await setDescription(this.state.descValue);
-        await setScales(this.state.scaleValue)
-    };
-
-    render() {
-        const {hidden, ratingDescriptions, ratingScales, ratingValue, cancelHandling} = this.props;
-        const {halfValue, descValue, scaleValue} = this.state;
-        const {selectHandling} = this;
-        return (
-            <div className='options-main' hidden={hidden}>
-                <div className="select-main">
-                    <select value={descValue} name="descValue" onChange={selectHandling}
-                            title="select description of rating">
-                        <optgroup label="description">
-                            {ratingDescriptions.map((desc, i) => {
-                                return <option key={i} value={desc}>{desc}</option>
-                            })}
-                        </optgroup>
-                    </select>
-                    <div className="second-row">
-                        <select value={halfValue} name="halfValue" onChange={selectHandling}
-                                title="select +/-">
-                            <optgroup label="half">
-                                <option value=""></option>
-                                <option hidden={ratingValue === '6'} value={true}>+</option>
-                                <option hidden={ratingValue === '1'} value={false}>-</option>
-                            </optgroup>
-                        </select>
-                        <select value={scaleValue} name="scaleValue" onChange={selectHandling}
-                                title="select scales of rating">
-                            <optgroup label="scales">
-                                {ratingScales.map((scales, i) => {
-                                    return <option key={i} value={scales}>{scales}</option>
-                                })}
-                            </optgroup>
-                        </select>
-                    </div>
+    return (
+        <div className={classes.root}>
+            <div className={classes.ratingRow}>
+                <Rating
+                    name="rating-stars"
+                    size='small'
+                    max={8}
+                    value={value}
+                    precision={0.5}
+                    onChange={(event, newValue) => {
+                        setValue(newValue);
+                    }}
+                    onChangeActive={(event, newHover) => {
+                        setHover(newHover);
+                    }}
+                />
+                <div className={classes.valueBox}>
+                    <Typography className={classes.ratingValue}>{labels[hover !== -1 ? hover : value]}</Typography>
                 </div>
-                <Button variant="danger" title="abort adding rating" onClick={cancelHandling}>Cancel</Button>
             </div>
-        )
-    }
-}
+            <div className={classes.ratingRow}>
+                <FormControl>
+                    <Select
+                        value={scales}
+                        onChange={e => setScales(e.target.value)}
+                        style={{fontSize: '14px'}}
+                    >
+                        {ratingScales.map(item => {
+                            return <MenuItem style={{fontSize: '14px'}} key={item} value={item}>{item}</MenuItem>
+                        })}
+
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <Select
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                        style={{fontSize: '14px'}}
+                    >
+                        {ratingDescriptions.map(item => {
+                            return <MenuItem style={{fontSize: '14px'}} key={item} value={item}>{item}</MenuItem>
+                        })}
+
+                    </Select>
+                </FormControl>
+            </div>
+        </div>
+    )
+
+};
 
 RatingOptions.propTypes = {
-    studentId: PropTypes.string.isRequired,
-    hidden: PropTypes.bool.isRequired,
-    setIsPlus: PropTypes.func.isRequired,
-    isNewRating: PropTypes.object,
-    ratingDescriptions: PropTypes.array.isRequired,
     ratingScales: PropTypes.array.isRequired,
-    setDescription: PropTypes.func.isRequired,
-    setScales: PropTypes.func.isRequired,
-    ratingValue: PropTypes.string.isRequired,
-    cancelHandling: PropTypes.func.isRequired
+    ratingDescriptions: PropTypes.array.isRequired
 };
 
 export default RatingOptions;
