@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
+import clsx from "clsx";
 import {Paper} from "@material-ui/core";
 import RatingItem from '../../common/RatingItem/RatingItem';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from "@material-ui/core/Typography";
 import TableCell from '@material-ui/core/TableCell';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
@@ -11,6 +13,7 @@ import RatingOptions from '../../features/RatingOptions/RatingOptionsContainer';
 import Fade from '@material-ui/core/Fade';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from "@material-ui/core/Tooltip";
+import {style} from "../../../styles/global";
 
 const useStyles = makeStyles(theme => ({
     buttonBox: {
@@ -22,10 +25,10 @@ const useStyles = makeStyles(theme => ({
     },
     adding: {
         position: 'absolute',
-        left: '-50px',
-        top: '-85px',
+        left: '-200px',
+        top: '-33px',
         zIndex: '20',
-        backgroundColor: theme.palette.secondary.dark
+        backgroundColor: theme.palette.action.adding
     },
     buttonAdd: {
         color: theme.palette.action.dark,
@@ -35,6 +38,30 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.action.warning,
         transform: 'rotate(45deg)',
         transition: '1s'
+    },
+    padding: {
+        padding: style.smallSize
+    },
+    firstCell: {
+        width: style.baseSize,
+    },
+    secondCell: {
+        width: '200px',
+        overflowX: 'auto'
+    },
+    thirdCell: {
+        width: '720px',
+    },
+    names: {
+        whiteSpace: 'nowrap',
+        width: '200px',
+    },
+    ratings: {
+        width: '666px',
+        display: 'inline-flex',
+        flexWrap: 'nowrap',
+        overflowX: 'auto',
+        height: '40px',
     }
 }));
 
@@ -63,13 +90,18 @@ const DiaryRow = props => {
 
     return (
         <TableRow hover>
-            <TableCell align='center'>{i + 1}</TableCell>
-            <TableCell align='left'>{`${student.firstName} ${student.lastName}`}</TableCell>
-            <TableCell align='left'>{studentRatings.map(rating => {
-                return (
-                    <RatingItem key={rating._id} rating={rating}/>
-                )
-            })}
+            <TableCell className={clsx(classes.firstCell, classes.padding)} align='center'>{i + 1}</TableCell>
+            <TableCell className={clsx(classes.padding, classes.secondCell)} align='left'>
+                <Typography className={classes.names}>{`${student.lastName} ${student.firstName}`}</Typography>
+            </TableCell>
+            <TableCell className={clsx(classes.padding, classes.thirdCell)} align='left'>
+                <span className={classes.ratings}>
+                    {studentRatings.map(rating => {
+                        return (
+                            <RatingItem key={rating._id} rating={rating}/>
+                        )
+                    })}
+                </span>
                 <div className={classes.buttonBox}>
                 <span>
                     <Tooltip
@@ -90,7 +122,7 @@ const DiaryRow = props => {
                 </Tooltip>
                 </span>
                     <Zoom in={isOpen}>
-                        <Paper variant='outlined' elevation={9} className={classes.adding}>
+                        <Paper elevation={9} className={classes.adding}>
                             <RatingOptions/>
                         </Paper>
                     </Zoom>

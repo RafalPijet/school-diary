@@ -1,37 +1,42 @@
 import React from 'react';
-// import {Table} from 'reactstrap';
+import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
+import componentStyle from "./DiaryListStyle";
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
+import {Link} from "@material-ui/core";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import DiaryRow from '../../features/DiaryRow/DiaryRowContainer';
-import {style} from "../../../styles/global";
+import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles({
-    root: {
-        width: '100%',
-        height: '300px',
-        padding: `${style.baseSize} ${style.smallSize}`
-    }
-});
+const useStyles = makeStyles(theme => componentStyle(theme));
+
 
 const DiaryList = props => {
     const {students} = props.selectedClass;
-    const {teacher} = props;
+    const {teacher, selectedClass} = props;
     const classes = useStyles();
+    console.log(props.selectedClass);
     return (
         <TableContainer className={classes.root}>
-            <Table stickyHeader aria-label="sticky table">
-                <TableHead>
+            <div className={classes.classInfo}>
+                <Typography className={classes.tutor}>{'tutor: '}
+                    <Link href={`mailto:${selectedClass.mainTeacher.email}`} className={classes.tutorContent}>
+                        {selectedClass.mainTeacher.firstName} {selectedClass.mainTeacher.lastName}
+                    </Link>
+                </Typography>
+            </div>
+            <Table aria-label="sticky table">
+                <TableHead className={classes.header}>
                     <TableRow>
                         <TableCell> </TableCell>
-                        <TableCell align='left'>Student</TableCell>
-                        <TableCell align='left'>Ratings</TableCell>
+                        <TableCell align='left' className={clsx(classes.row, classes.student)}>Student</TableCell>
+                        <TableCell align='left' className={classes.row}>Ratings</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

@@ -1,44 +1,12 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
+import componentStyle from "./RatingOptionsStyle";
 import Rating from '@material-ui/lab/Rating';
-import Typography from "@material-ui/core/Typography";
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import {style} from "../../../styles/global";
-import {InputLabel} from "@material-ui/core";
+import {Typography, FormControl, Select, MenuItem, Tooltip, IconButton, Fade} from "@material-ui/core";
+import DoneIcon from '@material-ui/icons/Done';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '80px',
-        width: '180px'
-    },
-    ratingRow: {
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-    },
-    valueBox: {
-        display: 'inline-flex',
-        width: '30px',
-        height: '30px',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingBottom: style.smallSize
-    },
-    ratingValue: {
-        fontSize: style.middleSize,
-        fontWeight: 700,
-        paddingLeft: theme.spacing(1),
-        color: theme.palette.action.dark
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const labels = {
     0.5: '1',
@@ -67,6 +35,17 @@ const RatingOptions = props => {
     const [description, setDescription] = useState(ratingDescriptions[0]);
     const classes = useStyles();
 
+    const setColor = isValue => {
+        switch (scales) {
+            case 1:
+                return isValue ? classes.scales1 : classes[0];
+            case 2:
+                return isValue ? classes.scales2 : classes[1];
+            case 3:
+                return isValue ? classes.scales3 : classes[2];
+        }
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.ratingRow}>
@@ -84,18 +63,25 @@ const RatingOptions = props => {
                     }}
                 />
                 <div className={classes.valueBox}>
-                    <Typography className={classes.ratingValue}>{labels[hover !== -1 ? hover : value]}</Typography>
+                    <Typography className={setColor(true)}>{labels[hover !== -1 ? hover : value]}</Typography>
                 </div>
             </div>
             <div className={classes.ratingRow}>
                 <FormControl>
                     <Select
                         value={scales}
+                        className={setColor(false)}
                         onChange={e => setScales(e.target.value)}
                         style={{fontSize: '14px'}}
                     >
                         {ratingScales.map(item => {
-                            return <MenuItem style={{fontSize: '14px'}} key={item} value={item}>{item}</MenuItem>
+                            return <MenuItem
+                                className={classes[item - 1]}
+                                style={{fontSize: '14px'}}
+                                key={item}
+                                value={item}>
+                                {item}
+                            </MenuItem>
                         })}
 
                     </Select>
@@ -112,6 +98,27 @@ const RatingOptions = props => {
 
                     </Select>
                 </FormControl>
+                <div>
+                    <span>
+                    <Tooltip
+                        title='confirm rating'
+                        arrow
+                        placement='bottom'
+                        TransitionComponent={Fade}
+                        TransitionProps={{timeout: 1000}}
+                    >
+                <span>
+                    <IconButton
+                        className={classes.buttonBox}
+                        aria-label='done'
+                        onClick={() => console.log('Done')}
+                    >
+                    {<DoneIcon fontSize='small'/>}
+                    </IconButton>
+                </span>
+                </Tooltip>
+                </span>
+                </div>
             </div>
         </div>
     )

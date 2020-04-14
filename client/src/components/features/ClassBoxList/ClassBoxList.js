@@ -27,6 +27,10 @@ const useStyles = makeStyles(theme => ({
         padding: `${style.smallSize} 0`,
         display: 'inline-flex',
         justifyContent: 'flex-end'
+    },
+    tabs: {
+        backgroundColor: theme.palette.action.tab,
+        fontWeight: 800
     }
 }));
 
@@ -60,17 +64,16 @@ const ClassBoxList = props => {
             <div className={classes.subjectInfo}>
                 <Typography variant='subtitle1'>{`subject: ${user.subject.toUpperCase()}`}</Typography>
             </div>
-            <AppBar position="static" color="secondary">
+            <AppBar position="static" className={classes.tabs}>
                 <Tabs
                     value={value}
                     onChange={handleChange}
-                    indicatorColor="primary"
                     textColor="primary"
                     variant="fullWidth"
                     aria-label="full width tabs example"
                 >
                     {availableClasses.map((item, i) => {
-                        return <Tab key={item.id} label={item.name} {...a11yProps(i)}/>
+                        return <Tab className={classes.tabs} key={item.id} label={item.name} {...a11yProps(i)}/>
                     })}
                 </Tabs>
             </AppBar>

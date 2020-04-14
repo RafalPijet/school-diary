@@ -1,4 +1,4 @@
-import { grey, red, green, orange } from "@material-ui/core/colors";
+import { grey, red, green, orange, yellow, amber, blueGrey } from "@material-ui/core/colors";
 
 const AppTheme = {
     DARK: 'dark',
@@ -23,7 +23,15 @@ const appThemeOptions = {
                 light: red[500],
                 main: red[500],
                 dark: green[500],
-                warning: orange[700]
+                warning: orange[700],
+                tab: blueGrey[100],
+                adding: blueGrey[300],
+                header: grey[200]
+            },
+            scales: {
+                first: amber[500],
+                second: orange[700],
+                third: red[700]
             }
         },
         typography: {
@@ -49,7 +57,15 @@ const appThemeOptions = {
                 light: red[300],
                 main: red[500],
                 dark: green[400],
-                warning: orange[500]
+                warning: orange[500],
+                tab: blueGrey[700],
+                adding: blueGrey[600],
+                header: grey[700]
+            },
+            scales: {
+                first: yellow[200],
+                second: orange[400],
+                third: red[300]
             }
         },
         typography: {
