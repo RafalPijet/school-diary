@@ -21,7 +21,7 @@ const DiaryList = props => {
     const {students} = props.selectedClass;
     const {teacher, selectedClass} = props;
     const classes = useStyles();
-    console.log(props.selectedClass);
+
     return (
         <TableContainer className={classes.root}>
             <div className={classes.classInfo}>
@@ -41,7 +41,13 @@ const DiaryList = props => {
                 </TableHead>
                 <TableBody>
                     {students.map((student, i) => {
-                        return <DiaryRow key={student.id} student={student} i={i} teacher={teacher}/>
+                        return <DiaryRow
+                            classId={selectedClass.id}
+                            key={student.id}
+                            student={student}
+                            i={i}
+                            teacher={teacher}
+                        />
                     })}
                 </TableBody>
             </Table>

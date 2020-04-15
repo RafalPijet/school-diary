@@ -1,60 +1,35 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import clsx from "clsx";
+import componentStyle from "./RatingItemStyle";
 import {makeStyles} from "@material-ui/core/styles";
-import {Tooltip, Typography} from "@material-ui/core";
-import Zoom from '@material-ui/core/Zoom';
+import {Typography} from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'inline-flex',
-        width: '30px',
-        height: '30px',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    ratingNumber: {
-        padding: `0 ${theme.spacing(1)}px`,
-        cursor: 'pointer'
-    },
-    ratingNumberBig: {
-        padding: `0 ${theme.spacing(1)}px`,
-        cursor: 'pointer',
-        fontSize: '22px',
-        fontWeight: '700',
-        transition: '.5s'
-    }
-}));
-
-const TooltipContent = rating => {
-    return (
-        <div>
-            <Typography variant='subtitle2'>{`scales: ${rating.scales}`}</Typography>
-            <Typography variant='subtitle2'>{`description: ${rating.description}`}</Typography>
-            <Typography variant='subtitle2'>{`date: ${rating.date.substring(0, 10)}`}</Typography>
-        </div>
-    )
-};
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const RatingItem = props => {
     const {rating, ...otherProps} = props;
     const classes = useStyles();
     const [ratingStyle, setRatingStyle] = useState(classes.ratingNumber);
 
+    useEffect(() => {
+        setRatingStyle(clsx(ratingStyle, classes[rating.scales]));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
     return (
-        <Tooltip title={TooltipContent(rating)} arrow placement='top' TransitionComponent={Zoom}>
-            <div className={classes.root}>
-                <Typography
-                    className={ratingStyle}
-                    display='inline'
-                    variant='subtitle1'
-                    {...otherProps}
-                    onMouseEnter={() => setRatingStyle(classes.ratingNumberBig)}
-                    onMouseLeave={() => setRatingStyle(classes.ratingNumber)}
-                >
+        <div className={classes.root}>
+            <Typography
+                className={ratingStyle}
+                display='inline'
+                variant='subtitle1'
+                {...otherProps}
+                onMouseEnter={() => setRatingStyle(clsx(ratingStyle, classes.ratingNumberBig))}
+                onMouseLeave={() => setRatingStyle(clsx(classes[rating.scales], classes.ratingNumber))}
+            >
                 {rating.value}
             </Typography>
-            </div>
-        </Tooltip>
+        </div>
     )
 };
 

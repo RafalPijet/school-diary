@@ -14,10 +14,10 @@ export const UPDATE_CLASS = createActionName(reducerName, 'UPDATE_CLASS');
 export const loadClassByTeacher = allClass => ({allClass, type: LOAD_CLASS_BY_TEACHER_ID});
 export const loadAllClasses = allClasses => ({allClasses, type: LOAD_ALL_CLASSES});
 export const setSelectedClass = diary => ({diary, type: SELECT_CLASS});
-export const addRatingToStudent = rating => ({rating, type: ADD_RATING_TO_STUDENT});
+export const addRatingToStudent = (classId, rating) => ({classId, rating, type: ADD_RATING_TO_STUDENT});
 export const addUserToClass = classContent => ({classContent, type: ADD_USER_TO_CLASS});
 export const updateClass = classItem => ({classItem, type: UPDATE_CLASS});
-    
+
 
 
 //SELECTORS

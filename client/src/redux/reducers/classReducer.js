@@ -23,23 +23,25 @@ const reducer = (state = initialState, action) => {
             return {...state, selectedClass: action.diary};
         case ADD_RATING_TO_STUDENT:
             return {
-                ...state, selectedClass: {
-                    ...state.selectedClass, students: state.selectedClass.students.map(student => {
-                        if (student.id === action.rating.studentId) {
-                            student.ratings = student.ratings.map(rating => {
+                ...state, teacherAllClass: state.teacherAllClass.map(classItem => {
+
+                    if (classItem.id === action.classId) {
+                        classItem.students.map(student => {
+                            student.ratings.forEach(rating => {
                                 if (rating.id === action.rating.id) {
-                                    return action.rating;
-                                } else {
-                                    return rating;
+                                    student.ratings[student.ratings.indexOf(rating)] = action.rating;
+                                    return {...classItem.students, student}
                                 }
                             });
-                            return student;
-                        } else {
-                            return student;
-                        }
-                    })
-                }
+                            return {...classItem.students, student}
+                        })
+                    } else {
+                        return classItem
+                    }
+                    return classItem
+                })
             };
+
         case ADD_USER_TO_CLASS:
             return {
                 ...state, allClasses: state.allClasses.map(item => {

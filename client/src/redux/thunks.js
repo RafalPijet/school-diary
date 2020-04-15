@@ -136,14 +136,14 @@ export const updateClassRequest = classItem => {
     }
 };
 
-export const addRatingForStudent = dataPackage => {
+export const addRatingForStudent = (classId, dataPackage) => {
     return async dispatch => {
         dispatch(startAddingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
-            dispatch(addRatingToStudent(res.data));
+            dispatch(addRatingToStudent(classId, res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))

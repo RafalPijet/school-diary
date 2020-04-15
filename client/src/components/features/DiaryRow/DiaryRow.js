@@ -4,6 +4,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import clsx from "clsx";
 import {Paper} from "@material-ui/core";
 import RatingItem from '../../common/RatingItem/RatingItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from "@material-ui/core/Typography";
 import TableCell from '@material-ui/core/TableCell';
@@ -22,6 +23,12 @@ const useStyles = makeStyles(theme => ({
         height: '50px',
         alignItems: 'center',
         position: 'relative'
+    },
+    spinnerBox: {
+        display: 'inline-flex',
+        width: '30px',
+        height: '30px',
+        alignItems: 'center'
     },
     adding: {
         position: 'absolute',
@@ -68,12 +75,13 @@ const useStyles = makeStyles(theme => ({
 const DiaryRow = props => {
     const {
         student, addRating, i, isNewRating, isPlus, teacher, request, ratingValue, selectedDescription,
-        selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales
+        selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales, classId
     } = props;
     const [studentRatings, setStudentRatings] = useState([]);
     const [studentId, setStudentId] = useState('');
     const [ratingsId, setRatingsId] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isSpinner, setIsSpinner] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -85,7 +93,14 @@ const DiaryRow = props => {
                 setStudentId(student.id);
             }
         });
-    }, [teacher, student]);
+
+        if (!request.adding) setIsSpinner(false);
+    }, [teacher, student, request.adding]);
+
+    const addingHandling = idOptions => {
+        setIsOpen(false);
+        setIsSpinner(idOptions === ratingsId)
+    };
 
 
     return (
@@ -101,6 +116,9 @@ const DiaryRow = props => {
                             <RatingItem key={rating._id} rating={rating}/>
                         )
                     })}
+                    <div className={classes.spinnerBox}>
+                        {(request.adding && isSpinner) && <CircularProgress size='20px' color='secondary'/>}
+                    </div>
                 </span>
                 <div className={classes.buttonBox}>
                 <span>
@@ -123,7 +141,7 @@ const DiaryRow = props => {
                 </span>
                     <Zoom in={isOpen}>
                         <Paper elevation={9} className={classes.adding}>
-                            <RatingOptions/>
+                            <RatingOptions addingHandling={addingHandling} classId={classId} ratingsId={ratingsId} teacher={teacher}/>
                         </Paper>
                     </Zoom>
                 </div>
@@ -136,6 +154,7 @@ const DiaryRow = props => {
 DiaryRow.propTypes = {
     student: PropTypes.object.isRequired,
     i: PropTypes.number.isRequired,
+    classId: PropTypes.string.isRequired,
     teacher: PropTypes.object.isRequired,
     isPlus: PropTypes.bool,
     setIsPlus: PropTypes.func.isRequired,

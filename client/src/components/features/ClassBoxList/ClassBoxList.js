@@ -2,37 +2,15 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Paper} from "@material-ui/core";
 import {makeStyles, useTheme} from "@material-ui/core/styles";
-import Spinner from '../../common/Spinner/Spinner';
-import Alert from '../../common/Alert/Alert';
+import componentStyle from "./ClassBoxListStyle";
 import TabPanelDiary from "../../common/TabPanelDiary/TabPanelDiary";
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import {style} from "../../../styles/global";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        height: style.contentHeight,
-        width: '100%',
-        padding: `0 ${style.baseSize}`
-    },
-    subjectInfo: {
-        width: '100%',
-        padding: `${style.smallSize} 0`,
-        display: 'inline-flex',
-        justifyContent: 'flex-end'
-    },
-    tabs: {
-        backgroundColor: theme.palette.action.tab,
-        fontWeight: 800
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const a11yProps = index => {
     return {
@@ -69,8 +47,6 @@ const ClassBoxList = props => {
                     value={value}
                     onChange={handleChange}
                     textColor="primary"
-                    variant="fullWidth"
-                    aria-label="full width tabs example"
                 >
                     {availableClasses.map((item, i) => {
                         return <Tab className={classes.tabs} key={item.id} label={item.name} {...a11yProps(i)}/>

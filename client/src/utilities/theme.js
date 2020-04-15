@@ -10,7 +10,7 @@ const appThemeOptions = {
         palette: {
             type: 'light',
             primary: {
-                light: grey[100],
+                light: grey[600],
                 main: '#000',
                 dark: green[200]
             },

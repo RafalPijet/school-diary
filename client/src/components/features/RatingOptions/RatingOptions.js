@@ -28,7 +28,7 @@ const labels = {
 };
 
 const RatingOptions = props => {
-    const {ratingScales, ratingDescriptions} = props;
+    const {ratingScales, ratingDescriptions, ratingsId, teacher, addRating, classId, addingHandling} = props;
     const [value, setValue] = useState(3.5);
     const [hover, setHover] = useState(-1);
     const [scales, setScales] = useState(ratingScales[0]);
@@ -43,14 +43,31 @@ const RatingOptions = props => {
                 return isValue ? classes.scales2 : classes[1];
             case 3:
                 return isValue ? classes.scales3 : classes[2];
+            default:
+                break;
         }
+    };
+
+    const addRatingHandling = () => {
+        let dataPackage = {
+            ratingsId,
+            rating: {
+                value: labels[value],
+                description,
+                scales,
+                date: new Date(),
+                teacher: `${teacher.firstName} ${teacher.lastName}`
+            }
+        };
+        addRating(classId, dataPackage);
+        addingHandling(ratingsId);
     };
 
     return (
         <div className={classes.root}>
             <div className={classes.ratingRow}>
                 <Rating
-                    name="rating-stars"
+                    name={`rating-stars-${ratingsId}`}
                     size='small'
                     max={8}
                     value={value}
@@ -111,7 +128,7 @@ const RatingOptions = props => {
                     <IconButton
                         className={classes.buttonBox}
                         aria-label='done'
-                        onClick={() => console.log('Done')}
+                        onClick={addRatingHandling}
                     >
                     {<DoneIcon fontSize='small'/>}
                     </IconButton>
@@ -127,7 +144,12 @@ const RatingOptions = props => {
 
 RatingOptions.propTypes = {
     ratingScales: PropTypes.array.isRequired,
-    ratingDescriptions: PropTypes.array.isRequired
+    ratingDescriptions: PropTypes.array.isRequired,
+    ratingsId: PropTypes.string.isRequired,
+    teacher: PropTypes.object.isRequired,
+    addRating: PropTypes.func.isRequired,
+    classId: PropTypes.string.isRequired,
+    addingHandling: PropTypes.func.isRequired
 };
 
 export default RatingOptions;
