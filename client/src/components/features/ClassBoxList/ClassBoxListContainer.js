@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {getTeacherAllClass} from "../../../redux/actions/classActions";
 import {getUser} from "../../../redux/actions/usersActions";
-import {getRequest} from "../../../redux/actions/requestActions";
+import {getRequest, resetRequest} from "../../../redux/actions/requestActions";
 import {loadAllClassByTeacherId} from "../../../redux/thunks";
 import ClassBoxList from "./ClassBoxList";
 
@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    loadClasses: teacherId => dispatch(loadAllClassByTeacherId(teacherId))
+    loadClasses: teacherId => dispatch(loadAllClassByTeacherId(teacherId)),
+    resetRequest: () => dispatch(resetRequest())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClassBoxList)

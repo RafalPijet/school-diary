@@ -14,63 +14,9 @@ import RatingOptions from '../../features/RatingOptions/RatingOptionsContainer';
 import Fade from '@material-ui/core/Fade';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from "@material-ui/core/Tooltip";
-import {style} from "../../../styles/global";
+import componentStyle from "./DiaryRowStyle";
 
-const useStyles = makeStyles(theme => ({
-    buttonBox: {
-        display: 'inline-flex',
-        width: '50px',
-        height: '50px',
-        alignItems: 'center',
-        position: 'relative'
-    },
-    spinnerBox: {
-        display: 'inline-flex',
-        width: '30px',
-        height: '30px',
-        alignItems: 'center'
-    },
-    adding: {
-        position: 'absolute',
-        left: '-200px',
-        top: '-33px',
-        zIndex: '20',
-        backgroundColor: theme.palette.action.adding
-    },
-    buttonAdd: {
-        color: theme.palette.action.dark,
-        transition: '1s'
-    },
-    buttonCancel: {
-        color: theme.palette.action.warning,
-        transform: 'rotate(45deg)',
-        transition: '1s'
-    },
-    padding: {
-        padding: style.smallSize
-    },
-    firstCell: {
-        width: style.baseSize,
-    },
-    secondCell: {
-        width: '200px',
-        overflowX: 'auto'
-    },
-    thirdCell: {
-        width: '720px',
-    },
-    names: {
-        whiteSpace: 'nowrap',
-        width: '200px',
-    },
-    ratings: {
-        width: '666px',
-        display: 'inline-flex',
-        flexWrap: 'nowrap',
-        overflowX: 'auto',
-        height: '40px',
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const DiaryRow = props => {
     const {

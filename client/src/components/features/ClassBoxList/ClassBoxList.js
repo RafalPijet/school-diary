@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Paper} from "@material-ui/core";
 import {makeStyles, useTheme} from "@material-ui/core/styles";
+import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassBoxListStyle";
 import TabPanelDiary from "../../common/TabPanelDiary/TabPanelDiary";
 import SwipeableViews from 'react-swipeable-views';
@@ -20,17 +21,24 @@ const a11yProps = index => {
 };
 
 const ClassBoxList = props => {
-    const {loadClasses, user, availableClasses, request} = props;
+    const {loadClasses, user, availableClasses, request, resetRequest} = props;
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
+    const [alertIsOpen, setAlertIsOpen] = useState(false);
 
     useEffect(() => {
-        loadClasses(user.id);
-    }, [user.id, loadClasses]);
+        if (request.success === null) loadClasses(user.id);
+        setAlertIsOpen(request.error !== null)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [request.error]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    const handleAlert = () => {
+        resetRequest();
     };
 
     const handleChangeIndex = (index) => {
@@ -70,6 +78,12 @@ const ClassBoxList = props => {
                             dir={theme.direction}/>
                 )})}
             </SwipeableViews>
+            <Alert
+                message={request.error}
+                isOpenAlert={alertIsOpen}
+                variant='error'
+                handleCloseHandling={handleAlert}
+            />
         </Paper>
     )
 };
@@ -78,7 +92,8 @@ ClassBoxList.propTypes = {
     availableClasses: PropTypes.array.isRequired,
     user: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
-    loadClasses: PropTypes.func.isRequired
+    loadClasses: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired
 };
 
 export default ClassBoxList;

@@ -79,7 +79,7 @@ const Alert = props => {
 };
 
 Alert.propTypes = {
-    message: PropTypes.string.isRequired,
+    message: PropTypes.string,
     isOpenAlert: PropTypes.bool.isRequired,
     variant: PropTypes.string.isRequired,
     handleCloseHandling: PropTypes.func
