@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import clsx from "clsx";
-import {Paper} from "@material-ui/core";
-import RatingItem from '../../common/RatingItem/RatingItem';
+import {useSpring, animated} from "react-spring";
+import {Paper, Typography} from "@material-ui/core";
+import RatingItem from '../../common/RatingItem/RatingItemContainer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from "@material-ui/core/Typography";
 import TableCell from '@material-ui/core/TableCell';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
@@ -21,13 +21,25 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 const DiaryRow = props => {
     const {
         student, addRating, i, isNewRating, isPlus, teacher, request, ratingValue, selectedDescription,
-        selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales, classId
-    } = props;
+        selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales, classId,
+        isUpdateRating} = props;
     const [studentRatings, setStudentRatings] = useState([]);
     const [studentId, setStudentId] = useState('');
     const [ratingsId, setRatingsId] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [isSpinner, setIsSpinner] = useState(false);
+    const [isOpenPreview, setIsOpenPreview] = useState(false);
+    const [previewContent, setPreviewContent] = useState({
+        description: '',
+        date: '',
+        scales: 0
+    });
+    const [flipped, setFlipped] = useState(false);
+    const {transform, opacity} = useSpring({
+        opacity: flipped ? 1 : 0,
+        transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
+        config: {mass: 5, tension: 500, friction: 80}
+    });
     const classes = useStyles();
 
     useEffect(() => {
@@ -48,6 +60,15 @@ const DiaryRow = props => {
         setIsSpinner(idOptions === ratingsId)
     };
 
+    const previewHandling = (isOpen, data) => {
+        setIsOpenPreview(isOpen);
+        setPreviewContent(data)
+    };
+
+    const updateHandling = rating => {
+        console.log(rating);
+        setFlipped(!flipped);
+    };
 
     return (
         <TableRow hover>
@@ -56,10 +77,49 @@ const DiaryRow = props => {
                 <Typography className={classes.names}>{`${student.lastName} ${student.firstName}`}</Typography>
             </TableCell>
             <TableCell className={clsx(classes.padding, classes.thirdCell)} align='left'>
+                <div className={classes.previewRoot}>
+                    <div className={isOpenPreview ? classes.showUpdate : classes.hiddenUpdate}>
+                        <animated.div
+                            className={classes.flipped}
+                            style={{opacity: opacity.interpolate(o => 1 - o), transform}}>
+                            <Paper elevation={9} className={classes.preview}>
+                                <Typography className={classes[previewContent.scales]}
+                                            variant='subtitle2'>{previewContent.description}</Typography>
+                                <Typography className={classes[previewContent.scales]}
+                                            variant='subtitle2'>{previewContent.date}</Typography>
+                            </Paper>
+                        </animated.div>
+                        <animated.div
+                            className={classes.flipped}
+                            style={{opacity, transform: transform.interpolate(t => `${t} rotateX(180deg)`)}}>
+                            <Paper elevation={9} className={classes.preview}>
+                                <p>TEST</p>
+                            </Paper>
+                        </animated.div>
+                    </div>
+                </div>
                 <span className={classes.ratings}>
                     {studentRatings.map(rating => {
                         return (
-                            <RatingItem key={rating._id} rating={rating}/>
+                            <Fragment key={rating._id}>
+                                <span>
+                                    <Tooltip
+                                        title={isUpdateRating ? '' : 'update rating'}
+                                        arrow
+                                        placement='bottom'
+                                        TransitionComponent={Fade}
+                                        enterDelay={3000}
+                                    >
+                                        <span>
+                                            <RatingItem
+                                                previewHandling={previewHandling}
+                                                updateHandling={updateHandling}
+                                                rating={rating}/>
+                                        </span>
+                                    </Tooltip>
+                                </span>
+
+                            </Fragment>
                         )
                     })}
                     <div className={classes.spinnerBox}>
@@ -79,15 +139,19 @@ const DiaryRow = props => {
                      <IconButton
                          aria-label='add'
                          onClick={() => setIsOpen(!isOpen)}
+                         disabled={isUpdateRating}
                      >
-                    {<AddIcon className={isOpen ? classes.buttonCancel : classes.buttonAdd}/>}
+                    {<AddIcon
+                        className={!isUpdateRating ?
+                            (isOpen ? classes.buttonCancel : classes.buttonAdd) : classes.disabled}/>}
                     </IconButton>
                 </span>
                 </Tooltip>
                 </span>
                     <Zoom in={isOpen}>
                         <Paper elevation={9} className={classes.adding}>
-                            <RatingOptions addingHandling={addingHandling} classId={classId} ratingsId={ratingsId} teacher={teacher}/>
+                            <RatingOptions addingHandling={addingHandling} classId={classId} ratingsId={ratingsId}
+                                           teacher={teacher}/>
                         </Paper>
                     </Zoom>
                 </div>
@@ -102,8 +166,6 @@ DiaryRow.propTypes = {
     i: PropTypes.number.isRequired,
     classId: PropTypes.string.isRequired,
     teacher: PropTypes.object.isRequired,
-    isPlus: PropTypes.bool,
-    setIsPlus: PropTypes.func.isRequired,
     setIsNewRating: PropTypes.func.isRequired,
     setRatingValue: PropTypes.func.isRequired,
     isNewRating: PropTypes.object.isRequired,
@@ -113,7 +175,8 @@ DiaryRow.propTypes = {
     setDescription: PropTypes.func.isRequired,
     setScales: PropTypes.func.isRequired,
     addRating: PropTypes.func.isRequired,
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    isUpdateRating: PropTypes.bool.isRequired
 };
 
 export default DiaryRow;

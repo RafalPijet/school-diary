@@ -8,12 +8,13 @@ const componentStyle = theme => ({
     },
     ratingNumber: {
         padding: `0 ${theme.spacing(1)}px`,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        transition: '.3s'
     },
     ratingNumberBig: {
         fontSize: '22px',
         fontWeight: '700',
-        transition: '.5s'
+        transition: '.3s'
     },
     1: {
         color: theme.palette.scales.first
@@ -23,6 +24,9 @@ const componentStyle = theme => ({
     },
     3: {
         color: theme.palette.scales.third
+    },
+    disabled: {
+        color: theme.palette.secondary.light
     }
 });
 

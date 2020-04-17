@@ -139,7 +139,6 @@ const RatingOptions = props => {
             </div>
         </div>
     )
-
 };
 
 RatingOptions.propTypes = {
