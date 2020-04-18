@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import componentStyle from "./RatingOptionsStyle";
 import Rating from '@material-ui/lab/Rating';
 import {Typography, FormControl, Select, MenuItem, Tooltip, IconButton, Fade} from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
 import DoneIcon from '@material-ui/icons/Done';
 
 const useStyles = makeStyles(theme => componentStyle(theme));
@@ -28,12 +29,40 @@ const labels = {
 };
 
 const RatingOptions = props => {
-    const {ratingScales, ratingDescriptions, ratingsId, teacher, addRating, classId, addingHandling} = props;
+    const {
+        ratingScales,
+        ratingDescriptions,
+        ratingsId,
+        teacher,
+        addRating,
+        classId,
+        addingHandling,
+        isEditMode,
+        changeRating,
+        ratingToChange,
+        isUpdate
+    } = props;
     const [value, setValue] = useState(3.5);
     const [hover, setHover] = useState(-1);
     const [scales, setScales] = useState(ratingScales[0]);
     const [description, setDescription] = useState(ratingDescriptions[0]);
     const classes = useStyles();
+
+    useEffect(() => {
+        // if (isEditMode) changeRating(labels[value]);
+        if (isEditMode && isUpdate) {
+            setDescription(ratingToChange.description);
+            setScales(ratingToChange.scales);
+
+            // console.log(Object.values(labels));
+            console.log(ratingToChange.value);
+            console.log(Object.keys(labels));
+            console.log(Object.values(labels));
+            console.log(Object.values(labels).indexOf(ratingToChange.value));
+
+            // console.log(Object.keys(labels));
+        }
+    }, [value, changeRating, ratingToChange, isEditMode, isUpdate]);
 
     const setColor = isValue => {
         switch (scales) {
@@ -63,6 +92,14 @@ const RatingOptions = props => {
         addingHandling(ratingsId);
     };
 
+    const deleteRatingHandling = () => {
+        console.log('delete')
+    };
+
+    const updateRatingHandling = () => {
+        console.log('update')
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.ratingRow}>
@@ -79,9 +116,30 @@ const RatingOptions = props => {
                         setHover(newHover);
                     }}
                 />
-                <div className={classes.valueBox}>
+                {isEditMode ? <div className={classes.deleteBox}>
+                    <span>
+                    <Tooltip
+                        title='delete rating'
+                        arrow
+                        id='delete'
+                        placement='top'
+                        TransitionComponent={Fade}
+                        TransitionProps={{timeout: 1000}}
+                    >
+                <span>
+                    <IconButton
+                        className={classes.buttonBox}
+                        aria-label='delete'
+                        onClick={deleteRatingHandling}
+                    >
+                    {<DeleteIcon className={classes.deleteIcon} fontSize='small'/>}
+                    </IconButton>
+                </span>
+                </Tooltip>
+                </span>
+                </div> : <div className={classes.valueBox}>
                     <Typography className={setColor(true)}>{labels[hover !== -1 ? hover : value]}</Typography>
-                </div>
+                </div>}
             </div>
             <div className={classes.ratingRow}>
                 <FormControl>
@@ -118,8 +176,9 @@ const RatingOptions = props => {
                 <div>
                     <span>
                     <Tooltip
-                        title='confirm rating'
+                        title={isEditMode ? 'confirm update' : 'confirm adding'}
                         arrow
+                        id='confirm'
                         placement='bottom'
                         TransitionComponent={Fade}
                         TransitionProps={{timeout: 1000}}
@@ -128,7 +187,7 @@ const RatingOptions = props => {
                     <IconButton
                         className={classes.buttonBox}
                         aria-label='done'
-                        onClick={addRatingHandling}
+                        onClick={isEditMode ? updateRatingHandling : addRatingHandling}
                     >
                     {<DoneIcon fontSize='small'/>}
                     </IconButton>
@@ -145,10 +204,14 @@ RatingOptions.propTypes = {
     ratingScales: PropTypes.array.isRequired,
     ratingDescriptions: PropTypes.array.isRequired,
     ratingsId: PropTypes.string.isRequired,
-    teacher: PropTypes.object.isRequired,
-    addRating: PropTypes.func.isRequired,
+    teacher: PropTypes.object,
+    addRating: PropTypes.func,
     classId: PropTypes.string.isRequired,
-    addingHandling: PropTypes.func.isRequired
+    addingHandling: PropTypes.func,
+    isEditMode: PropTypes.bool.isRequired,
+    changeRating: PropTypes.func,
+    ratingToChange: PropTypes.object,
+    isUpdate: PropTypes.bool
 };
 
 export default RatingOptions;

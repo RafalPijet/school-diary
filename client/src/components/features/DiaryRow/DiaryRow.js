@@ -22,7 +22,8 @@ const DiaryRow = props => {
     const {
         student, addRating, i, isNewRating, isPlus, teacher, request, ratingValue, selectedDescription,
         selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales, classId,
-        isUpdateRating} = props;
+        isUpdateRating
+    } = props;
     const [studentRatings, setStudentRatings] = useState([]);
     const [studentId, setStudentId] = useState('');
     const [ratingsId, setRatingsId] = useState('');
@@ -35,6 +36,8 @@ const DiaryRow = props => {
         scales: 0
     });
     const [flipped, setFlipped] = useState(false);
+    const [ratingToChange, setRatingToChange] = useState({});
+    const [isUpdate, setIsUpdate] = useState(false);
     const {transform, opacity} = useSpring({
         opacity: flipped ? 1 : 0,
         transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
@@ -53,11 +56,23 @@ const DiaryRow = props => {
         });
 
         if (!request.adding) setIsSpinner(false);
-    }, [teacher, student, request.adding]);
+    }, [teacher, student, request.adding, isNewRating]);
 
     const addingHandling = idOptions => {
         setIsOpen(false);
         setIsSpinner(idOptions === ratingsId)
+    };
+
+    const addingOptionHandling = () => {
+        if (isOpen) {
+            setIsOpen(false);
+            setIsNewRating(false);
+        } else {
+            if (!isNewRating) {
+                setIsOpen(true);
+                setIsNewRating(true);
+            }
+        }
     };
 
     const previewHandling = (isOpen, data) => {
@@ -66,8 +81,13 @@ const DiaryRow = props => {
     };
 
     const updateHandling = rating => {
-        console.log(rating);
+        setRatingToChange(rating);
+        setIsUpdate(!isUpdate);
         setFlipped(!flipped);
+    };
+
+    const changeRatingHandling = rating => {
+        console.log(rating);
     };
 
     return (
@@ -93,7 +113,14 @@ const DiaryRow = props => {
                             className={classes.flipped}
                             style={{opacity, transform: transform.interpolate(t => `${t} rotateX(180deg)`)}}>
                             <Paper elevation={9} className={classes.preview}>
-                                <p>TEST</p>
+                                <RatingOptions
+                                    changeRating={changeRatingHandling}
+                                    isEditMode={true}
+                                    classId={classId}
+                                    ratingsId={ratingsId}
+                                    ratingToChange={ratingToChange}
+                                    isUpdate={isUpdate}
+                                />
                             </Paper>
                         </animated.div>
                     </div>
@@ -104,7 +131,7 @@ const DiaryRow = props => {
                             <Fragment key={rating._id}>
                                 <span>
                                     <Tooltip
-                                        title={isUpdateRating ? '' : 'update rating'}
+                                        title={isNewRating ? '' : (isUpdateRating ? 'cancel update' : 'update rating')}
                                         arrow
                                         placement='bottom'
                                         TransitionComponent={Fade}
@@ -129,7 +156,7 @@ const DiaryRow = props => {
                 <div className={classes.buttonBox}>
                 <span>
                     <Tooltip
-                        title={isOpen ? 'cancel adding' : 'add rating'}
+                        title={(isNewRating && !isOpen) ? '' : (isOpen ? 'cancel adding' : 'add rating')}
                         arrow
                         placement='bottom'
                         TransitionComponent={Fade}
@@ -138,11 +165,11 @@ const DiaryRow = props => {
                 <span>
                      <IconButton
                          aria-label='add'
-                         onClick={() => setIsOpen(!isOpen)}
+                         onClick={addingOptionHandling}
                          disabled={isUpdateRating}
                      >
                     {<AddIcon
-                        className={!isUpdateRating ?
+                        className={((!isUpdateRating && !isNewRating) || (isOpen && isNewRating)) ?
                             (isOpen ? classes.buttonCancel : classes.buttonAdd) : classes.disabled}/>}
                     </IconButton>
                 </span>
@@ -150,8 +177,8 @@ const DiaryRow = props => {
                 </span>
                     <Zoom in={isOpen}>
                         <Paper elevation={9} className={classes.adding}>
-                            <RatingOptions addingHandling={addingHandling} classId={classId} ratingsId={ratingsId}
-                                           teacher={teacher}/>
+                            <RatingOptions isEditMode={false} addingHandling={addingHandling} classId={classId}
+                                           ratingsId={ratingsId} teacher={teacher}/>
                         </Paper>
                     </Zoom>
                 </div>
@@ -168,7 +195,7 @@ DiaryRow.propTypes = {
     teacher: PropTypes.object.isRequired,
     setIsNewRating: PropTypes.func.isRequired,
     setRatingValue: PropTypes.func.isRequired,
-    isNewRating: PropTypes.object.isRequired,
+    isNewRating: PropTypes.bool.isRequired,
     ratingValue: PropTypes.string.isRequired,
     selectedDescription: PropTypes.string.isRequired,
     selectedScales: PropTypes.number.isRequired,

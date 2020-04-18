@@ -10,7 +10,7 @@ import {
 const initialState = {
     isDark: true,
     isUpdateRating: false,
-    isNewRating: {isNew: false, studentId: ""},
+    isNewRating: false,
     ratingValue: "",
     ratingDescriptions: ['homework', 'teamwork', 'school test', 'response'],
     ratingScales: [1, 2, 3],
@@ -42,7 +42,7 @@ const reducer = (state = initialState, action) => {
         case SET_IS_UPDATE_RATING:
             return {...state, isUpdateRating: action.isUpdate};
         case SET_IS_NEW_RATING:
-            return {...state, isNewRating: {isNew: action.isNewRating, studentId: action.studentId}};
+            return {...state, isNewRating: action.isNewRating};
         case SET_RATING_VALUE:
             return {...state, ratingValue: action.value};
         case SET_DESCRIPTION:

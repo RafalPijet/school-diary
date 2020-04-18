@@ -13,7 +13,7 @@ export const SET_SCALES = createActionName(reducerName, 'SET_SCALES');
 // CREATORS OF ACTIONS
 export const setIsDark = isDark => ({isDark, type: SET_IS_DARK});
 export const setIsUpdateRating = isUpdate => ({isUpdate, type: SET_IS_UPDATE_RATING});
-export const setIsNewRating = (isNewRating, studentId) => ({isNewRating, studentId, type: SET_IS_NEW_RATING});
+export const setIsNewRating = isNewRating => ({isNewRating, type: SET_IS_NEW_RATING});
 export const setRatingValue = value => ({value, type: SET_RATING_VALUE});
 export const setDescription = desc => ({desc, type: SET_DESCRIPTION});
 export const setScales = value => ({value, type: SET_SCALES});

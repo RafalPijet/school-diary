@@ -28,6 +28,14 @@ const componentStyle = theme => ({
     buttonBox: {
         padding: style.smallSize
     },
+    deleteBox: {
+        width: '30px',
+        height: '30px',
+        paddingBottom: style.smallSize
+    },
+    deleteIcon: {
+        color: theme.palette.action.light
+    },
     scales1: {
         fontSize: style.middleSize,
         fontWeight: 700,

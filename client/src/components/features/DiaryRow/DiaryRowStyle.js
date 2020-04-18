@@ -19,7 +19,7 @@ const componentStyle = theme => ({
         left: '-200px',
         top: '-16px',
         zIndex: '20',
-        backgroundColor: theme.palette.action.adding
+        backgroundColor: 'rgba(84, 110, 122, .5)'
     },
     buttonAdd: {
         color: theme.palette.action.dark,

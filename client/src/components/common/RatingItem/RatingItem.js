@@ -8,7 +8,15 @@ import {Typography} from "@material-ui/core";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const RatingItem = props => {
-    const {rating, previewHandling, updateHandling, isUpdateRating, setIsUpdateRating, ...otherProps} = props;
+    const {
+        rating,
+        previewHandling,
+        updateHandling,
+        isUpdateRating,
+        setIsUpdateRating,
+        isNewRating,
+        ...otherProps
+    } = props;
     const classes = useStyles();
     const [ratingStyle, setRatingStyle] = useState(classes.ratingNumber);
     const [isFrozen, setIsFrozen] = useState(false);
@@ -16,7 +24,7 @@ const RatingItem = props => {
     useEffect(() => {
         setRatingStyle(clsx(ratingStyle, classes[rating.scales]));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[isUpdateRating]);
+    }, [isUpdateRating]);
 
     const enterMouseHandling = () => {
         setRatingStyle(clsx(ratingStyle, classes.ratingNumberBig));
@@ -33,9 +41,19 @@ const RatingItem = props => {
     };
 
     const updateItemHandling = () => {
-        updateHandling(rating);
-        setIsUpdateRating(true);
-        setIsFrozen(true);
+        if (!isNewRating) {
+            updateHandling(rating);
+            setIsUpdateRating(true);
+            setIsFrozen(true);
+        }
+    };
+
+    const cancelUpdate = () => {
+        if (!isNewRating) {
+            setIsUpdateRating(false);
+            setIsFrozen(false);
+            updateHandling(rating);
+        }
     };
 
     return (
@@ -47,7 +65,7 @@ const RatingItem = props => {
                 {...otherProps}
                 onMouseEnter={(!isUpdateRating && !isFrozen) ? enterMouseHandling : null}
                 onMouseLeave={(!isUpdateRating && !isFrozen) ? leaveMouseHandling : null}
-                onClick={(!isUpdateRating && !isFrozen) ? updateItemHandling : null}
+                onClick={(!isUpdateRating && !isFrozen) ? updateItemHandling : cancelUpdate}
             >
                 {rating.value}
             </Typography>
@@ -58,7 +76,7 @@ const RatingItem = props => {
 
 RatingItem.propTypes = {
     rating: PropTypes.object.isRequired,
-    isNewRating: PropTypes.object,
+    isNewRating: PropTypes.bool.isRequired,
     setRatingValue: PropTypes.func,
     previewHandling: PropTypes.func.isRequired,
     updateHandling: PropTypes.func.isRequired,

@@ -26,7 +26,8 @@ const componentStyle = theme => ({
         color: theme.palette.scales.third
     },
     disabled: {
-        color: theme.palette.secondary.light
+        color: theme.palette.secondary.light,
+        transition: '.5s'
     }
 });
 

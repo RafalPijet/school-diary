@@ -1,9 +1,10 @@
 import {connect} from 'react-redux';
-import {setIsUpdateRating, getIsisUpdateRating} from "../../../redux/actions/valuesActions";
+import {setIsUpdateRating, getIsisUpdateRating, getIsNewRating} from "../../../redux/actions/valuesActions";
 import RatingItem from "./RatingItem";
 
 const mapStateToProps = state => ({
-    isUpdateRating: getIsisUpdateRating(state)
+    isUpdateRating: getIsisUpdateRating(state),
+    isNewRating: getIsNewRating(state)
 });
 
 const mapDispatchToProps = dispatch => ({

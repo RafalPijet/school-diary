@@ -24,7 +24,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setIsNewRating: (isNewRating, studentId) => dispatch(setIsNewRating(isNewRating, studentId)),
+    setIsNewRating: isNewRating => dispatch(setIsNewRating(isNewRating)),
     setRatingValue: value => dispatch(setRatingValue(value)),
     setDescription: desc => dispatch(setDescription(desc)),
     setScales: value => dispatch(setScales(value)),
