@@ -9,7 +9,8 @@ import {
     setScales,
     getSelectedDescription,
     getSelectedScales,
-    getIsisUpdateRating
+    getIsisUpdateRating,
+    setIsUpdateRating
 } from "../../../redux/actions/valuesActions";
 import {getRequest} from "../../../redux/actions/requestActions";
 import {addRatingForStudent} from "../../../redux/thunks";
@@ -28,7 +29,9 @@ const mapDispatchToProps = dispatch => ({
     setRatingValue: value => dispatch(setRatingValue(value)),
     setDescription: desc => dispatch(setDescription(desc)),
     setScales: value => dispatch(setScales(value)),
-    addRating: dataPackage => dispatch(addRatingForStudent(dataPackage))
+    addRating: dataPackage => dispatch(addRatingForStudent(dataPackage)),
+    setIsUpdateRating: isUpdateRating => dispatch(setIsUpdateRating(isUpdateRating))
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiaryRow);

@@ -151,6 +151,20 @@ export const addRatingForStudent = (classId, dataPackage) => {
     }
 };
 
+export const updateRatingForStudent = dataPackage => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const deleteRatingRequest = id => {
     return async dispatch => {
         dispatch(startWorkingRequest());

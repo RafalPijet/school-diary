@@ -17,7 +17,10 @@ app.use('/api', classRouter);
 app.use('/api', ratingRouter);
 app.use('/api', studentRouter);
 
-mongoose.connect('mongodb://localhost:27017/school-diary', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/school-diary', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 let db = mongoose.connection;
 db.once('open', () => {
     console.log('Connected to database');

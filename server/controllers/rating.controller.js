@@ -26,6 +26,20 @@ exports.addNewRatingById = async (req, res) => {
     }
 };
 
+exports.updateRatingById = async (req, res) => {
+
+    try {
+        const {id} = req.params;
+        let rating = await Rating.findOne({"id": id});
+        rating.ratings = rating.ratings.map(item => {
+            return (item._id.toString() === req.body._id) ? req.body : item;
+        });
+        res.status(200).json(await rating.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.deleteRating = async (req, res) => {
 
     try {

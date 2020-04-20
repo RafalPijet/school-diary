@@ -1,13 +1,14 @@
 import {connect} from "react-redux";
 import RatingOptions from './RatingOptions';
-import {addRatingForStudent} from "../../../redux/thunks";
+import {addRatingForStudent, updateRatingForStudent} from "../../../redux/thunks";
 import {
     getRatingDescriptions,
     getRatingScales,
 } from "../../../redux/actions/valuesActions";
 
 const mapDispatchToProps = dispatch => ({
-    addRating: (classId, dataPackage) => dispatch(addRatingForStudent(classId, dataPackage))
+    addRating: (classId, dataPackage) => dispatch(addRatingForStudent(classId, dataPackage)),
+    updateRating: dataPackage => dispatch(updateRatingForStudent(dataPackage))
 });
 
 const mapStateToProps = state => ({

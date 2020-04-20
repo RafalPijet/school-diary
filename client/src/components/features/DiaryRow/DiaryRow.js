@@ -15,6 +15,7 @@ import Fade from '@material-ui/core/Fade';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from "@material-ui/core/Tooltip";
 import componentStyle from "./DiaryRowStyle";
+import {setIsUpdateRating} from "../../../redux/actions/valuesActions";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
@@ -22,7 +23,7 @@ const DiaryRow = props => {
     const {
         student, addRating, i, isNewRating, isPlus, teacher, request, ratingValue, selectedDescription,
         selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales, classId,
-        isUpdateRating
+        isUpdateRating, setIsUpdateRating
     } = props;
     const [studentRatings, setStudentRatings] = useState([]);
     const [studentId, setStudentId] = useState('');
@@ -38,6 +39,7 @@ const DiaryRow = props => {
     const [flipped, setFlipped] = useState(false);
     const [ratingToChange, setRatingToChange] = useState({});
     const [isUpdate, setIsUpdate] = useState(false);
+    const [updatedRating, setUpdatedRating] = useState({});
     const {transform, opacity} = useSpring({
         opacity: flipped ? 1 : 0,
         transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
@@ -56,11 +58,15 @@ const DiaryRow = props => {
         });
 
         if (!request.adding) setIsSpinner(false);
-    }, [teacher, student, request.adding, isNewRating]);
+        if (request.pending) setIsOpenPreview(false);
+        if (request.success) setIsUpdateRating(false);
+
+    }, [teacher, student, request.adding, isNewRating, request.pending, request.success]);
 
     const addingHandling = idOptions => {
         setIsOpen(false);
-        setIsSpinner(idOptions === ratingsId)
+        setIsSpinner(idOptions === ratingsId);
+        setIsNewRating(false);
     };
 
     const addingOptionHandling = () => {
@@ -81,13 +87,15 @@ const DiaryRow = props => {
     };
 
     const updateHandling = rating => {
+        rating.studentId = studentId;
+        rating.classId = classId;
         setRatingToChange(rating);
         setIsUpdate(!isUpdate);
         setFlipped(!flipped);
     };
 
-    const changeRatingHandling = rating => {
-        console.log(rating);
+    const changeRatingHandling = newRating => {
+        setUpdatedRating(newRating);
     };
 
     return (
@@ -141,6 +149,7 @@ const DiaryRow = props => {
                                             <RatingItem
                                                 previewHandling={previewHandling}
                                                 updateHandling={updateHandling}
+                                                updatedRating={updatedRating}
                                                 rating={rating}/>
                                         </span>
                                     </Tooltip>
@@ -203,7 +212,8 @@ DiaryRow.propTypes = {
     setScales: PropTypes.func.isRequired,
     addRating: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
-    isUpdateRating: PropTypes.bool.isRequired
+    isUpdateRating: PropTypes.bool.isRequired,
+    setIsUpdateRating: PropTypes.func.isRequired
 };
 
 export default DiaryRow;

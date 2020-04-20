@@ -12,6 +12,7 @@ const componentStyle = theme => ({
         transition: '.3s'
     },
     ratingNumberBig: {
+        cursor: 'pointer',
         fontSize: '22px',
         fontWeight: '700',
         transition: '.3s'

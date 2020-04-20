@@ -40,29 +40,48 @@ const RatingOptions = props => {
         isEditMode,
         changeRating,
         ratingToChange,
-        isUpdate
+        isUpdate,
+        updateRating
     } = props;
     const [value, setValue] = useState(3.5);
     const [hover, setHover] = useState(-1);
     const [scales, setScales] = useState(ratingScales[0]);
     const [description, setDescription] = useState(ratingDescriptions[0]);
+    const [isChanging, setIsChanging] = useState(false);
+    const [dataIsChanging, setDataIsChanging] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
-        // if (isEditMode) changeRating(labels[value]);
-        if (isEditMode && isUpdate) {
+
+        if (isEditMode && isUpdate && !isChanging) {
             setDescription(ratingToChange.description);
             setScales(ratingToChange.scales);
-
-            // console.log(Object.values(labels));
-            console.log(ratingToChange.value);
-            console.log(Object.keys(labels));
-            console.log(Object.values(labels));
-            console.log(Object.values(labels).indexOf(ratingToChange.value));
-
-            // console.log(Object.keys(labels));
+            Object.entries(labels).forEach(item => {
+                if (item[1] === ratingToChange.value) {
+                    setValue(parseInt(item[0]));
+                    setIsChanging(true);
+                }
+            });
         }
-    }, [value, changeRating, ratingToChange, isEditMode, isUpdate]);
+
+        if (isEditMode && isUpdate && dataIsChanging) {
+            changeRating({
+                _id: ratingToChange._id,
+                value: labels[value],
+                scales,
+                description,
+                date: ratingToChange.date,
+                teacher: ratingToChange.teacher
+            });
+            setDataIsChanging(false);
+        }
+    //
+    }, [value, changeRating, ratingToChange, isEditMode, isUpdate, isChanging, scales,
+        description, dataIsChanging]);
+    //
+    useEffect(() => {
+        setIsChanging(false);
+    }, [isUpdate]);
 
     const setColor = isValue => {
         switch (scales) {
@@ -97,20 +116,35 @@ const RatingOptions = props => {
     };
 
     const updateRatingHandling = () => {
-        console.log('update')
+        let dataPackage = {
+            rating: {
+                _id: ratingToChange._id,
+                value: labels[value],
+                scales,
+                description,
+                date: ratingToChange.date,
+                teacher: ratingToChange.teacher
+            },
+            ratingsId,
+            studentId: ratingToChange.studentId,
+            classId: ratingToChange.classId
+        };
+        // console.log(dataPackage);
+        updateRating(dataPackage);
     };
 
     return (
         <div className={classes.root}>
             <div className={classes.ratingRow}>
                 <Rating
-                    name={`rating-stars-${ratingsId}`}
+                    name={isEditMode ? `rating-edit-${ratingsId}` : `rating-add-${ratingsId}`}
                     size='small'
                     max={8}
                     value={value}
                     precision={0.5}
                     onChange={(event, newValue) => {
                         setValue(newValue);
+                        if (isEditMode) setDataIsChanging(true);
                     }}
                     onChangeActive={(event, newHover) => {
                         setHover(newHover);
@@ -146,7 +180,10 @@ const RatingOptions = props => {
                     <Select
                         value={scales}
                         className={setColor(false)}
-                        onChange={e => setScales(e.target.value)}
+                        onChange={e => {
+                            setScales(e.target.value);
+                            if (isEditMode) setDataIsChanging(true);
+                        }}
                         style={{fontSize: '14px'}}
                     >
                         {ratingScales.map(item => {
@@ -164,7 +201,10 @@ const RatingOptions = props => {
                 <FormControl>
                     <Select
                         value={description}
-                        onChange={e => setDescription(e.target.value)}
+                        onChange={e => {
+                            setDescription(e.target.value);
+                            if (isEditMode) setDataIsChanging(true);
+                        }}
                         style={{fontSize: '14px'}}
                     >
                         {ratingDescriptions.map(item => {
@@ -211,7 +251,8 @@ RatingOptions.propTypes = {
     isEditMode: PropTypes.bool.isRequired,
     changeRating: PropTypes.func,
     ratingToChange: PropTypes.object,
-    isUpdate: PropTypes.bool
+    isUpdate: PropTypes.bool,
+    updateRating: PropTypes.func.isRequired
 };
 
 export default RatingOptions;
