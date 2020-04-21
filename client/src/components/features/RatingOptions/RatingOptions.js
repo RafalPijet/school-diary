@@ -75,10 +75,10 @@ const RatingOptions = props => {
             });
             setDataIsChanging(false);
         }
-    //
+
     }, [value, changeRating, ratingToChange, isEditMode, isUpdate, isChanging, scales,
         description, dataIsChanging]);
-    //
+
     useEffect(() => {
         setIsChanging(false);
     }, [isUpdate]);
@@ -129,7 +129,6 @@ const RatingOptions = props => {
             studentId: ratingToChange.studentId,
             classId: ratingToChange.classId
         };
-        // console.log(dataPackage);
         updateRating(dataPackage);
     };
 

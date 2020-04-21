@@ -5,7 +5,7 @@ const componentStyle = theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         height: style.contentHeight,
         width: '100%',
         padding: `0 ${style.baseSize}`

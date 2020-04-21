@@ -18,7 +18,6 @@ const RatingItem = props => {
         isNewRating,
         updatedRating,
         request,
-        resetRequest,
         ...otherProps
     } = props;
     const classes = useStyles();
@@ -28,24 +27,22 @@ const RatingItem = props => {
 
     useEffect(() => {
 
-        // if (request.success) {
-        //     console.log('wow');
-        //     setIsFrozen(false);
-        //     setRatingStyle(clsx(classes[ratingItem.scales], classes.ratingNumber));
-        // }
-
-        if (updatedRating._id === ratingItem._id) {
+        if (updatedRating._id === ratingItem._id && isFrozen) {
             setRatingItem(updatedRating);
             setRatingStyle(clsx(classes.ratingNumberBig, classes[ratingItem.scales]))
         } else {
             setRatingStyle(clsx(isFrozen ? classes.ratingNumberBig : classes.ratingNumber,
                 classes[ratingItem.scales]));
         }
+
+        if (!isUpdateRating && isFrozen) {
+            setIsFrozen(false);
+            setRatingStyle(clsx(classes.ratingNumber, classes[ratingItem.scales]))
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isUpdateRating, updatedRating, updatedRating._id, ratingItem]);
 
     const enterMouseHandling = () => {
-        resetRequest();
         setRatingStyle(clsx(ratingStyle, classes.ratingNumberBig));
         previewHandling(true, {
             description: ratingItem.description,
@@ -77,7 +74,7 @@ const RatingItem = props => {
 
     return (
         <div className={classes.root}>
-            {(request.pending && isFrozen) ? <CircularProgress size='25px' color='secondary'/> :
+            {(request.working && isFrozen) ? <CircularProgress size='25px' color='secondary'/> :
                 <Typography
                     className={(isUpdateRating && !isFrozen) ? classes.disabled : ratingStyle}
                     display='inline'
@@ -103,8 +100,7 @@ RatingItem.propTypes = {
     isUpdateRating: PropTypes.bool.isRequired,
     setIsUpdateRating: PropTypes.func.isRequired,
     updatedRating: PropTypes.object,
-    request: PropTypes.object.isRequired,
-    resetRequest: PropTypes.func.isRequired
+    request: PropTypes.object.isRequired
 };
 
 export default RatingItem;

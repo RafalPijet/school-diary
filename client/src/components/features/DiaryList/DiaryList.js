@@ -9,7 +9,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import {Link} from "@material-ui/core";
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import DiaryRow from '../../features/DiaryRow/DiaryRowContainer';
 import Typography from "@material-ui/core/Typography";

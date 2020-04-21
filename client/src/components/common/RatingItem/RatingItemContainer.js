@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import {setIsUpdateRating, getIsisUpdateRating, getIsNewRating} from "../../../redux/actions/valuesActions";
-import {getRequest, resetRequest} from "../../../redux/actions/requestActions";
+import {getRequest} from "../../../redux/actions/requestActions";
 import RatingItem from "./RatingItem";
 
 const mapStateToProps = state => ({
@@ -10,8 +10,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setIsUpdateRating: isUpdateRating => dispatch(setIsUpdateRating(isUpdateRating)),
-    resetRequest: () => dispatch(resetRequest())
+    setIsUpdateRating: isUpdateRating => dispatch(setIsUpdateRating(isUpdateRating))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RatingItem);

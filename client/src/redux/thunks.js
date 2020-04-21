@@ -4,6 +4,7 @@ import {setUser, setLogin, loadTeachers, loadParents, updateParent, deleteParent
 import {
     loadClassByTeacher,
     addRatingToStudent,
+    updateRatingToStudent,
     loadAllClasses,
     addUserToClass,
     updateClass
@@ -153,12 +154,14 @@ export const addRatingForStudent = (classId, dataPackage) => {
 
 export const updateRatingForStudent = dataPackage => {
     return async dispatch => {
-        dispatch(startRequest());
+        dispatch(startWorkingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
-            dispatch(stopRequest());
+            // console.log(res.data);
+            dispatch(updateRatingToStudent(dataPackage.classId, dataPackage.studentId, res.data));
+            dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

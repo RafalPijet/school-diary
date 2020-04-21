@@ -32,7 +32,7 @@ const reducer = (state = initialState, action) => {
         case STOP_ADDING_REQUEST:
             return {...state, pending: false, error: null, success: true, adding: false, working: false};
         case START_WORKING_REQUEST:
-            return {...state, pending: false, error: null, success: true, adding: false, working: true};
+            return {...state, pending: false, error: null, success: null, adding: false, working: true};
         case STOP_WORKING_REQUEST:
             return {...state, pending: false, error: null, success: true, adding: false, working: false};
         default:

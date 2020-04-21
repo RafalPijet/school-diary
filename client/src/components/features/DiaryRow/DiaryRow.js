@@ -15,14 +15,12 @@ import Fade from '@material-ui/core/Fade';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from "@material-ui/core/Tooltip";
 import componentStyle from "./DiaryRowStyle";
-import {setIsUpdateRating} from "../../../redux/actions/valuesActions";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const DiaryRow = props => {
     const {
-        student, addRating, i, isNewRating, isPlus, teacher, request, ratingValue, selectedDescription,
-        selectedScales, setDescription, setIsNewRating, setIsPlus, setRatingValue, setScales, classId,
+        student, i, isNewRating, teacher, request, setIsNewRating, classId,
         isUpdateRating, setIsUpdateRating
     } = props;
     const [studentRatings, setStudentRatings] = useState([]);
@@ -58,10 +56,16 @@ const DiaryRow = props => {
         });
 
         if (!request.adding) setIsSpinner(false);
-        if (request.pending) setIsOpenPreview(false);
-        if (request.success) setIsUpdateRating(false);
+        if (request.working && isOpenPreview) {
+            setIsOpenPreview(false);
+            setFlipped(!flipped);
+        }
+        if (request.success && !isOpenPreview) {
+            setIsUpdateRating(false);
+            setIsUpdate(false);
+        }
 
-    }, [teacher, student, request.adding, isNewRating, request.pending, request.success]);
+    }, [teacher, student, request.adding, isNewRating, request.working, request.success, flipped]);
 
     const addingHandling = idOptions => {
         setIsOpen(false);
@@ -203,14 +207,7 @@ DiaryRow.propTypes = {
     classId: PropTypes.string.isRequired,
     teacher: PropTypes.object.isRequired,
     setIsNewRating: PropTypes.func.isRequired,
-    setRatingValue: PropTypes.func.isRequired,
     isNewRating: PropTypes.bool.isRequired,
-    ratingValue: PropTypes.string.isRequired,
-    selectedDescription: PropTypes.string.isRequired,
-    selectedScales: PropTypes.number.isRequired,
-    setDescription: PropTypes.func.isRequired,
-    setScales: PropTypes.func.isRequired,
-    addRating: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
     isUpdateRating: PropTypes.bool.isRequired,
     setIsUpdateRating: PropTypes.func.isRequired

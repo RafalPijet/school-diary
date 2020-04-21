@@ -2,6 +2,7 @@ import {
     LOAD_CLASS_BY_TEACHER_ID,
     SELECT_CLASS,
     ADD_RATING_TO_STUDENT,
+    UPDATE_RATING_TO_STUDENT,
     LOAD_ALL_CLASSES,
     ADD_USER_TO_CLASS,
     UPDATE_CLASS
@@ -41,7 +42,24 @@ const reducer = (state = initialState, action) => {
                     return classItem
                 })
             };
+        case UPDATE_RATING_TO_STUDENT:
+            return {
+                ...state, teacherAllClass: state.teacherAllClass.map(classItem => {
 
+                    if (classItem.id === action.classId) {
+                        classItem.students.map(student => {
+
+                            if (student.id === action.studentId) {
+                                student.ratings = student.ratings.map(rating => {
+                                    return (rating.id === action.rating.id) ? action.rating : rating
+                                });
+                            }
+                            return {...classItem.students, student};
+                        })
+                    }
+                    return classItem;
+                })
+            };
         case ADD_USER_TO_CLASS:
             return {
                 ...state, allClasses: state.allClasses.map(item => {

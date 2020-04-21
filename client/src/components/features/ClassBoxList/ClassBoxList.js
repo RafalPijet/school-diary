@@ -5,6 +5,7 @@ import {makeStyles, useTheme} from "@material-ui/core/styles";
 import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassBoxListStyle";
 import TabPanelDiary from "../../common/TabPanelDiary/TabPanelDiary";
+import Spinner from "../../common/Spinner/Spinner";
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -28,8 +29,10 @@ const ClassBoxList = props => {
     const [alertIsOpen, setAlertIsOpen] = useState(false);
 
     useEffect(() => {
+
         if (request.success === null) loadClasses(user.id);
-        setAlertIsOpen(request.error !== null)
+        setAlertIsOpen(request.error !== null);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [request.error]);
 
@@ -47,43 +50,48 @@ const ClassBoxList = props => {
 
     return (
         <Paper variant='outlined' className={classes.root}>
-            <div className={classes.subjectInfo}>
-                <Typography variant='subtitle1'>{`subject: ${user.subject.toUpperCase()}`}</Typography>
-            </div>
-            <AppBar position="static" className={classes.tabs}>
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    textColor="primary"
-                >
-                    {availableClasses.map((item, i) => {
-                        return <Tab className={classes.tabs} key={item.id} label={item.name} {...a11yProps(i)}/>
-                    })}
-                </Tabs>
-            </AppBar>
-            <SwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                index={value}
-                onChangeIndex={handleChangeIndex}
-                style={{width: '100%'}}
-            >
-                {availableClasses.map((item, i) => {
-                    return (
-                        <TabPanelDiary
-                            item={item}
-                            key={item.id}
-                            teacher={user}
-                            index={i}
+            {request.pending ? <Spinner/> :
+                <>
+                    <div className={classes.subjectInfo}>
+                        <Typography variant='subtitle1'>{`subject: ${user.subject.toUpperCase()}`}</Typography>
+                    </div>
+                    <AppBar position="static" className={classes.tabs}>
+                        <Tabs
                             value={value}
-                            dir={theme.direction}/>
-                )})}
-            </SwipeableViews>
-            <Alert
-                message={request.error}
-                isOpenAlert={alertIsOpen}
-                variant='error'
-                handleCloseHandling={handleAlert}
-            />
+                            onChange={handleChange}
+                            textColor="primary"
+                        >
+                            {availableClasses.map((item, i) => {
+                                return <Tab className={classes.tabs} key={item.id} label={item.name} {...a11yProps(i)}/>
+                            })}
+                        </Tabs>
+                    </AppBar>
+                    <SwipeableViews
+                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                        index={value}
+                        onChangeIndex={handleChangeIndex}
+                        style={{width: '100%'}}
+                    >
+                        {availableClasses.map((item, i) => {
+                            return (
+                                <TabPanelDiary
+                                    item={item}
+                                    key={item.id}
+                                    teacher={user}
+                                    index={i}
+                                    value={value}
+                                    dir={theme.direction}/>
+                            )
+                        })}
+                    </SwipeableViews>
+                    <Alert
+                        message={request.error}
+                        isOpenAlert={alertIsOpen}
+                        variant='error'
+                        handleCloseHandling={handleAlert}
+                    />
+                </>
+            }
         </Paper>
     )
 };
