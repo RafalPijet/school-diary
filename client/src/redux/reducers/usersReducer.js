@@ -15,8 +15,8 @@ const initialState = {
     parents: [],
     user: {
         students: [],
-        _id: "5e96fafd5616a2105c2d73e6",
-        id: "ff370449-b117-46cd-b738-f7c426a8d832",
+        _id: "5e9fd27c00fe4800d6ccbc62",
+        id: "9f588fad-c77b-4927-8cfc-03a8a0195be9",
         status: "teacher",
         subject: "math",
         firstName: "David",

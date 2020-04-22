@@ -80,7 +80,7 @@ const NavBar = props => {
     return (
         <>
             <Paper elevation={9} className={classes.paperLogo}>
-                <Logo image={logo} name='logo' style='logo-200'/>
+                <Logo image={logo} name='logo' myStyle='logo-200'/>
             </Paper>
             <Paper elevation={9}>
                 <MainMenu links={activeLink}/>

@@ -159,8 +159,22 @@ export const updateRatingForStudent = dataPackage => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
-            // console.log(res.data);
             dispatch(updateRatingToStudent(dataPackage.classId, dataPackage.studentId, res.data));
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const deleteRatingForStudent = (id, _id, classId, studentId) => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.delete(`${API_URL}/ratings/${id}/${_id}`);
+            dispatch(updateRatingToStudent(classId, studentId, res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

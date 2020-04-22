@@ -83,6 +83,22 @@ const loadTestData = async () => {
                 ratings: [],
                 parents: []
             });
+            const student5 = new Student({
+                id: uuid.v4(),
+                firstName: 'George',
+                lastName: 'Brzęczyszczykiewicz',
+                birthDate: Date.now(),
+                ratings: [],
+                parents: []
+            });
+            const student6 = new Student({
+                id: uuid.v4(),
+                firstName: 'Hannibal',
+                lastName: 'Lecter',
+                birthDate: Date.now(),
+                ratings: [],
+                parents: []
+            });
             const item1 = {
                 value: "6", description: 'teamwork', scales: 3, date: Date.now(), teacher: "David Gahan"
             };
@@ -140,6 +156,31 @@ const loadTestData = async () => {
                 subject: 'english',
                 ratings: [item3, item3]
             });
+            const rating9 = new Rating({
+                id: uuid.v4(),
+                studentId: student5.id,
+                subject: 'math',
+                ratings: [item2]
+            });
+            const rating10 = new Rating({
+                id: uuid.v4(),
+                studentId: student5.id,
+                subject: 'english',
+                ratings: [item3]
+            });
+            const rating11 = new Rating({
+                id: uuid.v4(),
+                studentId: student6.id,
+                subject: 'math',
+                ratings: [item2]
+            });
+            const rating12 = new Rating({
+                id: uuid.v4(),
+                studentId: student6.id,
+                subject: 'english',
+                ratings: [item3]
+            });
+
 
             const user2 = new User({
                 id: uuid.v4(),
@@ -192,12 +233,18 @@ const loadTestData = async () => {
             student3.ratings.push(rating6);
             student4.ratings.push(rating7);
             student4.ratings.push(rating8);
+            student5.ratings.push(rating9);
+            student5.ratings.push(rating10);
+            student6.ratings.push(rating11);
+            student6.ratings.push(rating12);
             user.students.push(student1);
             user.students.push(student2);
             user4.students.push(student3);
             user5.students.push(student4);
             class1.students.push(student1);
             class1.students.push(student2);
+            class1.students.push(student5);
+            class1.students.push(student6);
             class2.students.push(student3);
             class2.students.push(student4);
             class1.save();
@@ -210,10 +257,16 @@ const loadTestData = async () => {
             rating6.save();
             rating7.save();
             rating8.save();
+            rating9.save();
+            rating10.save();
+            rating11.save();
+            rating12.save();
             student1.save();
             student2.save();
             student3.save();
             student4.save();
+            student5.save();
+            student6.save();
             user.save();
             user2.save();
             user3.save();

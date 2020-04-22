@@ -41,7 +41,8 @@ const RatingOptions = props => {
         changeRating,
         ratingToChange,
         isUpdate,
-        updateRating
+        updateRating,
+        setModalYesNot
     } = props;
     const [value, setValue] = useState(3.5);
     const [hover, setHover] = useState(-1);
@@ -112,7 +113,15 @@ const RatingOptions = props => {
     };
 
     const deleteRatingHandling = () => {
-        console.log('delete')
+        setModalYesNot(true, {
+            description: `Do you want to delete the rating: ${labels[value]} ?`,
+            data: {
+                id: ratingsId,
+                _id: ratingToChange._id,
+                classId,
+                studentId: ratingToChange.studentId
+            }
+        });
     };
 
     const updateRatingHandling = () => {
@@ -251,7 +260,8 @@ RatingOptions.propTypes = {
     changeRating: PropTypes.func,
     ratingToChange: PropTypes.object,
     isUpdate: PropTypes.bool,
-    updateRating: PropTypes.func.isRequired
+    updateRating: PropTypes.func.isRequired,
+    setModalYesNot: PropTypes.func.isRequired
 };
 
 export default RatingOptions;

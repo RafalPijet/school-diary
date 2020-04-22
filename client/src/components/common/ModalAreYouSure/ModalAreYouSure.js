@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ModalAreYouSure = props => {
-    const {user, isOpen, isConfirm, description} = props;
+    const {isOpen, isConfirm, description} = props;
     const classes = useStyles();
 
     return (
@@ -38,7 +38,7 @@ const ModalAreYouSure = props => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        {`${description} ${user.lastName} ${user.firstName}?`}
+                        {description}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -51,7 +51,6 @@ const ModalAreYouSure = props => {
 };
 
 ModalAreYouSure.propTypes = {
-    user: PropTypes.object.isRequired,
     description: PropTypes.string.isRequired,
     isOpen: PropTypes.bool.isRequired,
     isConfirm: PropTypes.func.isRequired

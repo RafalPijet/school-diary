@@ -40,6 +40,18 @@ exports.updateRatingById = async (req, res) => {
     }
 };
 
+exports.deleteRatingById = async (req, res) => {
+
+    try {
+        const {id, _id} = req.params;
+        let rating = await Rating.findOne({"id": id});
+        rating.ratings = rating.ratings.filter(item => item._id.toString() !== _id);
+        res.status(200).json(await rating.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.deleteRating = async (req, res) => {
 
     try {

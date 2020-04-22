@@ -134,10 +134,9 @@ const ParentItemCollapse = props => {
                 </Paper>
             </div>
             <ModalAreYouSure
-                user={parent}
                 isOpen={isModalOpen}
                 isConfirm={modalHandling}
-                description='Are you sure you want to delete the parent'
+                description={`Are you sure you want to delete the parent ${parent.lastName} ${parent.firstName}?`}
             />
         </>
     )

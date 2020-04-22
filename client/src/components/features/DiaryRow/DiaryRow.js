@@ -38,8 +38,9 @@ const DiaryRow = props => {
     const [ratingToChange, setRatingToChange] = useState({});
     const [isUpdate, setIsUpdate] = useState(false);
     const [updatedRating, setUpdatedRating] = useState({});
-    const {transform, opacity} = useSpring({
+    const {transform, opacity, visibility} = useSpring({
         opacity: flipped ? 1 : 0,
+        visibility: flipped ? 'visible' : 'hidden',
         transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
         config: {mass: 5, tension: 500, friction: 80}
     });
@@ -64,7 +65,7 @@ const DiaryRow = props => {
             setIsUpdateRating(false);
             setIsUpdate(false);
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teacher, student, request.adding, isNewRating, request.working, request.success, flipped]);
 
     const addingHandling = idOptions => {
@@ -113,7 +114,7 @@ const DiaryRow = props => {
                     <div className={isOpenPreview ? classes.showUpdate : classes.hiddenUpdate}>
                         <animated.div
                             className={classes.flipped}
-                            style={{opacity: opacity.interpolate(o => 1 - o), transform}}>
+                            style={{opacity: opacity.interpolate(o => 1 - o), visibility: !visibility, transform}}>
                             <Paper elevation={9} className={classes.preview}>
                                 <Typography className={classes[previewContent.scales]}
                                             variant='subtitle2'>{previewContent.description}</Typography>
@@ -123,7 +124,7 @@ const DiaryRow = props => {
                         </animated.div>
                         <animated.div
                             className={classes.flipped}
-                            style={{opacity, transform: transform.interpolate(t => `${t} rotateX(180deg)`)}}>
+                            style={{opacity, visibility, transform: transform.interpolate(t => `${t} rotateX(180deg)`)}}>
                             <Paper elevation={9} className={classes.preview}>
                                 <RatingOptions
                                     changeRating={changeRatingHandling}

@@ -3,7 +3,7 @@ import DiaryRow from './DiaryRow';
 import {
     setIsNewRating,
     getIsNewRating,
-    getIsisUpdateRating,
+    getIsUpdateRating,
     setIsUpdateRating
 } from "../../../redux/actions/valuesActions";
 import {getRequest} from "../../../redux/actions/requestActions";
@@ -11,7 +11,7 @@ import {getRequest} from "../../../redux/actions/requestActions";
 const mapStateToProps = state => ({
     isNewRating: getIsNewRating(state),
     request: getRequest(state),
-    isUpdateRating: getIsisUpdateRating(state)
+    isUpdateRating: getIsUpdateRating(state)
 });
 
 const mapDispatchToProps = dispatch => ({

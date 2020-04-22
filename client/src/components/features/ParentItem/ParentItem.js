@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
-import {ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Link, Paper} from "@material-ui/core";
+import {ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Link} from "@material-ui/core";
 import {Grid, Typography} from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ParentItemCollapse from '../ParentItemCollapse/ParentItemCollapseContainer';

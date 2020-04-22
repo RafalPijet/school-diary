@@ -73,8 +73,8 @@ const StudentItem = props => {
                 </Card>
             </Collapse>
             <ModalAreYouSure
-                user={studentItem}
-                description='Are you sure you want to delete the student'
+                description={`Are you sure you want to delete the student ${studentItem.lastName}
+                 ${studentItem.firstName}?`}
                 isOpen={modalIsOpen}
                 isConfirm={deleteHandling}/>
         </div>

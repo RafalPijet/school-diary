@@ -2,20 +2,16 @@ import {
     SET_IS_DARK,
     SET_IS_UPDATE_RATING,
     SET_IS_NEW_RATING,
-    SET_RATING_VALUE,
-    SET_DESCRIPTION,
-    SET_SCALES
+    SET_MODAL_YES_NOT
 } from "../actions/valuesActions";
 
 const initialState = {
     isDark: true,
     isUpdateRating: false,
     isNewRating: false,
-    ratingValue: "",
+    modalYesNot: {isOpen: false, content: {description: '', data: {}}},
     ratingDescriptions: ['homework', 'teamwork', 'school test', 'response'],
     ratingScales: [1, 2, 3],
-    selectedDescription: "",
-    selectedScales: 1,
     availableSubjects: {
         all: ['english', 'polish', 'german', 'math', 'biology', 'history', 'geography', 'physics', 'chemistry',
             'informatics', 'physical education', 'form period', 'social studies', 'career counseling', 'music',
@@ -43,12 +39,8 @@ const reducer = (state = initialState, action) => {
             return {...state, isUpdateRating: action.isUpdate};
         case SET_IS_NEW_RATING:
             return {...state, isNewRating: action.isNewRating};
-        case SET_RATING_VALUE:
-            return {...state, ratingValue: action.value};
-        case SET_DESCRIPTION:
-            return {...state, selectedDescription: action.desc};
-        case SET_SCALES:
-            return {...state, selectedScales: parseInt(action.value)};
+        case SET_MODAL_YES_NOT:
+            return {...state, modalYesNot: {isOpen: action.isOpen, content: action.content}};
         default:
             return state;
     }

@@ -6,6 +6,7 @@ import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassBoxListStyle";
 import TabPanelDiary from "../../common/TabPanelDiary/TabPanelDiary";
 import Spinner from "../../common/Spinner/Spinner";
+import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -22,7 +23,16 @@ const a11yProps = index => {
 };
 
 const ClassBoxList = props => {
-    const {loadClasses, user, availableClasses, request, resetRequest} = props;
+    const {
+        loadClasses,
+        user,
+        availableClasses,
+        request,
+        resetRequest,
+        modalYesNot,
+        setModalYesNot,
+        deleteRating
+    } = props;
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
@@ -46,6 +56,15 @@ const ClassBoxList = props => {
 
     const handleChangeIndex = (index) => {
         setValue(index);
+    };
+
+    const handleModal = isTrue => {
+        const {id, _id, classId, studentId} = modalYesNot.content.data;
+        setModalYesNot(false, {description: '', data: {}});
+
+        if (isTrue) {
+            deleteRating(id, _id, classId, studentId);
+        }
     };
 
     return (
@@ -90,6 +109,11 @@ const ClassBoxList = props => {
                         variant='error'
                         handleCloseHandling={handleAlert}
                     />
+                    <ModalAreYouSure
+                        description={modalYesNot.content.description}
+                        isOpen={modalYesNot.isOpen}
+                        isConfirm={handleModal}
+                    />
                 </>
             }
         </Paper>
@@ -101,7 +125,10 @@ ClassBoxList.propTypes = {
     user: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
     loadClasses: PropTypes.func.isRequired,
-    resetRequest: PropTypes.func.isRequired
+    resetRequest: PropTypes.func.isRequired,
+    modalYesNot: PropTypes.object.isRequired,
+    setModalYesNot: PropTypes.func.isRequired,
+    deleteRating: PropTypes.func.isRequired
 };
 
 export default ClassBoxList;

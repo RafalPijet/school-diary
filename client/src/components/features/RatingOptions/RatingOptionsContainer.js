@@ -4,11 +4,13 @@ import {addRatingForStudent, updateRatingForStudent} from "../../../redux/thunks
 import {
     getRatingDescriptions,
     getRatingScales,
+    setModalYesNot,
 } from "../../../redux/actions/valuesActions";
 
 const mapDispatchToProps = dispatch => ({
     addRating: (classId, dataPackage) => dispatch(addRatingForStudent(classId, dataPackage)),
-    updateRating: dataPackage => dispatch(updateRatingForStudent(dataPackage))
+    updateRating: dataPackage => dispatch(updateRatingForStudent(dataPackage)),
+    setModalYesNot: (isOpen, content) => dispatch(setModalYesNot(isOpen, content))
 });
 
 const mapStateToProps = state => ({
