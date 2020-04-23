@@ -1,12 +1,8 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {resetRequest} from "../../../redux/actions/requestActions";
 import PageTitle from '../../common/PageTitle/PageTitle';
 import UserForm from '../../features/UserForm/UserFormContainer';
 
-const Login = props => {
-    const {resetRequest} = props;
-    resetRequest();
+const Login = () => {
 
     return (
         <div>
@@ -16,9 +12,4 @@ const Login = props => {
     )
 };
 
-const mapDispatchToProps = dispatch => ({
-    resetRequest: () => dispatch(resetRequest())
-});
-
-
-export default connect(null, mapDispatchToProps)(Login);
+export default Login;

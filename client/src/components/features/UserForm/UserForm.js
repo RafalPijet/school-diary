@@ -10,39 +10,9 @@ import DoneIcon from '@material-ui/icons/Done';
 import Fab from '@material-ui/core/Fab';
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from "../../common/Alert/Alert";
-import {style} from "../../../styles/global";
+import componentStyle from "./UserFormStyle";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: style.contentHeight
-    },
-    selectRow: {
-        display: 'inherit',
-        justifyContent: 'space-between',
-        width: '400px',
-        margin: '5px 0'
-    },
-    textRow: {
-        display: 'inherit',
-        flexDirection: 'inherit',
-        justifyContent: 'center',
-        width: '400px'
-    },
-    select: {
-        minWidth: '150px'
-    },
-    margin: {
-        margin: '5px 0'
-    },
-    button: {
-        marginTop: '50px',
-        backgroundColor: theme.palette.action.dark
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const TextMaskCustom = props => {
     const {inputRef, ...other} = props;
@@ -93,6 +63,7 @@ const UserForm = props => {
 
     useEffect(() => {
         setIsSubjectsDisabled(userType === 'parent');
+        if (success) resetRequest();
 
         if (isLogin) {
             let {email, password} = login;
@@ -122,9 +93,9 @@ const UserForm = props => {
         }
 
     }, [userType, login.email, login.password, register.firstName, register.lastName, register,
-        register.telephone, register.email, register.password, register.confirm, subject, isLogin, login,
+        register.telephone, register.email, register.password, register.confirm, subject, login, isLogin,
         isError.email, isError.confirm, registerAfter.email, registerAfter.password, error, isAlert,
-        setRegisterAfter]);
+        setRegisterAfter, success, resetRequest]);
 
     const handleTextField = event => {
         isLogin ? setLogin({...login, [event.target.name]: event.target.value}) :
@@ -174,7 +145,6 @@ const UserForm = props => {
         </Paper>
     }
     if (success) {
-        resetRequest();
         return !isLogin ? <Redirect to='/login'/> : <Redirect to='/'/>
     } else {
         return (

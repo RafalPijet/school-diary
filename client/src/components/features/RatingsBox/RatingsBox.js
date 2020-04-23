@@ -1,56 +1,73 @@
-import React from 'react';
-import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
-import classnames from 'classnames';
-import RatingSubjectList from '../../features/RatingSubjectList/RatingSubjectList';
-import './RatingBox.scss';
+import React, {useState} from 'react';
+import PropTypes from 'prop-types';
+import {makeStyles, useTheme} from "@material-ui/core/styles";
+import {Paper, AppBar, Tabs, Tab} from "@material-ui/core";
+import SwipeableViews from 'react-swipeable-views';
+import TabPanelRatings from "../../common/TabPanelRatings/TabPanelRatings";
+import componentStyle from "./RatingsBoxStyle";
 
-class RatingsBox extends React.Component {
-    state = {
-        activeTab: 1
+const useStyles = makeStyles(theme => componentStyle(theme));
+
+const a11yProps = index => {
+    return {
+        id: `full-width-tab-${index}`,
+        'aria-controls': `full-width-tabpanel-${index}`,
+    };
+};
+
+const RatingsBox = props => {
+    const {user} = props;
+    const [value, setValue] = useState(0);
+    const classes = useStyles();
+    const theme = useTheme();
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
     };
 
-    componentDidMount() {
-        this.toggle(1)
-    }
-
-    toggle = tab => {
-        const {activeTab} = this.state;
-        if (activeTab !== tab) this.setState({activeTab: tab});
+    const handleChangeIndex = (index) => {
+        setValue(index);
     };
 
-    render() {
-        const {students} = this.props.user;
-        const {activeTab} = this.state;
-        return (
-            <div>
-                <Nav tabs>
-                    {students.map((item, i) => {
-                        return (
-                            <NavItem key={i}>
-                                <NavLink
-                                    className={`${classnames({active: activeTab === i + 1})} tab-title`}
-                                    onClick={() => {
-                                        this.toggle(i + 1);
-                                    }}
-                                >
-                                    {`${item.firstName} ${item.lastName}`}
-                                </NavLink>
-                            </NavItem>
-                        )
+    return (
+        <Paper variant='outlined' className={classes.root}>
+            <AppBar position="static" className={classes.tabs}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    textColor="primary"
+                >
+                    {user.students.map((item, i) => {
+                        return <Tab
+                            className={classes.tabs}
+                            key={item.id}
+                            label={`${item.firstName} ${item.lastName}`}
+                            {...a11yProps(i)}/>
                     })}
-                </Nav>
-                <TabContent activeTab={activeTab}>
-                    {students.map((item, i) => {
-                        return (
-                            <TabPane tabId={i + 1} key={i}>
-                                <RatingSubjectList student={item}/>
-                            </TabPane>
-                        )
-                    })}
-                </TabContent>
-            </div>
-        );
-    }
+                </Tabs>
+            </AppBar>
+            <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={value}
+                onChangeIndex={handleChangeIndex}
+                style={{width: '100%'}}
+            >
+                {user.students.map((item, i) => {
+                    return <TabPanelRatings
+                        item={item}
+                        index={i}
+                        value={value}
+                        key={item.id}
+                        dir={theme.direction}
+                    />
+                })}
+            </SwipeableViews>
+        </Paper>
+    )
+};
+
+RatingsBox.propTypes = {
+    user: PropTypes.object.isRequired
 };
 
 export default RatingsBox;

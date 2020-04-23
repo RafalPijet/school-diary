@@ -92,15 +92,14 @@ const ClassBoxList = props => {
                         style={{width: '100%'}}
                     >
                         {availableClasses.map((item, i) => {
-                            return (
-                                <TabPanelDiary
-                                    item={item}
-                                    key={item.id}
-                                    teacher={user}
-                                    index={i}
-                                    value={value}
-                                    dir={theme.direction}/>
-                            )
+                            return <TabPanelDiary
+                                item={item}
+                                key={item.id}
+                                teacher={user}
+                                index={i}
+                                value={value}
+                                dir={theme.direction}
+                            />
                         })}
                     </SwipeableViews>
                     <Alert

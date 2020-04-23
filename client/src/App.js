@@ -26,7 +26,7 @@ import Logout from './components/pages/Logout/Logout';
 const App = props => {
     const {isLogin, loggedUser, isDark} = props;
 
-    if (isLogin && loggedUser.status === 'student') {
+    if (isLogin && loggedUser.status === 'parent') {
         return (
             <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                 <Switch>

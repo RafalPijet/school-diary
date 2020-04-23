@@ -1,6 +1,6 @@
 import React from 'react';
 import PageTitle from '../../common/PageTitle/PageTitle';
-import RatingsBox from '../../features/RatingsBox/RatingBoxContainer';
+import RatingsBox from '../../features/RatingsBox/RatingsBoxContainer';
 
 const StudentRatings = () => (
     <div>
