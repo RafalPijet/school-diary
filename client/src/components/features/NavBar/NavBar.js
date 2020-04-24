@@ -17,7 +17,6 @@ import DataIcon from '@material-ui/icons/Assignment';
 import RatingIcon from '@material-ui/icons/Dvr';
 import DiariesIcon from '@material-ui/icons/LibraryBooks';
 import TodayIcon from '@material-ui/icons/Today';
-import '../../features/NavBar/NavBar.scss';
 
 const availableLinks = {
     loginLinks: [
@@ -56,6 +55,11 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2),
         height: '105px',
         backgroundColor: theme.palette.secondary.light
+    },
+    logo: {
+        width: '170px',
+        height: '65px',
+        margin: '0'
     }
 }));
 
@@ -81,7 +85,7 @@ const NavBar = props => {
     return (
         <>
             <Paper elevation={9} className={classes.paperLogo}>
-                <Logo image={logo} name='logo' myStyle='logo-200'/>
+                <Logo image={logo} name='logo' myStyle={classes.logo}/>
             </Paper>
             <Paper elevation={9}>
                 <MainMenu links={activeLink}/>
