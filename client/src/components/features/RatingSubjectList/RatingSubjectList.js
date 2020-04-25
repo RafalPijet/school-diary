@@ -1,20 +1,12 @@
 import React from 'react';
-// import {Table} from 'reactstrap';
+import clsx from "clsx";
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {TableContainer, Table, TableHead, TableBody, TableRow, TableCell} from "@material-ui/core";
 import RatingSubject from '../../features/RatingSubject/RatingSubject';
-import {style} from "../../../styles/global";
+import componentStyle from './RatingSubjectListStyle';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        padding: style.smallSize
-    },
-    header: {
-        backgroundColor: theme.palette.action.header
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const RatingSubjectList = props => {
     const {student} = props;
@@ -25,20 +17,15 @@ const RatingSubjectList = props => {
             <Table aria-label="sticky table">
                 <TableHead className={classes.header}>
                     <TableRow>
-                        <TableCell>Subject</TableCell>
-                        <TableCell>Ratings</TableCell>
+                        <TableCell className={clsx(classes.title, classes.subject)}>Subject</TableCell>
+                        <TableCell align='center' className={classes.title}>Ratings</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {student.ratings.map(item => {
-                        return <RatingSubject key={item.id} ratings={item}/>
+                        return <RatingSubject key={item.id} rating={item}/>
                     })}
                 </TableBody>
-                {/*<tbody>*/}
-                {/*{student.ratings.map(item => {*/}
-                {/*    return <RatingSubject key={item.id} ratings={item}/>*/}
-                {/*})}*/}
-                {/*</tbody>*/}
             </Table>
         </TableContainer>
     )
