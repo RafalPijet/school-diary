@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import {Redirect} from 'react-router-dom';
-import './MainMenu.scss';
 
 const useStyles = makeStyles(theme => ({
     root: {
