@@ -71,3 +71,5 @@ TablePagination.propTypes = {
     page: PropTypes.number.isRequired,
     rowsPerPage: PropTypes.number.isRequired
 };
+
+export default TablePagination;
