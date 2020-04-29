@@ -15,4 +15,5 @@ export const updateStudent = student => ({student, type: UPDATE_STUDENT});
 export const deleteStudent = id => ({id, type: DELETE_STUDENT});
 
 //SELECTORS
-export const getAllStudents = store => store.students.allStudents;
+export const getAllStudents = state => state.students.allStudents;
+export const getStudentsAmount = state => state.students.allStudents.length;

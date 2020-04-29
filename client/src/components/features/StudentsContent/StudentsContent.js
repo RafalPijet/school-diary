@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import StudentsTable from "../StudentsTable/StudentsTableContainer";
+import StudentForm from "../StudentForm/StudentFormContainer";
 
 const useStyles = makeStyles({
     root: {
-        height: '480px'
+        height: '480px',
+        padding: '5px'
     }
 });
 
@@ -15,7 +17,7 @@ const StudentsContent = props => {
 
     return (
         <div className={classes.root}>
-            {isAdding ? <div>Adding</div> : <StudentsTable/>}
+            {isAdding ? <StudentForm/> : <StudentsTable/>}
         </div>
     )
 };

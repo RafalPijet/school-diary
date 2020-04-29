@@ -320,13 +320,13 @@ export const addTeacherToClassRequest = payload => {
 
 export const addStudentRequest = student => {
     return async dispatch => {
-        dispatch(startRequest());
+        dispatch(startAddingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/student`, student);
             dispatch(addStudent(res.data));
-            dispatch(stopRequest());
+            dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

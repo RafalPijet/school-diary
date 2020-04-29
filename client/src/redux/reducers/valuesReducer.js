@@ -2,7 +2,9 @@ import {
     SET_IS_DARK,
     SET_IS_UPDATE_RATING,
     SET_IS_NEW_RATING,
-    SET_MODAL_YES_NOT
+    SET_MODAL_YES_NOT,
+    SET_MAX_BIRTH_DATE,
+    SET_ALERT_SUCCESS
 } from "../actions/valuesActions";
 
 const initialState = {
@@ -28,7 +30,9 @@ const initialState = {
             'technology', 'family life education', 'physical education', 'form period'],
         class4: ['history', 'informatics', 'english', 'polish', 'math', 'music', 'art', 'natural science',
             'technology', 'family life education', 'physical education', 'form period']
-    }
+    },
+    maxBirthDate: '2014-01-01',
+    alertSuccess: {isOpen: false, message: ''}
 };
 
 const reducer = (state = initialState, action) => {
@@ -41,6 +45,10 @@ const reducer = (state = initialState, action) => {
             return {...state, isNewRating: action.isNewRating};
         case SET_MODAL_YES_NOT:
             return {...state, modalYesNot: {isOpen: action.isOpen, content: action.content}};
+        case SET_MAX_BIRTH_DATE:
+            return {...state, maxBirthDate: action.date};
+        case SET_ALERT_SUCCESS:
+            return {...state, alertSuccess: {isOpen: action.isOpen, message: action.message}};
         default:
             return state;
     }

@@ -20,7 +20,7 @@ const a11yProps = index => {
 };
 
 const StudentsHandling = props => {
-    const {request, resetRequest, loadAllStudents} = props;
+    const {request, resetRequest, loadAllStudents, alertSuccess, setAlertSuccess} = props;
     const [value, setValue] = useState(0);
     const classes = useStyles();
     const theme = useTheme();
@@ -38,7 +38,7 @@ const StudentsHandling = props => {
     };
 
     const handleAlert = () => {
-        resetRequest();
+        alertSuccess.isOpen ? setAlertSuccess(false, '') : resetRequest();
     };
 
     return (
@@ -65,9 +65,9 @@ const StudentsHandling = props => {
             </>
             }
             <Alert
-                isOpenAlert={request.error !== null}
-                variant='error'
-                message={request.error}
+                isOpenAlert={alertSuccess.isOpen || request.error !== null}
+                variant={alertSuccess.isOpen ? 'success' : 'error'}
+                message={alertSuccess.isOpen ? alertSuccess.message : request.error}
                 handleCloseHandling={handleAlert}
             />
         </Paper>
@@ -77,7 +77,9 @@ const StudentsHandling = props => {
 StudentsHandling.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
-    loadAllStudents: PropTypes.func.isRequired
+    loadAllStudents: PropTypes.func.isRequired,
+    alertSuccess: PropTypes.object.isRequired,
+    setAlertSuccess: PropTypes.func.isRequired
 };
 
 export default StudentsHandling;
