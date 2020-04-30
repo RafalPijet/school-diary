@@ -26,7 +26,9 @@ const StudentsHandling = props => {
     const theme = useTheme();
 
     useEffect(() => {
+        resetRequest();
         loadAllStudents();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleChange = (event, newValue) => {

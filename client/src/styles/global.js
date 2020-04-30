@@ -6,5 +6,6 @@ export const style = {
     bigSize: '25px',
     colorOnLine: '#32ff7e',
     colorOffLine: '#a4b0be',
-    contentHeight: '600px'
+    contentHeight: '600px',
+    colorActive: '#F5F5F5'
 };

@@ -4,25 +4,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import {TextField, Fab} from "@material-ui/core";
 import DoneIcon from '@material-ui/icons/Done';
 import Spinner from "../../common/Spinner/Spinner";
+import componentStyle from "./StudentFormStyle";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.palette.secondary.light
-    },
-    names: {
-        paddingBottom: '14px'
-    },
-    button: {
-        marginTop: '50px',
-        backgroundColor: theme.palette.action.dark
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const StudentForm = props => {
     const {request, addStudent, maxBirthDate, studentsAmount, alertSuccess} = props;
@@ -52,6 +36,7 @@ const StudentForm = props => {
                 birthDate: ''
             })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newStudent.firstName, newStudent.lastName, newStudent.birthDate, maxBirthDate, studentsAmount]);
 
     const handleTextField = event => {
