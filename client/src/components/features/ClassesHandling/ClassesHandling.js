@@ -4,6 +4,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
 import Spinner from "../../common/Spinner/Spinner";
 import ClassesPanel from "../ClassesPanel/ClassesPanelContainer";
+import ClassBox from "../ClassBox/ClassBoxContainer";
 import componentStyle from "./ClassesHandlingStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
@@ -24,6 +25,7 @@ const ClassesHandling = props => {
             {request.success &&
             <>
                 <ClassesPanel/>
+                <ClassBox/>
             </>
             }
         </Paper>
