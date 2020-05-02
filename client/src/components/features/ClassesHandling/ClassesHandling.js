@@ -17,6 +17,7 @@ const ClassesHandling = props => {
     useEffect(() => {
         resetRequest();
         loadAllClasses();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -25,7 +26,7 @@ const ClassesHandling = props => {
             {request.success &&
             <>
                 <ClassesPanel/>
-                <ClassBox/>
+                {/*<ClassBox/>*/}
             </>
             }
         </Paper>

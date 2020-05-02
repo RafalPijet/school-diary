@@ -7,7 +7,8 @@ import {
     updateRatingToStudent,
     loadAllClasses,
     addUserToClass,
-    updateClass
+    updateClass,
+    addNewClass
 } from "./actions/classActions";
 import {
     startRequest,
@@ -245,7 +246,8 @@ export const addClassRequest = payload => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            await axios.post(`${API_URL}/class`, payload);
+            let res = await axios.post(`${API_URL}/class`, payload);
+            dispatch(addNewClass(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))

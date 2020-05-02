@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {
@@ -10,36 +10,73 @@ import {
     FormControl,
     MenuItem,
     InputLabel,
-    TextField
+    Typography
 } from "@material-ui/core";
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import Spinner from "../../common/Spinner/Spinner";
 import componentStyle from './ClassesPanelStyle'
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ClassesPanel = props => {
-    const {allClasses, addClass, loadTeachers, request, teachers} = props;
+    const {allClasses, addClass, loadTeachers, request, teachers, availableNames} = props;
     const [newClass, setNewClass] = useState({
-        name: 'Class ',
-        mainTeacher: {},
+        name: '',
+        mainTeacher: 'unselected',
     });
-    const [isVisible, setIsVisible] = useState(false);
-    const [tutor, setTutor] = useState({});
+    const [isPossible, setIsPossible] = useState(false);
     const [availableTutors, setAvailableTutors] = useState([]);
-    const [availableClassTypes, setAvailableClassTypes] = useState([]);
-    const [classType, setClassType] = useState('');
+    const [availableClassNames, setAvailableClassNames] = useState([]);
+    const [classGrade, setClassGrade] = useState('none');
     const classes = useStyles();
 
+    useEffect(() => {
+        setIsPossible(newClass.mainTeacher !== 'unselected');
+
+        if (teachers.length === 0) loadTeachers();
+        prepareData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [availableNames.grade, availableNames.type, classGrade, teachers, newClass.mainTeacher, allClasses]);
+
+    const prepareData = () => {
+        let result = [];
+        let possibleTutors = [];
+        availableNames.grade.forEach(grade => {
+            availableNames.type.forEach(type => {
+                result = [...result, `${grade} ${type}`]
+            })
+        });
+        allClasses.forEach(item => {
+            result = result.filter(name => name !== item.name.substring(6, item.name.length));
+        });
+
+        if (classGrade !== 'none') {
+            result = result.filter(name => name.substring(0, 1) === classGrade)
+        }
+        setAvailableClassNames(result);
+        setNewClass({...newClass, name: result[0]});
+        let existedTutors = allClasses.map(item => item.mainTeacher.id);
+        teachers.forEach(teacher => {
+
+            if (!existedTutors.includes(teacher.id)) {
+                possibleTutors = [...possibleTutors, teacher];
+                setAvailableTutors(possibleTutors);
+            }
+        });
+        console.log(existedTutors);
+    };
+
     const addClassHandling = () => {
-        console.log('add class');
+        newClass.name = `Class ${newClass.name}`;
+        addClass(newClass);
     };
 
     const handleTutorChange = event => {
-        setTutor(event.target.value)
+        setNewClass({...newClass, mainTeacher: event.target.value});
     };
 
-    const handleClassType = event => {
-        setClassType(event.target.value)
+    const handleClassGrade = event => {
+        setClassGrade(event.target.value)
     };
 
     const handleClassName = event => {
@@ -48,59 +85,79 @@ const ClassesPanel = props => {
 
     return (
         <Paper elevation={3} className={classes.root}>
-            <span className={classes.classType}>
+            <span className={classes.classGrade}>
                 <FormControl>
-                <InputLabel id='choose-class-type'>
-                    choose class type
+                <InputLabel id='choose-class-grade'>
+                    sort by class grade
                 </InputLabel>
                 <Select
                     className={classes.input}
-                    labelId='choose-class-type'
-                    value={classType}
-                    onChange={handleClassType}
+                    labelId='choose-class-grade'
+                    value={classGrade}
+                    onChange={handleClassGrade}
                 >
-                    {availableClassTypes.map((item, i) => {
-                        return <MenuItem key={i} value={item}/>
+                    <MenuItem value='none'>none</MenuItem>
+                    {availableNames.grade.map(item => {
+                        return <MenuItem key={item} value={item}>{`${item}th`}</MenuItem>
                     })}
                 </Select>
             </FormControl>
             </span>
             <Paper variant='outlined' className={classes.addClass}>
-                <TextField
-                    className={classes.input}
-                    value={newClass.name}
-                    label='class name'
-                    onChange={handleClassName}
-                />
-                <FormControl>
-                    <InputLabel id='choose-teacher'>
-                        choose teacher as tutor
-                    </InputLabel>
-                    <Select
-                        className={classes.input}
-                        labelId='choose-teacher'
-                        value={tutor}
-                        onChange={handleTutorChange}
-                    >
-                        {availableTutors.map((tutor, i) => {
-                            return <MenuItem key={i} value={`${tutor.lastName} ${tutor.firstName}`}/>
-                        })}
-                    </Select>
-                </FormControl>
-                <Tooltip
-                    title='Add class'
-                    placement='bottom'
-                    arrow
-                    TransitionComponent={Fade}
-                    enterDelay={1000}
-                >
+                {request.adding ? <Spinner/> :
+                    <>
+                        <span className={classes.classOptions}>
+                    <Typography className={classes.className} variant='subtitle1'>Class</Typography>
+                    <FormControl className={classes.possibleNames}>
+                        <InputLabel id='class-names'>possible names</InputLabel>
+                        <Select
+                            labelId='class-names'
+                            value={newClass.name}
+                            onChange={handleClassName}
+                        >
+                            {availableClassNames.map(name => {
+                                return <MenuItem key={name} value={name}>{name}</MenuItem>
+                            })}
+                        </Select>
+                    </FormControl>
+                </span>
+                        <FormControl>
+                            <InputLabel id='choose-teacher'>
+                                choose teacher as tutor
+                            </InputLabel>
+                            <Select
+                                className={classes.input}
+                                labelId='choose-teacher'
+                                value={newClass.mainTeacher}
+                                onChange={handleTutorChange}
+                            >
+                                <MenuItem value='unselected'>unselected</MenuItem>
+                                {availableTutors.map(item => {
+                                    return <MenuItem key={item.id}
+                                                     value={item}>{`${item.lastName} ${item.firstName}`}</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl>
+
+                        <Tooltip
+                            title='Add class'
+                            placement='bottom'
+                            arrow
+                            TransitionComponent={Fade}
+                            enterDelay={1000}
+                        >
+                    <span>
                     <IconButton
                         className={classes.button}
                         onClick={addClassHandling}
+                        disabled={!isPossible}
                     >
                         <GroupAddIcon/>
                     </IconButton>
-                </Tooltip>
+                        </span>
+                        </Tooltip>
+                    </>
+                }
             </Paper>
         </Paper>
     )
@@ -111,7 +168,8 @@ ClassesPanel.propTypes = {
     request: PropTypes.object.isRequired,
     loadTeachers: PropTypes.func.isRequired,
     teachers: PropTypes.array.isRequired,
-    addClass: PropTypes.func.isRequired
+    addClass: PropTypes.func.isRequired,
+    availableNames: PropTypes.object.isRequired
 };
 
 export default ClassesPanel;

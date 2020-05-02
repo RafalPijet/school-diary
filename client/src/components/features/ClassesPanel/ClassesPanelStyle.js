@@ -10,6 +10,7 @@ const componentStyle = theme => ({
     },
     button: {
         outline: 'none !important',
+        backgroundColor: theme.palette.primary.light,
         '&:hover': {backgroundColor: theme.palette.action.dark}
     },
     input: {
@@ -17,15 +18,29 @@ const componentStyle = theme => ({
     },
     addClass: {
         width: '600px',
+        height: '56px',
         display: 'inline-flex',
         justifyContent: 'space-around',
         padding: style.smallSize,
-        backgroundColor: theme.palette.secondary.dark
+        backgroundColor: theme.palette.secondary.dark,
+        alignItems: 'center'
     },
-    classType: {
+    classGrade: {
         display: 'inline-flex',
         justifyContent: 'center',
         width: '250px'
+    },
+    classOptions: {
+        display: 'inline-flex',
+        width: '180px',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    possibleNames: {
+        width: '115px'
+    },
+    className: {
+        paddingTop: '13px'
     }
 });
 

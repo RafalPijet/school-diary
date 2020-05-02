@@ -5,13 +5,18 @@ import {
     UPDATE_RATING_TO_STUDENT,
     LOAD_ALL_CLASSES,
     ADD_USER_TO_CLASS,
-    UPDATE_CLASS
+    UPDATE_CLASS,
+    ADD_NEW_CLASS
 } from "../actions/classActions";
 
 const initialState = {
     allClasses: [],
     teacherAllClass: [],
-    selectedClass: {}
+    selectedClass: {},
+    availableNames: {
+        grade: ['1', '2', '3', '4', '5', '6', '7', '8'],
+        type: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    }
 };
 
 const reducer = (state = initialState, action) => {
@@ -80,6 +85,10 @@ const reducer = (state = initialState, action) => {
                         return item;
                     }
                 })
+            };
+        case ADD_NEW_CLASS:
+            return {
+                ...state, allClasses: [...state.allClasses, action.newClass]
             };
         default:
             return state;
