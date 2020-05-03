@@ -63,12 +63,12 @@ const ClassesPanel = props => {
                 setAvailableTutors(possibleTutors);
             }
         });
-        console.log(existedTutors);
     };
 
     const addClassHandling = () => {
         newClass.name = `Class ${newClass.name}`;
         addClass(newClass);
+        setNewClass({name: '', mainTeacher: 'unselected'});
     };
 
     const handleTutorChange = event => {

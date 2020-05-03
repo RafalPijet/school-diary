@@ -20,6 +20,7 @@ import {
     stopWorkingRequest
 } from "./actions/requestActions";
 import {loadAllStudents, updateStudent, deleteStudent, addStudent} from "./actions/studentActions";
+import {setAlertSuccess} from "./actions/valuesActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -247,7 +248,10 @@ export const addClassRequest = payload => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/class`, payload);
-            dispatch(addNewClass(res.data));
+            let newClass = res.data;
+            newClass.mainTeacher = payload.mainTeacher;
+            dispatch(addNewClass(newClass));
+            dispatch(setAlertSuccess(true, `${payload.name} has been added.`));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
