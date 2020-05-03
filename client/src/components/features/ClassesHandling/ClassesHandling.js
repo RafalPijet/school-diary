@@ -1,10 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
 import Spinner from "../../common/Spinner/Spinner";
 import ClassesPanel from "../ClassesPanel/ClassesPanelContainer";
-import ClassBox from "../ClassBox/ClassBoxContainer";
+import ClassesContent from "../ClassesContent/ClassesContentContainer";
 import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassesHandlingStyle";
 
@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ClassesHandling = props => {
     const {request, loadAllClasses, resetRequest, alertSuccess, setAlertSuccess} = props;
+    const [classGrade, setClassGrade] = useState('none');
     const classes = useStyles();
 
     useEffect(() => {
@@ -26,13 +27,17 @@ const ClassesHandling = props => {
         loadAllClasses();
     };
 
+    const getClassGrade = classGrade => {
+        setClassGrade(classGrade);
+    };
+
     return (
         <Paper variant='outlined' className={classes.root}>
             {request.pending && <Spinner/>}
             {request.success &&
             <>
-                <ClassesPanel/>
-                {/*<ClassBox/>*/}
+                <ClassesPanel getClassGrade={getClassGrade}/>
+                <ClassesContent classGrade={classGrade}/>
             </>
             }
             {request.error &&

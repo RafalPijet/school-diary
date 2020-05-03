@@ -19,7 +19,7 @@ import componentStyle from './ClassesPanelStyle'
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ClassesPanel = props => {
-    const {allClasses, addClass, loadTeachers, request, teachers, availableNames} = props;
+    const {allClasses, addClass, loadTeachers, request, teachers, availableNames, getClassGrade} = props;
     const [newClass, setNewClass] = useState({
         name: '',
         mainTeacher: 'unselected',
@@ -76,7 +76,8 @@ const ClassesPanel = props => {
     };
 
     const handleClassGrade = event => {
-        setClassGrade(event.target.value)
+        setClassGrade(event.target.value);
+        getClassGrade(event.target.value);
     };
 
     const handleClassName = event => {
@@ -169,7 +170,8 @@ ClassesPanel.propTypes = {
     loadTeachers: PropTypes.func.isRequired,
     teachers: PropTypes.array.isRequired,
     addClass: PropTypes.func.isRequired,
-    availableNames: PropTypes.object.isRequired
+    availableNames: PropTypes.object.isRequired,
+    getClassGrade: PropTypes.func.isRequired
 };
 
 export default ClassesPanel;
