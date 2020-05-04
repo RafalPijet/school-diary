@@ -261,13 +261,13 @@ export const addClassRequest = payload => {
 
 export const getAllStudentsRequest = () => {
     return async dispatch => {
-        dispatch(startRequest());
+        dispatch(startWorkingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students`);
             dispatch(loadAllStudents(res.data));
-            dispatch(stopRequest());
+            dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

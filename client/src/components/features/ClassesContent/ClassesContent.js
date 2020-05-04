@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles, useTheme} from "@material-ui/core/styles";
 import {AppBar, Tabs, Tab, Paper} from "@material-ui/core";
@@ -16,10 +16,14 @@ const a11yProps = index => {
 };
 
 const ClassesContent = props => {
-    const {allClasses, classGrade} = props;
+    const {allClasses, classGrade, allStudents, loadAllStudents} = props;
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
+
+    useEffect(() => {
+        if (allStudents.length === 0) loadAllStudents();
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -73,7 +77,9 @@ ClassesContent.propTypes = {
         _id: PropTypes.string,
         name: PropTypes.string.isRequired
     })),
-    classGrade: PropTypes.string.isRequired
+    classGrade: PropTypes.string.isRequired,
+    allStudents: PropTypes.array.isRequired,
+    loadAllStudents: PropTypes.func.isRequired
 };
 
 export default ClassesContent;
