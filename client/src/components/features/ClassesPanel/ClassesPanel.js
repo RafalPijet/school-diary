@@ -19,7 +19,7 @@ import componentStyle from './ClassesPanelStyle'
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ClassesPanel = props => {
-    const {allClasses, addClass, loadTeachers, request, teachers, availableNames, getClassGrade} = props;
+    const {allClasses, addClass, loadTeachers, request, teachers, availableNames, getClassGrade, getPossibleTutors} = props;
     const [newClass, setNewClass] = useState({
         name: '',
         mainTeacher: 'unselected',
@@ -61,6 +61,7 @@ const ClassesPanel = props => {
             if (!existedTutors.includes(teacher.id)) {
                 possibleTutors = [...possibleTutors, teacher];
                 setAvailableTutors(possibleTutors);
+                getPossibleTutors(possibleTutors);
             }
         });
     };
@@ -171,7 +172,8 @@ ClassesPanel.propTypes = {
     teachers: PropTypes.array.isRequired,
     addClass: PropTypes.func.isRequired,
     availableNames: PropTypes.object.isRequired,
-    getClassGrade: PropTypes.func.isRequired
+    getClassGrade: PropTypes.func.isRequired,
+    getPossibleTutors: PropTypes.func.isRequired
 };
 
 export default ClassesPanel;

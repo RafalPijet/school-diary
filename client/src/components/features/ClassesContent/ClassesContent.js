@@ -16,13 +16,14 @@ const a11yProps = index => {
 };
 
 const ClassesContent = props => {
-    const {allClasses, classGrade, allStudents, loadAllStudents} = props;
+    const {allClasses, classGrade, allStudents, loadAllStudents, possibleTutors} = props;
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
 
     useEffect(() => {
         if (allStudents.length === 0) loadAllStudents();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleChange = (event, newValue) => {
@@ -57,6 +58,7 @@ const ClassesContent = props => {
             >
                 {allClasses.map((item, i) => {
                     return <TabPanelClass
+                        possibleTutors={possibleTutors}
                         item={item}
                         key={item.id}
                         index={i}
@@ -79,7 +81,8 @@ ClassesContent.propTypes = {
     })),
     classGrade: PropTypes.string.isRequired,
     allStudents: PropTypes.array.isRequired,
-    loadAllStudents: PropTypes.func.isRequired
+    loadAllStudents: PropTypes.func.isRequired,
+    possibleTutors: PropTypes.array.isRequired
 };
 
 export default ClassesContent;

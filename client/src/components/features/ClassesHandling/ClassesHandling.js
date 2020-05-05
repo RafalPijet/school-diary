@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 const ClassesHandling = props => {
     const {request, loadAllClasses, resetRequest, alertSuccess, setAlertSuccess} = props;
     const [classGrade, setClassGrade] = useState('none');
+    const [possibleTutors, setPossibleTutors] = useState([]);
     const classes = useStyles();
 
     useEffect(() => {
@@ -31,13 +32,17 @@ const ClassesHandling = props => {
         setClassGrade(classGrade);
     };
 
+    const getPossibleTutors = possibleTutors => {
+        setPossibleTutors(possibleTutors);
+    };
+
     return (
         <Paper variant='outlined' className={classes.root}>
             {request.pending && <Spinner/>}
             {request.success &&
             <>
-                <ClassesPanel getClassGrade={getClassGrade}/>
-                <ClassesContent classGrade={classGrade}/>
+                <ClassesPanel getPossibleTutors={getPossibleTutors} getClassGrade={getClassGrade}/>
+                <ClassesContent possibleTutors={possibleTutors} classGrade={classGrade}/>
             </>
             }
             {request.error &&
