@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TabPanelClass = props => {
-    const {item, value, index, possibleTutors, ...other} = props;
+    const {item, value, index, possibleTutors, freeStudents, ...other} = props;
 
     const classes = useStyles();
 
@@ -27,8 +27,13 @@ const TabPanelClass = props => {
             id={`full-width-tabpanel-${index}`}
             aria-labelledby={`full-width-tab-${index}`}
             {...other}
-            >
-            {value === index && <ClassContent possibleTutors={possibleTutors} classItem={item}/>}
+        >
+            {value === index &&
+            <ClassContent
+                possibleTutors={possibleTutors}
+                classItem={item}
+                freeStudents={freeStudents}
+            />}
         </Paper>
     )
 };
@@ -37,7 +42,8 @@ TabPanelClass.propTypes = {
     item: PropTypes.object.isRequired,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
-    possibleTutors: PropTypes.array.isRequired
+    possibleTutors: PropTypes.array.isRequired,
+    freeStudents: PropTypes.array.isRequired
 };
 
 export default TabPanelClass;

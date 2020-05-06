@@ -1,15 +1,19 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Typography from "@material-ui/core/Typography";
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import clsx from "clsx";
+import {makeStyles} from '@material-ui/core/styles';
+import {
+    Grid,
+    Paper,
+    List,
+    ListItem,
+    Typography,
+    ListItemIcon,
+    ListItemText,
+    Checkbox,
+    Button,
+    Zoom
+} from '@material-ui/core';
 import NavClassPanel from "../NavClassPanel/NavClassPanelContainer";
 import {style} from "../../../styles/global";
 
@@ -22,12 +26,17 @@ const useStyles = makeStyles((theme) => ({
         width: 434,
         height: 270,
         overflow: 'auto',
+        transition: '.5s'
     },
     button: {
         margin: theme.spacing(0.5, 0),
     },
     description: {
         padding: style.smallSize
+    },
+    moreWidth: {
+        width: 474,
+        transition: '.5s'
     }
 }));
 
@@ -40,17 +49,67 @@ const intersection = (a, b) => {
 };
 
 const ClassContent = props => {
-    const {classItem, allStudents, request, resetRequest, teachers, possibleTutors} = props;
+    const {classItem, allStudents, request, resetRequest, teachers, possibleTutors, freeStudents} = props;
     const [checked, setChecked] = useState([]);
     const [leftList, setLeftList] = useState(classItem.students);
-    const [rightList, setRightList] = useState(teachers);
+    const [rightList, setRightList] = useState(classItem.subjectTeachers);
     const [leftDesc, setLeftDesc] = useState('students');
     const [rightDesc, setRightDesc] = useState('class teachers');
     const [isVisible, setIsVisible] = useState(false);
+    const [isShowButtons, setIsShowButtons] = useState(false);
+    const [isStudentMode, setIsStudentMode] = useState(false);
+    const [isTeacherMode, setIsTeacherMode] = useState(false);
+    const [isTypeStudent, setIsTypeStudent] = useState(true);
+    const [isTypeTeacher, setIsTypeTeacher] = useState(false);
+    const [freeTeachers, setFreeTeachers] = useState([]);
     const classes = useStyles();
+
+    useEffect(() => {
+        prepareFreeTeachers();
+        setIsVisible(isStudentMode || isTeacherMode);
+
+        if (isVisible) {
+            setTimeout(() => setIsShowButtons(true), 500);
+        } else {
+            setIsShowButtons(false);
+        }
+
+        if (isStudentMode && !isTeacherMode) {
+            setRightList(freeStudents);
+            setLeftList(classItem.students);
+            setIsTypeTeacher(true);
+            setIsTypeStudent(true);
+            setRightDesc('available students');
+            setLeftDesc('students');
+        } else if (!isStudentMode && isTeacherMode) {
+            setRightList(freeTeachers);
+            setLeftList(classItem.subjectTeachers);
+            setIsTypeStudent(false);
+            setIsTypeTeacher(false);
+            setRightDesc('available teachers');
+            setLeftDesc('class teachers');
+        } else {
+            setRightList(classItem.subjectTeachers);
+            setLeftList(classItem.students);
+            setIsTypeTeacher(false);
+            setIsTypeStudent(true);
+            setRightDesc('class teachers');
+            setLeftDesc('students');
+        }
+    }, [isStudentMode, isTeacherMode, isVisible, isShowButtons, teachers]);
 
     const leftChecked = intersection(checked, leftList);
     const rightChecked = intersection(checked, rightList);
+
+    const prepareFreeTeachers = () => {
+        let result = [];
+        let teachersClassId = classItem.subjectTeachers.map(teacher => teacher.id);
+        teachers.forEach(item => {
+
+            if (!teachersClassId.includes(item.id)) result = [...result, item]
+        });
+        setFreeTeachers(result);
+    };
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -63,6 +122,11 @@ const ClassContent = props => {
         }
 
         setChecked(newChecked);
+    };
+
+    const getModeStatus = (isStudentMode, isTeacherMode) => {
+        setIsStudentMode(isStudentMode);
+        setIsTeacherMode(isTeacherMode);
     };
 
     const handleCheckedRight = () => {
@@ -78,7 +142,7 @@ const ClassContent = props => {
     };
 
     const customList = (items, isStudent) => (
-        <Paper className={classes.paper}>
+        <Paper className={clsx(classes.paper, !isVisible && classes.moreWidth)}>
             <List dense component="div" role="list">
                 {items.map((value, i) => {
                     const labelId = `transfer-list-item-${value}-label`;
@@ -89,63 +153,69 @@ const ClassContent = props => {
                                 id={labelId}
                                 primary={`${i + 1}. ${lastName} ${firstName} ${isStudent ? birthDate.substring(0, 10) : subject}`}
                             />
-                            <ListItemIcon>
+                            <ListItemIcon style={{justifyContent: "flex-end"}}>
                                 <Checkbox
+                                    hidden={!isShowButtons}
+                                    style={{padding: 0}}
                                     checked={checked.indexOf(value) !== -1}
                                     tabIndex={-1}
                                     disableRipple
-                                    inputProps={{ 'aria-labelledby': labelId }}
+                                    inputProps={{'aria-labelledby': labelId}}
                                 />
                             </ListItemIcon>
                         </ListItem>
                     );
                 })}
-                <ListItem />
+                <ListItem/>
             </List>
         </Paper>
     );
 
     return (
-        <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
+        <Grid container spacing={2} justify="space-between" alignItems="center" className={classes.root}>
             <Grid item>
-                {customList(leftList, true)}
+                {customList(leftList, isTypeStudent)}
                 <Typography className={classes.description} variant='subtitle2'>
                     {`${leftDesc}: ${leftList.length}`}
                 </Typography>
             </Grid>
-            <Grid item>
-                <Grid container direction="column" alignItems="center">
-                    <Button
-                        hidden={isVisible}
-                        variant="outlined"
-                        size="small"
-                        className={classes.button}
-                        onClick={handleCheckedRight}
-                        disabled={leftChecked.length === 0}
-                        aria-label="move selected right"
-                    >
-                        &gt;
-                    </Button>
-                    <Button
-                        hidden={isVisible}
-                        variant="outlined"
-                        size="small"
-                        className={classes.button}
-                        onClick={handleCheckedLeft}
-                        disabled={rightChecked.length === 0}
-                        aria-label="move selected left"
-                    >
-                        &lt;
-                    </Button>
+            <Zoom in={isShowButtons}>
+                <Grid item hidden={!isShowButtons}>
+                    <Grid container direction="column" alignItems="center">
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            className={classes.button}
+                            onClick={handleCheckedRight}
+                            disabled={leftChecked.length === 0}
+                            aria-label="move selected right"
+                        >
+                            &gt;
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            className={classes.button}
+                            onClick={handleCheckedLeft}
+                            disabled={rightChecked.length === 0}
+                            aria-label="move selected left"
+                        >
+                            &lt;
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Zoom>
             <Grid item>
-                {customList(rightList, false)}
+                {customList(rightList, isTypeTeacher)}
                 <Typography className={classes.description} variant='subtitle2'>
                     {`${rightDesc}: ${rightList.length}`}
                 </Typography>
             </Grid>
-            <NavClassPanel tutor={classItem.mainTeacher} possibleTutors={possibleTutors}/>
+            <NavClassPanel
+                tutor={classItem.mainTeacher}
+                possibleTutors={possibleTutors}
+                getModeStatus={getModeStatus}
+            />
         </Grid>
     )
 };
@@ -156,7 +226,8 @@ ClassContent.propTypes = {
     teachers: PropTypes.array.isRequired,
     resetRequest: PropTypes.func.isRequired,
     allStudents: PropTypes.array.isRequired,
-    possibleTutors: PropTypes.array.isRequired
+    possibleTutors: PropTypes.array.isRequired,
+    freeStudents: PropTypes.array.isRequired
 };
 
 export default ClassContent

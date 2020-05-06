@@ -20,11 +20,27 @@ const ClassesContent = props => {
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
+    const [freeStudents, setFreeStudents] = useState([]);
 
     useEffect(() => {
         if (allStudents.length === 0) loadAllStudents();
+        prepareFreeStudents();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [allStudents, allClasses]);
+
+    const prepareFreeStudents = () => {
+        let studentsClassId = [];
+        let result = [];
+        allClasses.forEach(item => {
+            let studentsId = item.students.map(student => student.id);
+            studentsId.forEach(id => studentsClassId.push(id));
+        });
+        allStudents.forEach(student => {
+
+            if (!studentsClassId.includes(student.id)) result.push(student)
+        });
+        setFreeStudents(result);
+     };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -58,6 +74,7 @@ const ClassesContent = props => {
             >
                 {allClasses.map((item, i) => {
                     return <TabPanelClass
+                        freeStudents={freeStudents}
                         possibleTutors={possibleTutors}
                         item={item}
                         key={item.id}

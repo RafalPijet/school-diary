@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
+import clsx from "clsx";
 import {
     Paper,
     Button,
@@ -28,10 +29,7 @@ const useStyles = makeStyles(theme => ({
     },
     buttons: {
         outline: 'none !important',
-        color: theme.palette.primary.main,
-        '&:hover': {
-            backgroundColor: theme.palette.action.dark
-        }
+        color: theme.palette.primary.main
     },
     second: {
         display: 'flex',
@@ -51,24 +49,32 @@ const useStyles = makeStyles(theme => ({
     },
     replaceButton: {
         outline: 'none !important',
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.primary.dark,
         '&:hover': {backgroundColor: theme.palette.action.dark}
     },
     tooltip: {
         backgroundColor: theme.palette.secondary.light
+    },
+    buttonsActive: {
+        backgroundColor: theme.palette.primary.dark,
+        '&:hover': {
+            backgroundColor: theme.palette.action.dark
+        }
     }
 }));
 
 const NavClassPanel = props => {
-    const {request, tutor, possibleTutors} = props;
+    const {request, tutor, possibleTutors, getModeStatus} = props;
     const classes = useStyles();
     const [newTutor, setNewTutor] = useState('unselected');
     const [isPossible, setIsPossible] = useState(false);
+    const [isStudentsMode, setIsStudentsMode] = useState(false);
+    const [isTeachersMode, setIsTeachersMode] = useState(false);
 
     useEffect(() => {
         setIsPossible(newTutor !== 'unselected');
-
-    }, [newTutor]);
+        getModeStatus(isStudentsMode, isTeachersMode);
+    }, [newTutor, isStudentsMode, isTeachersMode]);
 
     const handleNewTutor = event => {
         setNewTutor(event.target.value)
@@ -129,7 +135,7 @@ const NavClassPanel = props => {
                 </Grid>
                 <Grid item lg={2} className={classes.second}>
                     <Tooltip
-                        title='students list change mode'
+                        title={isStudentsMode ? 'OFF students list change mode' : 'ON students list change mode'}
                         classes={{tooltip: classes.tooltip}}
                         placement='right'
                         arrow
@@ -139,7 +145,11 @@ const NavClassPanel = props => {
                         <span>
                             <Button
                                 variant='outlined'
-                                className={classes.buttons}
+                                className={clsx(classes.buttons, isStudentsMode && classes.buttonsActive)}
+                                onClick={() => {
+                                    setIsStudentsMode(!isStudentsMode);
+                                    setIsTeachersMode(false);
+                                }}
                             >
                                 <SwapHorizIcon/>
                                 <SchoolIcon/>
@@ -147,7 +157,8 @@ const NavClassPanel = props => {
                         </span>
                     </Tooltip>
                     <Tooltip
-                        title='class teachers list change mode'
+                        title={isTeachersMode ? 'OFF class teachers list change mode' :
+                            'ON class teachers list change mode'}
                         classes={{tooltip: classes.tooltip}}
                         placement='right'
                         arrow
@@ -157,7 +168,11 @@ const NavClassPanel = props => {
                         <span>
                              <Button
                                  variant='outlined'
-                                 className={classes.buttons}
+                                 className={clsx(classes.buttons, isTeachersMode && classes.buttonsActive)}
+                                 onClick={() => {
+                                     setIsTeachersMode(!isTeachersMode);
+                                     setIsStudentsMode(false);
+                                 }}
                              >
                                 <SwapHorizIcon/>
                                 <SupervisedUserCircleIcon/>
@@ -178,7 +193,8 @@ const NavClassPanel = props => {
 NavClassPanel.propTypes = {
     request: PropTypes.object.isRequired,
     tutor: PropTypes.object.isRequired,
-    possibleTutors: PropTypes.array.isRequired
+    possibleTutors: PropTypes.array.isRequired,
+    getModeStatus: PropTypes.func.isRequired
 };
 
 export default NavClassPanel;

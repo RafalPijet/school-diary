@@ -10,7 +10,7 @@ const componentStyle = theme => ({
     },
     button: {
         outline: 'none !important',
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.primary.dark,
         '&:hover': {backgroundColor: theme.palette.action.dark}
     },
     input: {
