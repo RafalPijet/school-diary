@@ -13,7 +13,9 @@ import {
     Grid,
     IconButton,
     Tooltip,
-    Fade
+    Fade,
+    TextField,
+    Zoom
 } from "@material-ui/core";
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
@@ -60,16 +62,21 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             backgroundColor: theme.palette.action.dark
         }
+    },
+    searchField: {
+        padding: '5px'
     }
 }));
 
 const NavClassPanel = props => {
-    const {request, tutor, possibleTutors, getModeStatus} = props;
+    const {request, tutor, possibleTutors, getModeStatus, subjects, getSelectedSubject, getFilteredStudents} = props;
     const classes = useStyles();
     const [newTutor, setNewTutor] = useState('unselected');
     const [isPossible, setIsPossible] = useState(false);
     const [isStudentsMode, setIsStudentsMode] = useState(false);
     const [isTeachersMode, setIsTeachersMode] = useState(false);
+    const [selectedSubject, setSelectedSubject] = useState('all');
+    const [filteredStudents, setFilteredStudents] = useState('');
 
     useEffect(() => {
         setIsPossible(newTutor !== 'unselected');
@@ -78,6 +85,16 @@ const NavClassPanel = props => {
 
     const handleNewTutor = event => {
         setNewTutor(event.target.value)
+    };
+
+    const handleSelectedSubject = event => {
+        setSelectedSubject(event.target.value);
+        getSelectedSubject(event.target.value);
+    };
+
+    const handleFilteredStudents = event => {
+        setFilteredStudents(event.target.value);
+        getFilteredStudents(event.target.value);
     };
 
     const replaceTutorHandling = () => {
@@ -137,7 +154,7 @@ const NavClassPanel = props => {
                     <Tooltip
                         title={isStudentsMode ? 'OFF students list change mode' : 'ON students list change mode'}
                         classes={{tooltip: classes.tooltip}}
-                        placement='right'
+                        placement='left'
                         arrow
                         TransitionComponent={Fade}
                         enterDelay={1000}
@@ -149,6 +166,7 @@ const NavClassPanel = props => {
                                 onClick={() => {
                                     setIsStudentsMode(!isStudentsMode);
                                     setIsTeachersMode(false);
+                                    setFilteredStudents('');
                                 }}
                             >
                                 <SwapHorizIcon/>
@@ -160,7 +178,7 @@ const NavClassPanel = props => {
                         title={isTeachersMode ? 'OFF class teachers list change mode' :
                             'ON class teachers list change mode'}
                         classes={{tooltip: classes.tooltip}}
-                        placement='right'
+                        placement='left'
                         arrow
                         TransitionComponent={Fade}
                         enterDelay={1000}
@@ -172,6 +190,7 @@ const NavClassPanel = props => {
                                  onClick={() => {
                                      setIsTeachersMode(!isTeachersMode);
                                      setIsStudentsMode(false);
+                                     setSelectedSubject('all');
                                  }}
                              >
                                 <SwapHorizIcon/>
@@ -181,11 +200,58 @@ const NavClassPanel = props => {
                     </Tooltip>
                 </Grid>
                 <Grid item lg={5}>
-
+                    <Grid container>
+                        <Grid item lg={9} component='span'>
+                            <Zoom in={isStudentsMode}>
+                                <TextField
+                                    hidden={!isStudentsMode}
+                                    size='small'
+                                    label='search student'
+                                    type='search'
+                                    id='search-student'
+                                    variant='outlined'
+                                    value={filteredStudents}
+                                    onChange={handleFilteredStudents}
+                                />
+                            </Zoom>
+                            <Zoom in={isTeachersMode}>
+                                <FormControl className={classes.selectInput} hidden={!isTeachersMode}>
+                                    <InputLabel id='select-subject'>
+                                        sort by subject
+                                    </InputLabel>
+                                    <Select
+                                        labelId='select-subject'
+                                        value={selectedSubject}
+                                        onChange={handleSelectedSubject}
+                                    >
+                                        <MenuItem value='all'>all</MenuItem>
+                                        {subjects.map((subject, i) => {
+                                            return <MenuItem key={i} value={subject}>{subject}</MenuItem>
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            </Zoom>
+                        </Grid>
+                        <Grid item lg={3} component='span' style={{display: 'flex', justifyContent: 'center'}}>
+                            <Tooltip
+                                title='Confirm new list content'
+                                classes={{tooltip: classes.tooltip}}
+                                placement='top-end'
+                                arrow
+                                TransitionComponent={Fade}
+                                enterDelay={1000}
+                            >
+                            <span>
+                                <IconButton
+                                >
+                                    <DoneIcon/>
+                                </IconButton>
+                            </span>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
-
-
         </Paper>
     )
 };
@@ -194,7 +260,10 @@ NavClassPanel.propTypes = {
     request: PropTypes.object.isRequired,
     tutor: PropTypes.object.isRequired,
     possibleTutors: PropTypes.array.isRequired,
-    getModeStatus: PropTypes.func.isRequired
+    getModeStatus: PropTypes.func.isRequired,
+    subjects: PropTypes.array.isRequired,
+    getSelectedSubject: PropTypes.func.isRequired,
+    getFilteredStudents: PropTypes.func.isRequired
 };
 
 export default NavClassPanel;

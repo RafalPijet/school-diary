@@ -49,7 +49,16 @@ const intersection = (a, b) => {
 };
 
 const ClassContent = props => {
-    const {classItem, allStudents, request, resetRequest, teachers, possibleTutors, freeStudents} = props;
+    const {
+        classItem,
+        allStudents,
+        request,
+        resetRequest,
+        teachers,
+        possibleTutors,
+        freeStudents,
+        availableSubjects
+    } = props;
     const [checked, setChecked] = useState([]);
     const [leftList, setLeftList] = useState(classItem.students);
     const [rightList, setRightList] = useState(classItem.subjectTeachers);
@@ -62,6 +71,7 @@ const ClassContent = props => {
     const [isTypeStudent, setIsTypeStudent] = useState(true);
     const [isTypeTeacher, setIsTypeTeacher] = useState(false);
     const [freeTeachers, setFreeTeachers] = useState([]);
+    const [subjects,] = useState(availableSubjects[`class${classItem.name.substring(6, 7)}`]);
     const classes = useStyles();
 
     useEffect(() => {
@@ -100,6 +110,16 @@ const ClassContent = props => {
 
     const leftChecked = intersection(checked, leftList);
     const rightChecked = intersection(checked, rightList);
+
+    const setSelectedSubject = subject => {
+        subject !== 'all' ?
+            setRightList(freeTeachers.filter(item => item.subject === subject)) : setRightList(freeTeachers);
+    };
+
+    const setFilteredStudents = data => {
+        setRightList(freeStudents.filter(item => (item.lastName.toLowerCase().includes(data.toLowerCase()) ||
+            item.firstName.toLowerCase().includes(data.toLowerCase()))));
+    };
 
     const prepareFreeTeachers = () => {
         let result = [];
@@ -215,6 +235,9 @@ const ClassContent = props => {
                 tutor={classItem.mainTeacher}
                 possibleTutors={possibleTutors}
                 getModeStatus={getModeStatus}
+                subjects={subjects}
+                getSelectedSubject={setSelectedSubject}
+                getFilteredStudents={setFilteredStudents}
             />
         </Grid>
     )
@@ -227,7 +250,8 @@ ClassContent.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     allStudents: PropTypes.array.isRequired,
     possibleTutors: PropTypes.array.isRequired,
-    freeStudents: PropTypes.array.isRequired
+    freeStudents: PropTypes.array.isRequired,
+    availableSubjects: PropTypes.object.isRequired
 };
 
 export default ClassContent
