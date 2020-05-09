@@ -69,7 +69,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavClassPanel = props => {
-    const {request, tutor, possibleTutors, getModeStatus, subjects, getSelectedSubject, getFilteredStudents} = props;
+    const {
+        request,
+        tutor,
+        possibleTutors,
+        getModeStatus, subjects,
+        getSelectedSubject,
+        getFilteredStudents,
+        isChanging
+    } = props;
     const classes = useStyles();
     const [newTutor, setNewTutor] = useState('unselected');
     const [isPossible, setIsPossible] = useState(false);
@@ -243,6 +251,8 @@ const NavClassPanel = props => {
                             >
                             <span>
                                 <IconButton
+                                    disabled={!isChanging}
+                                    className={classes.buttonsActive}
                                 >
                                     <DoneIcon/>
                                 </IconButton>
@@ -263,7 +273,8 @@ NavClassPanel.propTypes = {
     getModeStatus: PropTypes.func.isRequired,
     subjects: PropTypes.array.isRequired,
     getSelectedSubject: PropTypes.func.isRequired,
-    getFilteredStudents: PropTypes.func.isRequired
+    getFilteredStudents: PropTypes.func.isRequired,
+    isChanging: PropTypes.bool.isRequired
 };
 
 export default NavClassPanel;

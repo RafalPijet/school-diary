@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     moreWidth: {
         width: 474,
         transition: '.5s'
+    },
+    duplicate: {
+        color: '#ff3838'
     }
 }));
 
@@ -72,7 +75,11 @@ const ClassContent = props => {
     const [isTypeTeacher, setIsTypeTeacher] = useState(false);
     const [freeTeachers, setFreeTeachers] = useState([]);
     const [subjects,] = useState(availableSubjects[`class${classItem.name.substring(6, 7)}`]);
+    const [isChanging, setIsChanging] = useState(false);
+    const [subjectDuplicates, setSubjectDuplicates] = useState([]);
     const classes = useStyles();
+
+    let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) !== index);
 
     useEffect(() => {
         prepareFreeTeachers();
@@ -107,6 +114,34 @@ const ClassContent = props => {
             setLeftDesc('students');
         }
     }, [isStudentMode, isTeacherMode, isVisible, isShowButtons, teachers]);
+
+    useEffect(() => {
+
+        if (isStudentMode || isTeacherMode) {
+            let first = isStudentMode ? classItem.students.map(student => student.id) :
+                classItem.subjectTeachers.map(teacher => teacher.id);
+            let second = leftList.map(item => item.id);
+            let result = first.length !== second.length;
+
+            if (first.length === second.length) {
+                let counter = 0;
+                first.forEach(item => {
+
+                    if (second.includes(item)) counter++;
+                });
+                result = (counter !== first.length);
+            }
+            setIsChanging(result);
+        } else {
+            setIsChanging(false);
+        }
+
+        if (isTeacherMode) {
+            let subjects = leftList.map(item => item.subject);
+            setSubjectDuplicates(findDuplicates(subjects));
+            if (findDuplicates(subjects).length > 0) setIsChanging(false);
+        }
+    }, [leftList]);
 
     const leftChecked = intersection(checked, leftList);
     const rightChecked = intersection(checked, rightList);
@@ -161,6 +196,30 @@ const ClassContent = props => {
         setChecked(not(checked, rightChecked));
     };
 
+    const rowItem = (i, value, isStudent, duplicates) => {
+        const {lastName, firstName, birthDate, subject} = value;
+
+        return (
+            <span>
+                <Typography display='inline' component='p' color='textSecondary'>{`${i + 1}. `}</Typography>
+                <Typography display='inline' variant='h6' color='textPrimary'>{`${lastName} ${firstName}`}</Typography>
+                {isStudent ?
+                    <Typography display='inline' component='p' color='textSecondary'>
+                        {` d.o.b.: ${birthDate.substring(0, 10)}`}
+                    </Typography> :
+                    <Typography
+                        display='inline'
+                        component='p'
+                        color='textSecondary'
+                        className={duplicates.includes(subject) ? classes.duplicate : ''}
+                    >
+                        {` - ${subject}`}
+                    </Typography>
+                }
+            </span>
+        )
+    };
+
     const customList = (items, isStudent) => (
         <Paper className={clsx(classes.paper, !isVisible && classes.moreWidth)}>
             <List dense component="div" role="list">
@@ -171,7 +230,9 @@ const ClassContent = props => {
                         <ListItem key={id} role="listitem" button onClick={handleToggle(value)}>
                             <ListItemText
                                 id={labelId}
-                                primary={`${i + 1}. ${lastName} ${firstName} ${isStudent ? birthDate.substring(0, 10) : subject}`}
+                                style={{margin: 0}}
+                                // primary={`${i + 1}. ${lastName} ${firstName} ${isStudent ? birthDate.substring(0, 10) : subject}`}
+                                primary={rowItem(i, value, isStudent, subjectDuplicates)}
                             />
                             <ListItemIcon style={{justifyContent: "flex-end"}}>
                                 <Checkbox
@@ -238,6 +299,7 @@ const ClassContent = props => {
                 subjects={subjects}
                 getSelectedSubject={setSelectedSubject}
                 getFilteredStudents={setFilteredStudents}
+                isChanging={isChanging}
             />
         </Grid>
     )
