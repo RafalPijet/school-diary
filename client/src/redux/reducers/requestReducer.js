@@ -6,7 +6,9 @@ import {
     START_ADDING_REQUEST,
     STOP_ADDING_REQUEST,
     START_WORKING_REQUEST,
-    STOP_WORKING_REQUEST
+    STOP_WORKING_REQUEST,
+    START_UPDATING_REQUEST,
+    STOP_UPDATING_REQUEST
 } from "../actions/requestActions";
 
 const initialState = {
@@ -14,7 +16,8 @@ const initialState = {
     error: null,
     success: null,
     adding: false,
-    working: false
+    working: false,
+    updating: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -35,6 +38,10 @@ const reducer = (state = initialState, action) => {
             return {...state, pending: false, error: null, success: null, adding: false, working: true};
         case STOP_WORKING_REQUEST:
             return {...state, pending: false, error: null, success: true, adding: false, working: false};
+        case START_UPDATING_REQUEST:
+            return {...state, updating: true};
+        case STOP_UPDATING_REQUEST:
+            return {...state, updating: false};
         default:
             return state
 

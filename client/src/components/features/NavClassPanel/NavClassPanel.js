@@ -21,7 +21,6 @@ import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import SchoolIcon from '@material-ui/icons/School';
 import DoneIcon from '@material-ui/icons/Done';
-import {style} from "../../../styles/global";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -46,6 +45,11 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-around',
         alignItems: 'center'
     },
+    descTutor: {
+        width: '100%',
+        display: 'inline-flex',
+        justifyContent: 'center',
+    },
     selectInput: {
         width: '250px'
     },
@@ -65,18 +69,23 @@ const useStyles = makeStyles(theme => ({
     },
     searchField: {
         padding: '5px'
+    },
+    progress: {
+        cursor: 'progress !important'
     }
 }));
 
 const NavClassPanel = props => {
     const {
         request,
+        classId,
         tutor,
         possibleTutors,
         getModeStatus, subjects,
         getSelectedSubject,
         getFilteredStudents,
-        isChanging
+        isChanging,
+        updateTutor
     } = props;
     const classes = useStyles();
     const [newTutor, setNewTutor] = useState('unselected');
@@ -87,7 +96,7 @@ const NavClassPanel = props => {
     const [filteredStudents, setFilteredStudents] = useState('');
 
     useEffect(() => {
-        setIsPossible(newTutor !== 'unselected');
+        setIsPossible(newTutor !== 'unselected' && !isStudentsMode && !isTeachersMode);
         getModeStatus(isStudentsMode, isTeachersMode);
     }, [newTutor, isStudentsMode, isTeachersMode]);
 
@@ -106,18 +115,32 @@ const NavClassPanel = props => {
     };
 
     const replaceTutorHandling = () => {
-        console.log('replace');
+
+        if (newTutor !== 'unselected') {
+            updateTutor({id: classId, mainTeacher: newTutor});
+            setNewTutor('unselected');
+        }
     };
 
     return (
         <Paper variant='outlined' className={classes.root}>
             <Grid container justify='space-between' alignItems='center'>
                 <Grid item lg={5}>
-                    <Typography variant='subtitle1' align='center'>
-                        {`tutor: ${tutor.lastName} ${tutor.firstName}`}
-                    </Typography>
+                    <div className={classes.descTutor}>
+                        <Typography display='inline' component='p' color='textSecondary'>
+                            tutor:
+                        </Typography>
+                        <Typography
+                            display='inline'
+                            component='p'
+                            color='textPrimary'
+                            style={{paddingLeft: '10px', fontWeight: 700}}
+                        >
+                            {` ${tutor.lastName} ${tutor.firstName}`}
+                        </Typography>
+                    </div>
                     <div className={classes.selectTutor}>
-                        <FormControl className={classes.selectInput}>
+                        <FormControl disabled={isTeachersMode || isStudentsMode} className={classes.selectInput}>
                             <InputLabel id='replace-tutor'>
                                 replace tutor
                             </InputLabel>
@@ -144,10 +167,10 @@ const NavClassPanel = props => {
                             TransitionComponent={Fade}
                             enterDelay={1000}
                         >
-                            <span>
+                            <span className={request.updating ? classes.progress : ''}>
                                 <IconButton
                                     size='small'
-                                    disabled={!isPossible}
+                                    disabled={!isPossible || request.updating}
                                     className={classes.replaceButton}
                                     onClick={replaceTutorHandling}
                                 >
@@ -274,7 +297,9 @@ NavClassPanel.propTypes = {
     subjects: PropTypes.array.isRequired,
     getSelectedSubject: PropTypes.func.isRequired,
     getFilteredStudents: PropTypes.func.isRequired,
-    isChanging: PropTypes.bool.isRequired
+    isChanging: PropTypes.bool.isRequired,
+    classId: PropTypes.string.isRequired,
+    updateTutor: PropTypes.func.isRequired
 };
 
 export default NavClassPanel;

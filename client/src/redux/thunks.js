@@ -17,7 +17,9 @@ import {
     startAddingRequest,
     stopAddingRequest,
     startWorkingRequest,
-    stopWorkingRequest
+    stopWorkingRequest,
+    startUpdatingRequest,
+    stopUpdatingRequest
 } from "./actions/requestActions";
 import {loadAllStudents, updateStudent, deleteStudent, addStudent} from "./actions/studentActions";
 import {setAlertSuccess} from "./actions/valuesActions";
@@ -124,15 +126,18 @@ export const loadAllClassByTeacherId = teacherId => {
     }
 };
 
-export const updateClassRequest = classItem => {
+export const updateTutorClassRequest = classItem => {
     return async dispatch => {
-        dispatch(startWorkingRequest());
+        dispatch(startUpdatingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.put(`${API_URL}/class`, classItem);
+            let res = await axios.put(`${API_URL}/class/tutor`, classItem);
+            dispatch(setAlertSuccess(true,
+                `${res.data.name} tutor has been changed to ${res.data.mainTeacher.lastName}
+                 ${res.data.mainTeacher.firstName}`));
             dispatch(updateClass(res.data));
-            dispatch(stopWorkingRequest());
+            dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

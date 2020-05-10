@@ -225,13 +225,12 @@ const ClassContent = props => {
             <List dense component="div" role="list">
                 {items.map((value, i) => {
                     const labelId = `transfer-list-item-${value}-label`;
-                    const {id, lastName, firstName, birthDate, subject} = value;
+
                     return (
-                        <ListItem key={id} role="listitem" button onClick={handleToggle(value)}>
+                        <ListItem key={value.id} role="listitem" button onClick={handleToggle(value)}>
                             <ListItemText
                                 id={labelId}
                                 style={{margin: 0}}
-                                // primary={`${i + 1}. ${lastName} ${firstName} ${isStudent ? birthDate.substring(0, 10) : subject}`}
                                 primary={rowItem(i, value, isStudent, subjectDuplicates)}
                             />
                             <ListItemIcon style={{justifyContent: "flex-end"}}>
@@ -293,6 +292,7 @@ const ClassContent = props => {
                 </Typography>
             </Grid>
             <NavClassPanel
+                classId={classItem.id}
                 tutor={classItem.mainTeacher}
                 possibleTutors={possibleTutors}
                 getModeStatus={getModeStatus}
