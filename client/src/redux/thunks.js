@@ -144,6 +144,27 @@ export const updateTutorClassRequest = classItem => {
     }
 };
 
+export const updateClassRequest = classItem => {
+    return async dispatch => {
+        dispatch(startUpdatingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/class`, classItem);
+            let classAfterChange = res.data;
+            dispatch(setAlertSuccess(true,
+                `${classItem.isStudents ?
+                    'Students' : 'Teachers'} list of ${classAfterChange.name} has been changed.`));
+            classItem.isStudents ? classAfterChange.students = classItem.students :
+                classAfterChange.subjectTeachers = classItem.subjectTeachers;
+            dispatch(updateClass(classAfterChange));
+            dispatch(stopUpdatingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const addRatingForStudent = (classId, dataPackage) => {
     return async dispatch => {
         dispatch(startAddingRequest());

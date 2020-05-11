@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.secondary.light
     },
     buttonsActive: {
+        outline: 'none !important',
         backgroundColor: theme.palette.primary.dark,
         '&:hover': {
             backgroundColor: theme.palette.action.dark
@@ -85,7 +86,9 @@ const NavClassPanel = props => {
         getSelectedSubject,
         getFilteredStudents,
         isChanging,
-        updateTutor
+        updateTutor,
+        confirmUpdate,
+        getIsTutor
     } = props;
     const classes = useStyles();
     const [newTutor, setNewTutor] = useState('unselected');
@@ -98,7 +101,13 @@ const NavClassPanel = props => {
     useEffect(() => {
         setIsPossible(newTutor !== 'unselected' && !isStudentsMode && !isTeachersMode);
         getModeStatus(isStudentsMode, isTeachersMode);
-    }, [newTutor, isStudentsMode, isTeachersMode]);
+
+        if (request.updating) {
+            setIsStudentsMode(false);
+            setIsTeachersMode(false);
+            setIsPossible(false);
+        }
+    }, [newTutor, isStudentsMode, isTeachersMode, request.updating]);
 
     const handleNewTutor = event => {
         setNewTutor(event.target.value)
@@ -119,6 +128,7 @@ const NavClassPanel = props => {
         if (newTutor !== 'unselected') {
             updateTutor({id: classId, mainTeacher: newTutor});
             setNewTutor('unselected');
+            getIsTutor(true)
         }
     };
 
@@ -140,7 +150,10 @@ const NavClassPanel = props => {
                         </Typography>
                     </div>
                     <div className={classes.selectTutor}>
-                        <FormControl disabled={isTeachersMode || isStudentsMode} className={classes.selectInput}>
+                        <FormControl
+                            disabled={isTeachersMode || isStudentsMode || request.updating}
+                            className={classes.selectInput}
+                        >
                             <InputLabel id='replace-tutor'>
                                 replace tutor
                             </InputLabel>
@@ -190,9 +203,10 @@ const NavClassPanel = props => {
                         TransitionComponent={Fade}
                         enterDelay={1000}
                     >
-                        <span>
+                        <span className={request.updating ? classes.progress : ''}>
                             <Button
                                 variant='outlined'
+                                disabled={request.updating}
                                 className={clsx(classes.buttons, isStudentsMode && classes.buttonsActive)}
                                 onClick={() => {
                                     setIsStudentsMode(!isStudentsMode);
@@ -214,9 +228,10 @@ const NavClassPanel = props => {
                         TransitionComponent={Fade}
                         enterDelay={1000}
                     >
-                        <span>
+                        <span className={request.updating ? classes.progress : ''}>
                              <Button
                                  variant='outlined'
+                                 disabled={request.updating}
                                  className={clsx(classes.buttons, isTeachersMode && classes.buttonsActive)}
                                  onClick={() => {
                                      setIsTeachersMode(!isTeachersMode);
@@ -272,10 +287,11 @@ const NavClassPanel = props => {
                                 TransitionComponent={Fade}
                                 enterDelay={1000}
                             >
-                            <span>
+                            <span className={request.updating ? classes.progress : ''}>
                                 <IconButton
                                     disabled={!isChanging}
                                     className={classes.buttonsActive}
+                                    onClick={confirmUpdate}
                                 >
                                     <DoneIcon/>
                                 </IconButton>
@@ -299,7 +315,9 @@ NavClassPanel.propTypes = {
     getFilteredStudents: PropTypes.func.isRequired,
     isChanging: PropTypes.bool.isRequired,
     classId: PropTypes.string.isRequired,
-    updateTutor: PropTypes.func.isRequired
+    updateTutor: PropTypes.func.isRequired,
+    confirmUpdate: PropTypes.func.isRequired,
+    getIsTutor: PropTypes.func.isRequired
 };
 
 export default NavClassPanel;

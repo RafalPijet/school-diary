@@ -73,3 +73,16 @@ exports.updateTutorClass = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.updateClass = async (req, res) => {
+
+    try {
+        let {id, isStudents, students, subjectTeachers} = req.body;
+        let selectedClass = await Class.findOne({id});
+        await isStudents ? selectedClass.students = students :
+            selectedClass.subjectTeachers = subjectTeachers;
+        res.status(200).json(await selectedClass.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

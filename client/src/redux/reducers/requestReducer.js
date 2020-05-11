@@ -29,7 +29,7 @@ const reducer = (state = initialState, action) => {
         case ERROR_REQUEST:
             return {...state, pending: false, error: action.error, success: false, adding: false, working: false};
         case RESET_REQUEST:
-            return {...state, pending: false, error: null, success: null, adding: false, working: false};
+            return {...state, pending: false, error: null, success: null, adding: false, working: false, updating: false};
         case START_ADDING_REQUEST:
             return {...state, pending: false, error: null, success: true, adding: true, working: false};
         case STOP_ADDING_REQUEST:

@@ -14,6 +14,7 @@ import {
     Button,
     Zoom
 } from '@material-ui/core';
+import Spinner from "../../common/Spinner/Spinner";
 import NavClassPanel from "../NavClassPanel/NavClassPanelContainer";
 import {style} from "../../../styles/global";
 
@@ -40,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
     },
     duplicate: {
         color: '#ff3838'
+    },
+    spinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 }));
 
@@ -60,7 +66,8 @@ const ClassContent = props => {
         teachers,
         possibleTutors,
         freeStudents,
-        availableSubjects
+        availableSubjects,
+        updateClass
     } = props;
     const [checked, setChecked] = useState([]);
     const [leftList, setLeftList] = useState(classItem.students);
@@ -77,6 +84,7 @@ const ClassContent = props => {
     const [subjects,] = useState(availableSubjects[`class${classItem.name.substring(6, 7)}`]);
     const [isChanging, setIsChanging] = useState(false);
     const [subjectDuplicates, setSubjectDuplicates] = useState([]);
+    const [isTutor, setIsTutor] = useState(false);
     const classes = useStyles();
 
     let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) !== index);
@@ -98,6 +106,7 @@ const ClassContent = props => {
             setIsTypeStudent(true);
             setRightDesc('available students');
             setLeftDesc('students');
+            setIsTutor(false);
         } else if (!isStudentMode && isTeacherMode) {
             setRightList(freeTeachers);
             setLeftList(classItem.subjectTeachers);
@@ -105,6 +114,7 @@ const ClassContent = props => {
             setIsTypeTeacher(false);
             setRightDesc('available teachers');
             setLeftDesc('class teachers');
+            setIsTutor(false);
         } else {
             setRightList(classItem.subjectTeachers);
             setLeftList(classItem.students);
@@ -113,7 +123,7 @@ const ClassContent = props => {
             setRightDesc('class teachers');
             setLeftDesc('students');
         }
-    }, [isStudentMode, isTeacherMode, isVisible, isShowButtons, teachers]);
+    }, [isStudentMode, isTeacherMode, isVisible, isShowButtons, teachers, classItem.students]);
 
     useEffect(() => {
 
@@ -145,6 +155,14 @@ const ClassContent = props => {
 
     const leftChecked = intersection(checked, leftList);
     const rightChecked = intersection(checked, rightList);
+
+    const confirmUpdate = () => {
+        updateClass({
+            id: classItem.id,
+            isStudents: isStudentMode,
+            [isStudentMode ? 'students' : 'subjectTeachers']: leftList
+        });
+    };
 
     const setSelectedSubject = subject => {
         subject !== 'all' ?
@@ -221,33 +239,36 @@ const ClassContent = props => {
     };
 
     const customList = (items, isStudent) => (
-        <Paper className={clsx(classes.paper, !isVisible && classes.moreWidth)}>
-            <List dense component="div" role="list">
-                {items.map((value, i) => {
-                    const labelId = `transfer-list-item-${value}-label`;
+        <Paper
+            className={clsx(classes.paper, !isVisible && classes.moreWidth, request.updating && !isTutor && classes.spinner)}>
+            {request.updating && !isTutor ? <Spinner/> :
+                <List dense component="div" role="list">
+                    {items.map((value, i) => {
+                        const labelId = `transfer-list-item-${value}-label`;
 
-                    return (
-                        <ListItem key={value.id} role="listitem" button onClick={handleToggle(value)}>
-                            <ListItemText
-                                id={labelId}
-                                style={{margin: 0}}
-                                primary={rowItem(i, value, isStudent, subjectDuplicates)}
-                            />
-                            <ListItemIcon style={{justifyContent: "flex-end"}}>
-                                <Checkbox
-                                    hidden={!isShowButtons}
-                                    style={{padding: 0}}
-                                    checked={checked.indexOf(value) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{'aria-labelledby': labelId}}
+                        return (
+                            <ListItem key={value.id} role="listitem" button onClick={handleToggle(value)}>
+                                <ListItemText
+                                    id={labelId}
+                                    style={{margin: 0}}
+                                    primary={rowItem(i, value, isStudent, subjectDuplicates)}
                                 />
-                            </ListItemIcon>
-                        </ListItem>
-                    );
-                })}
-                <ListItem/>
-            </List>
+                                <ListItemIcon style={{justifyContent: "flex-end"}}>
+                                    <Checkbox
+                                        hidden={!isShowButtons}
+                                        style={{padding: 0}}
+                                        checked={checked.indexOf(value) !== -1}
+                                        tabIndex={-1}
+                                        disableRipple
+                                        inputProps={{'aria-labelledby': labelId}}
+                                    />
+                                </ListItemIcon>
+                            </ListItem>
+                        );
+                    })}
+                    <ListItem/>
+                </List>
+            }
         </Paper>
     );
 
@@ -300,6 +321,8 @@ const ClassContent = props => {
                 getSelectedSubject={setSelectedSubject}
                 getFilteredStudents={setFilteredStudents}
                 isChanging={isChanging}
+                confirmUpdate={confirmUpdate}
+                getIsTutor={isTutor => setIsTutor(isTutor)}
             />
         </Grid>
     )
@@ -313,7 +336,8 @@ ClassContent.propTypes = {
     allStudents: PropTypes.array.isRequired,
     possibleTutors: PropTypes.array.isRequired,
     freeStudents: PropTypes.array.isRequired,
-    availableSubjects: PropTypes.object.isRequired
+    availableSubjects: PropTypes.object.isRequired,
+    updateClass: PropTypes.func.isRequired
 };
 
 export default ClassContent
