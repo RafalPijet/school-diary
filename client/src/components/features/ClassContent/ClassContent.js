@@ -16,38 +16,10 @@ import {
 } from '@material-ui/core';
 import Spinner from "../../common/Spinner/Spinner";
 import NavClassPanel from "../NavClassPanel/NavClassPanelContainer";
-import {style} from "../../../styles/global";
+import componentStyle from "./ClassContentStyle";
+import {sortByLastnameFromAToZ} from "../../../utilities/functions";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        margin: 'auto',
-    },
-    paper: {
-        width: 434,
-        height: 270,
-        overflow: 'auto',
-        transition: '.5s'
-    },
-    button: {
-        margin: theme.spacing(0.5, 0),
-    },
-    description: {
-        padding: style.smallSize
-    },
-    moreWidth: {
-        width: 474,
-        transition: '.5s'
-    },
-    duplicate: {
-        color: '#ff3838'
-    },
-    spinner: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const not = (a, b) => {
     return a.filter(value => b.indexOf(value) === -1);
@@ -60,9 +32,7 @@ const intersection = (a, b) => {
 const ClassContent = props => {
     const {
         classItem,
-        allStudents,
         request,
-        resetRequest,
         teachers,
         possibleTutors,
         freeStudents,
@@ -123,6 +93,7 @@ const ClassContent = props => {
             setRightDesc('class teachers');
             setLeftDesc('students');
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isStudentMode, isTeacherMode, isVisible, isShowButtons, teachers, classItem.students]);
 
     useEffect(() => {
@@ -151,6 +122,7 @@ const ClassContent = props => {
             setSubjectDuplicates(findDuplicates(subjects));
             if (findDuplicates(subjects).length > 0) setIsChanging(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leftList]);
 
     const leftChecked = intersection(checked, leftList);
@@ -218,7 +190,7 @@ const ClassContent = props => {
         const {lastName, firstName, birthDate, subject} = value;
 
         return (
-            <span>
+            <span style={{whiteSpace: 'nowrap'}}>
                 <Typography display='inline' component='p' color='textSecondary'>{`${i + 1}. `}</Typography>
                 <Typography display='inline' variant='h6' color='textPrimary'>{`${lastName} ${firstName}`}</Typography>
                 {isStudent ?
@@ -275,7 +247,7 @@ const ClassContent = props => {
     return (
         <Grid container spacing={2} justify="space-between" alignItems="center" className={classes.root}>
             <Grid item>
-                {customList(leftList, isTypeStudent)}
+                {customList(leftList.sort(sortByLastnameFromAToZ), isTypeStudent)}
                 <Typography className={classes.description} variant='subtitle2'>
                     {`${leftDesc}: ${leftList.length}`}
                 </Typography>
@@ -307,7 +279,7 @@ const ClassContent = props => {
                 </Grid>
             </Zoom>
             <Grid item>
-                {customList(rightList, isTypeTeacher)}
+                {customList(rightList.sort(sortByLastnameFromAToZ), isTypeTeacher)}
                 <Typography className={classes.description} variant='subtitle2'>
                     {`${rightDesc}: ${rightList.length}`}
                 </Typography>
@@ -332,8 +304,6 @@ ClassContent.propTypes = {
     classItem: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
     teachers: PropTypes.array.isRequired,
-    resetRequest: PropTypes.func.isRequired,
-    allStudents: PropTypes.array.isRequired,
     possibleTutors: PropTypes.array.isRequired,
     freeStudents: PropTypes.array.isRequired,
     availableSubjects: PropTypes.object.isRequired,

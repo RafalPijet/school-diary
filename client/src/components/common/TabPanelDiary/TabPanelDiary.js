@@ -1,6 +1,6 @@
 import React from "react";
 import {Paper} from "@material-ui/core";
-import DiaryList from "../../features/DiaryList/DiaryList";
+import DiaryList from "../../features/DiaryList/DiaryListContainer";
 import PropTypes from "prop-types";
 import {makeStyles} from "@material-ui/core/styles";
 

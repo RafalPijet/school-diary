@@ -36,6 +36,18 @@ exports.updateStudent = async (req, res) => {
     }
 };
 
+exports.addSubjectToStudent = async (req, res) => {
+
+    try {
+        const {id, rating} = req.body;
+        let student = await Student.findOne({id});
+        student.ratings = [...student.ratings, rating];
+        res.status(200).json(await student.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.deleteStudent = async (req, res) => {
 
     try {

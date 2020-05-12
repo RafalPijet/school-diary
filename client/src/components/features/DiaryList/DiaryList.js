@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
 import componentStyle from "./DiaryListStyle";
@@ -18,8 +18,33 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 
 const DiaryList = props => {
     const {students} = props.selectedClass;
-    const {teacher, selectedClass} = props;
+    const {teacher, selectedClass, request, addSubjectRating} = props;
     const classes = useStyles();
+
+    useEffect(() => {
+        prepareSubjectRating();
+    }, []);
+
+    const prepareSubjectRating = () => {
+
+        if (students.length) {
+            students.forEach(student => {
+
+                if (student.ratings.length) {
+                    let ratingsSubject = student.ratings.map(rating => rating.subject);
+
+                    if (!ratingsSubject.includes(teacher.subject)) {
+                        addSubjectRating(student, teacher.subject);
+                        console.log(`${student.firstName} ${student.lastName} --> ${teacher.subject}`)
+                    }
+                } else {
+                    addSubjectRating(student, teacher.subject);
+                    console.log('Nothing');
+                    console.log(`${student.firstName} ${student.lastName} --> ${teacher.subject}`)
+                }
+            })
+        }
+    };
 
     return (
         <TableContainer className={classes.root}>
@@ -56,7 +81,9 @@ const DiaryList = props => {
 
 DiaryList.propTypes = {
     selectedClass: PropTypes.object.isRequired,
-    teacher: PropTypes.object.isRequired
+    teacher: PropTypes.object.isRequired,
+    request: PropTypes.object.isRequired,
+    addSubjectRating: PropTypes.func.isRequired
 };
 
 export default DiaryList;

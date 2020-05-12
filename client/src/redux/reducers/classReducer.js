@@ -6,7 +6,8 @@ import {
     LOAD_ALL_CLASSES,
     ADD_USER_TO_CLASS,
     UPDATE_CLASS,
-    ADD_NEW_CLASS
+    ADD_NEW_CLASS,
+    UPDATE_STUDENT_IN_TEACHER_CLASS
 } from "../actions/classActions";
 
 const initialState = {
@@ -14,7 +15,7 @@ const initialState = {
     teacherAllClass: [],
     selectedClass: {},
     availableNames: {
-        grade: ['1', '2', '3', '4', '5', '6', '7', '8'],
+        grade: ['4', '5', '6', '7', '8'],
         type: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     }
 };
@@ -89,6 +90,19 @@ const reducer = (state = initialState, action) => {
         case ADD_NEW_CLASS:
             return {
                 ...state, allClasses: [...state.allClasses, action.newClass]
+            };
+        case UPDATE_STUDENT_IN_TEACHER_CLASS:
+            return {
+                ...state, teacherAllClass: state.teacherAllClass.map(item => {
+                    return {...item, students: item.students.map(student => {
+
+                        if (student.id === action.student.id) {
+                            return action.student
+                        } else {
+                            return student
+                        }
+                    })}
+                })
             };
         default:
             return state;

@@ -36,3 +36,25 @@ export const prepareStudentsData = (students, classes) => {
     return studentsList;
 };
 
+export const sortByNameFromAToZ = (a, b) => {
+    let comparision = 0;
+
+    if (a.name > b.name) {
+        comparision = 1;
+    } else if (a.name < b.name) {
+        comparision = -1;
+    }
+    return comparision
+};
+
+export const sortByLastnameFromAToZ = (a, b) => {
+    let comparision = 0;
+
+    if (a.lastName > b.lastName) {
+        comparision = 1;
+    } else if (a.lastName < b.lastName) {
+        comparision = -1;
+    }
+    return comparision
+}
+
