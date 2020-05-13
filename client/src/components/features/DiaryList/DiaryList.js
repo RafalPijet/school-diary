@@ -4,6 +4,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import componentStyle from "./DiaryListStyle";
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
+import Paper from "@material-ui/core/Paper";
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -35,47 +36,52 @@ const DiaryList = props => {
 
                     if (!ratingsSubject.includes(teacher.subject)) {
                         addSubjectRating(student, teacher.subject);
-                        console.log(`${student.firstName} ${student.lastName} --> ${teacher.subject}`)
                     }
                 } else {
                     addSubjectRating(student, teacher.subject);
-                    console.log('Nothing');
-                    console.log(`${student.firstName} ${student.lastName} --> ${teacher.subject}`)
                 }
             })
         }
     };
 
     return (
-        <TableContainer className={classes.root}>
-            <div className={classes.classInfo}>
-                <Typography className={classes.tutor}>{'tutor: '}
-                    <Link href={`mailto:${selectedClass.mainTeacher.email}`} className={classes.tutorContent}>
-                        {selectedClass.mainTeacher.firstName} {selectedClass.mainTeacher.lastName}
-                    </Link>
-                </Typography>
-            </div>
-            <Table aria-label="sticky table">
-                <TableHead className={classes.header}>
-                    <TableRow>
-                        <TableCell> </TableCell>
-                        <TableCell align='left' className={clsx(classes.row, classes.student)}>Student</TableCell>
-                        <TableCell align='left' className={classes.row}>Ratings</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {students.map((student, i) => {
-                        return <DiaryRow
-                            classId={selectedClass.id}
-                            key={student.id}
-                            student={student}
-                            i={i}
-                            teacher={teacher}
-                        />
-                    })}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Paper elevation={3} className={classes.root}>
+            {request.updating ? <Typography>{`Preparing data...`}</Typography> :
+                <TableContainer className={classes.container}>
+
+                    <Table aria-label="sticky table">
+                        <TableHead className={classes.header}>
+                            <TableRow>
+                                <TableCell> </TableCell>
+                                <TableCell align='left'
+                                           className={clsx(classes.row, classes.student)}>Student</TableCell>
+                                <TableCell align='left' className={classes.row}>
+                                    Ratings
+                                    <div className={classes.classInfo}>
+                                        <Typography className={classes.tutor}>{'tutor: '}
+                                            <Link href={`mailto:${selectedClass.mainTeacher.email}`} className={classes.tutorContent}>
+                                                {selectedClass.mainTeacher.firstName} {selectedClass.mainTeacher.lastName}
+                                            </Link>
+                                        </Typography>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {students.map((student, i) => {
+                                return <DiaryRow
+                                    classId={selectedClass.id}
+                                    key={student.id}
+                                    student={student}
+                                    i={i}
+                                    teacher={teacher}
+                                />
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            }
+        </Paper>
     )
 };
 

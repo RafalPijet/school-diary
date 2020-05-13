@@ -24,15 +24,19 @@ const ClassesContent = props => {
     const [value, setValue] = useState(0);
     const [freeStudents, setFreeStudents] = useState([]);
     const [filteredClass, setFilteredClass] = useState(allClasses);
+    const [classGradeIn, setClassGradeIn] = useState('none');
 
     useEffect(() => {
 
         if (classGrade !== 'none') {
             setFilteredClass(allClasses.filter(classItem => classItem.name.includes(classGrade)));
+            setClassGradeIn(classGrade);
         } else {
-            // console.log(allClasses.sort(sortByNameFromAToZ));
             setFilteredClass(allClasses.sort(sortByNameFromAToZ));
+            setClassGradeIn(classGrade);
         }
+
+        if (classGrade !== classGradeIn) setValue(0);
 
         if (allStudents.length === 0) loadAllStudents();
         prepareFreeStudents();

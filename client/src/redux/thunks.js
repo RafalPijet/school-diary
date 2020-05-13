@@ -349,16 +349,16 @@ export const deleteStudentRequest = student => {
 
 export const addSubjectRating = (student, subject) => {
     return async dispatch => {
-        dispatch(startAddingRequest());
+        dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000000));
+            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/rating`, {studentId: student.id, subject});
             await axios.post(`${API_URL}/student/subject`, {id: student.id, rating: res.data});
             let studentAfterChange = student;
             studentAfterChange.ratings = [...studentAfterChange.ratings, res.data];
             dispatch(updateStudentInTeacherClass(studentAfterChange));
-            dispatch(stopAddingRequest());
+            dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
         }
