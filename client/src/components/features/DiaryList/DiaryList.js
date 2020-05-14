@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
 import componentStyle from "./DiaryListStyle";
 import PropTypes from 'prop-types';
@@ -48,22 +47,32 @@ const DiaryList = props => {
         <Paper elevation={3} className={classes.root}>
             {request.updating ? <Typography>{`Preparing data...`}</Typography> :
                 <TableContainer className={classes.container}>
-
-                    <Table aria-label="sticky table">
-                        <TableHead className={classes.header}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
                             <TableRow>
-                                <TableCell> </TableCell>
-                                <TableCell align='left'
-                                           className={clsx(classes.row, classes.student)}>Student</TableCell>
-                                <TableCell align='left' className={classes.row}>
-                                    Ratings
-                                    <div className={classes.classInfo}>
-                                        <Typography className={classes.tutor}>{'tutor: '}
-                                            <Link href={`mailto:${selectedClass.mainTeacher.email}`} className={classes.tutorContent}>
+                                <TableCell className={classes.classInfo}>
+                                </TableCell>
+                                <TableCell className={classes.classInfo} style={{zIndex: 0}}>
+                                    <Typography className={classes.description}
+                                                display='inline'>student</Typography>
+                                </TableCell>
+                                <TableCell className={classes.classInfo}>
+                                    <span className={classes.header}>
+                                        <Typography className={classes.description}
+                                                    display='inline'>ratings</Typography>
+                                        <Typography className={classes.description} display='inline'>
+                                            {'students: '}
+                                            <span className={classes.tutorContent}>
+                                                {selectedClass.students.length}
+                                            </span>
+                                        </Typography>
+                                        <Typography className={classes.description} display='inline'>{'tutor: '}
+                                            <Link href={`mailto:${selectedClass.mainTeacher.email}`}
+                                                className={classes.tutorContent}>
                                                 {selectedClass.mainTeacher.firstName} {selectedClass.mainTeacher.lastName}
                                             </Link>
                                         </Typography>
-                                    </div>
+                                    </span>
                                 </TableCell>
                             </TableRow>
                         </TableHead>

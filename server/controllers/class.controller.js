@@ -15,7 +15,18 @@ exports.getClassByTeacherId = async (req, res) => {
                 }
             })
         });
+        result = result.map(item => ({id: item.id, name: item.name}));
         res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.getClassById = async (req, res) => {
+
+    try {
+        let {id} = req.params;
+        res.status(200).json(await Class.findOne({id}));
     } catch (err) {
         res.status(500).json(err);
     }

@@ -7,42 +7,27 @@ const componentStyle = theme => ({
         height: '480px',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: style.baseSize
     },
     container: {
-        padding: `${style.baseSize} ${style.smallSize}`,
-        position: 'relative',
-        height: '450px',
-        marginTop: '25px'
+        padding: `0 ${style.smallSize}`,
+        height: '480px'
     },
     header: {
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        marginTop: '10px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         width: '100%',
         height: '35px',
-        backgroundColor: theme.palette.action.header,
-        zIndex: 99
-    },
-    student: {
-        paddingLeft: style.smallSize + ' !important'
-    },
-    row: {
-        fontWeight: 800,
-        color: theme.palette.primary.light,
-        padding: `${style.smallSize} ${style.baseSize}`
+        backgroundColor: theme.palette.action.header
     },
     classInfo: {
-        width: '100%',
-        display: 'inline-flex',
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-        position: 'absolute',
-        right: '6px',
-        top: '7px'
+        padding: 0,
+        height: '35px',
+        backgroundColor: theme.palette.action.header
     },
-    tutor: {
+    description: {
         fontWeight: 200,
         fontSize: style.baseSize,
         color: theme.palette.primary.light

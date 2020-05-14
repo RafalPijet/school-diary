@@ -8,6 +8,8 @@ const componentStyle = theme => ({
         justifyContent: 'center',
         height: style.contentHeight,
         width: '100%',
+    },
+    padding: {
         padding: `0 ${style.baseSize}`
     },
     subjectInfo: {

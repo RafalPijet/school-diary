@@ -13,6 +13,8 @@ export const START_WORKING_REQUEST = createActionName(reducerName, 'START_WORKIN
 export const STOP_WORKING_REQUEST = createActionName(reducerName, 'STOP_WORKING_REQUEST');
 export const START_UPDATING_REQUEST = createActionName(reducerName, 'START_UPDATING_REQUEST');
 export const STOP_UPDATING_REQUEST = createActionName(reducerName, 'STOP_UPDATING_REQUEST');
+export const START_GETING_REQUEST = createActionName(reducerName, 'START_GETING_REQUEST');
+export const STOP_GETING_REQUEST = createActionName(reducerName, 'STOP_GETING_REQUEST');
 
 // CREATORS OF ACTIONS
 export const startRequest = () => ({type: START_REQUEST});
@@ -25,6 +27,8 @@ export const startWorkingRequest = () => ({type: START_WORKING_REQUEST});
 export const stopWorkingRequest = () => ({type: STOP_WORKING_REQUEST});
 export const startUpdatingRequest = () => ({type: START_UPDATING_REQUEST});
 export const stopUpdatingRequest = () => ({type: STOP_UPDATING_REQUEST});
+export const startGetingRequest = () => ({type: START_GETING_REQUEST});
+export const stopGetingRequest = () => ({type: STOP_GETING_REQUEST});
 
 // SELECTORS
 export const getRequest = store => store.request;

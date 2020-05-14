@@ -8,7 +8,9 @@ import {
     START_WORKING_REQUEST,
     STOP_WORKING_REQUEST,
     START_UPDATING_REQUEST,
-    STOP_UPDATING_REQUEST
+    STOP_UPDATING_REQUEST,
+    START_GETING_REQUEST,
+    STOP_GETING_REQUEST
 } from "../actions/requestActions";
 
 const initialState = {
@@ -17,7 +19,8 @@ const initialState = {
     success: null,
     adding: false,
     working: false,
-    updating: false
+    updating: false,
+    geting: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -29,7 +32,9 @@ const reducer = (state = initialState, action) => {
         case ERROR_REQUEST:
             return {...state, pending: false, error: action.error, success: false, adding: false, working: false};
         case RESET_REQUEST:
-            return {...state, pending: false, error: null, success: null, adding: false, working: false, updating: false};
+            return {...state,
+                pending: false, error: null, success: null, adding: false, working: false, updating: false, geting: false
+            };
         case START_ADDING_REQUEST:
             return {...state, pending: false, error: null, success: true, adding: true, working: false};
         case STOP_ADDING_REQUEST:
@@ -42,9 +47,12 @@ const reducer = (state = initialState, action) => {
             return {...state, updating: true};
         case STOP_UPDATING_REQUEST:
             return {...state, updating: false};
+        case START_GETING_REQUEST:
+            return {...state, geting: true};
+        case STOP_GETING_REQUEST:
+            return {...state, geting: false};
         default:
             return state
-
     }
 };
 

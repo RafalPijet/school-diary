@@ -8,7 +8,8 @@ import {
     loadAllClasses,
     updateClass,
     addNewClass,
-    updateStudentInTeacherClass
+    updateStudentInTeacherClass,
+    setSelectedClass
 } from "./actions/classActions";
 import {
     startRequest,
@@ -19,7 +20,9 @@ import {
     startWorkingRequest,
     stopWorkingRequest,
     startUpdatingRequest,
-    stopUpdatingRequest
+    stopUpdatingRequest,
+    startGetingRequest,
+    stopGetingRequest
 } from "./actions/requestActions";
 import {loadAllStudents, updateStudent, deleteStudent, addStudent} from "./actions/studentActions";
 import {setAlertSuccess} from "./actions/valuesActions";
@@ -117,11 +120,26 @@ export const loadAllClassByTeacherId = teacherId => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.get(`${API_URL}/class/${teacherId}`);
+            let res = await axios.get(`${API_URL}/classes/${teacherId}`);
             dispatch(loadClassByTeacher(res.data));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
+        }
+    }
+};
+
+export const loadClassById = id => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/class/${id}`);
+            dispatch(setSelectedClass(res.data));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };

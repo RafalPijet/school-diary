@@ -1,17 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import clsx from "clsx";
 import {Paper} from "@material-ui/core";
 import {makeStyles, useTheme} from "@material-ui/core/styles";
 import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassBoxListStyle";
-import TabPanelDiary from "../../common/TabPanelDiary/TabPanelDiary";
 import Spinner from "../../common/Spinner/Spinner";
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
-import SwipeableViews from 'react-swipeable-views';
+import {Grow} from "@material-ui/core";
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import DiaryList from "../DiaryList/DiaryListContainer";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
@@ -25,37 +26,49 @@ const a11yProps = index => {
 const ClassBoxList = props => {
     const {
         loadClasses,
+        loadClassById,
         user,
         availableClasses,
         request,
         resetRequest,
         modalYesNot,
         setModalYesNot,
-        deleteRating
+        deleteRating,
+        selectedClass,
+        setSelectedClass
     } = props;
     const classes = useStyles();
-    const theme = useTheme();
     const [value, setValue] = useState(0);
     const [alertIsOpen, setAlertIsOpen] = useState(false);
+    const [isClasses, setIsClasses] = useState(false);
+    const [checked, setChecked] = useState(false);
+    const [isOpenDiary, setIsOpenDiary] = useState(false);
 
     useEffect(() => {
 
         if (request.success === null) loadClasses(user.id);
-        setAlertIsOpen(request.error !== null);
+        if (request.success && availableClasses.length && !isClasses) {
+            loadClassById(availableClasses[value].id);
+            setIsClasses(true);
+        }
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [request.error]);
+        setAlertIsOpen(request.error !== null);
+        setChecked(Object.keys(selectedClass).length > 0);
+
+        if (checked) setIsOpenDiary(true);
+
+    }, [request.error, request.success, request.geting, availableClasses.length, isClasses, selectedClass]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+
+        if (newValue !== value) {
+            setIsOpenDiary(false);
+        }
     };
 
     const handleAlert = () => {
         resetRequest();
-    };
-
-    const handleChangeIndex = (index) => {
-        setValue(index);
     };
 
     const handleModal = isTrue => {
@@ -68,7 +81,7 @@ const ClassBoxList = props => {
     };
 
     return (
-        <Paper variant='outlined' className={classes.root}>
+        <Paper variant='outlined' className={clsx(classes.root, classes.padding)}>
             {request.pending ? <Spinner/> :
                 <>
                     <div className={classes.subjectInfo}>
@@ -85,23 +98,24 @@ const ClassBoxList = props => {
                             })}
                         </Tabs>
                     </AppBar>
-                    <SwipeableViews
-                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                        index={value}
-                        onChangeIndex={handleChangeIndex}
-                        style={{width: '100%'}}
-                    >
-                        {availableClasses.map((item, i) => {
-                            return <TabPanelDiary
-                                item={item}
-                                key={item.id}
-                                teacher={user}
-                                index={i}
-                                value={value}
-                                dir={theme.direction}
-                            />
-                        })}
-                    </SwipeableViews>
+                    <Paper className={classes.root}>
+                        {request.geting && <Spinner/>}
+                        {checked &&
+                        <Grow
+                            in={isOpenDiary}
+                            timeout={500}
+                            onExited={async () => {
+                                await setIsClasses(false);
+                                await setChecked(false);
+                                // await setSelectedClass({});
+                            }}
+                        >
+                            <Paper style={{width: '100%'}}>
+                                <DiaryList selectedClass={selectedClass} teacher={user}/>
+                            </Paper>
+                        </Grow>
+                        }
+                    </Paper>
                     <Alert
                         message={request.error}
                         isOpenAlert={alertIsOpen}
@@ -121,8 +135,11 @@ const ClassBoxList = props => {
 
 ClassBoxList.propTypes = {
     availableClasses: PropTypes.array.isRequired,
+    selectedClass: PropTypes.object.isRequired,
+    setSelectedClass: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
+    loadClassById: PropTypes.func.isRequired,
     loadClasses: PropTypes.func.isRequired,
     resetRequest: PropTypes.func.isRequired,
     modalYesNot: PropTypes.object.isRequired,

@@ -27,7 +27,7 @@ const reducer = (state = initialState, action) => {
         case LOAD_ALL_CLASSES:
             return {...state, allClasses: action.allClasses};
         case SELECT_CLASS:
-            return {...state, selectedClass: action.diary};
+            return {...state, selectedClass: action.classItem};
         case ADD_RATING_TO_STUDENT:
             return {
                 ...state, teacherAllClass: state.teacherAllClass.map(classItem => {
