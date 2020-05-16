@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {setLogin, setUser, loadParents, loadTeachers} from "../../../redux/actions/usersActions";
 import {resetRequest} from "../../../redux/actions/requestActions";
-import {loadAllClasses, loadClassByTeacher} from "../../../redux/actions/classActions";
+import {loadAllClasses, loadClassByTeacher,setSelectedClass} from "../../../redux/actions/classActions";
 import {loadAllStudents} from "../../../redux/actions/studentActions";
 import {Redirect} from "react-router";
 
@@ -15,7 +15,8 @@ const Logout = props => {
         loadParents,
         loadAllClasses,
         loadClassByTeacher,
-        loadAllStudents
+        loadAllStudents,
+        setSelectedClass
     } = props;
 
     useEffect(() => {
@@ -27,6 +28,7 @@ const Logout = props => {
         loadClassByTeacher([]);
         loadAllClasses([]);
         loadAllStudents([]);
+        setSelectedClass({});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -38,6 +40,7 @@ const Logout = props => {
 const mapDispatchToProps = dispatch => ({
     setLogin: isLogin => dispatch(setLogin(isLogin)),
     setUser: user => dispatch(setUser(user)),
+    setSelectedClass: classItem => dispatch(setSelectedClass(classItem)),
     loadTeachers: teachers => dispatch(loadTeachers(teachers)),
     loadParents: parents => dispatch(loadParents(parents)),
     loadAllClasses: classes => dispatch(loadAllClasses(classes)),

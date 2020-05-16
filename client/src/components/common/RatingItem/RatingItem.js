@@ -36,11 +36,11 @@ const RatingItem = props => {
         }
 
         if (!isUpdateRating && isFrozen) {
-            setIsFrozen(false);
+            !request.working && setIsFrozen(false);
             setRatingStyle(clsx(classes.ratingNumber, classes[ratingItem.scales]))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isUpdateRating, updatedRating, updatedRating._id, ratingItem]);
+    }, [isUpdateRating, updatedRating, updatedRating._id, ratingItem, request.working]);
 
     const enterMouseHandling = () => {
         setRatingStyle(clsx(ratingStyle, classes.ratingNumberBig));

@@ -41,7 +41,7 @@ const ClassBoxList = props => {
     const [value, setValue] = useState(0);
     const [alertIsOpen, setAlertIsOpen] = useState(false);
     const [isClasses, setIsClasses] = useState(false);
-    const [checked, setChecked] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);
     const [isOpenDiary, setIsOpenDiary] = useState(false);
 
     useEffect(() => {
@@ -53,9 +53,9 @@ const ClassBoxList = props => {
         }
 
         setAlertIsOpen(request.error !== null);
-        setChecked(Object.keys(selectedClass).length > 0);
+        setIsChecked(Object.keys(selectedClass).length > 0);
 
-        if (checked) setIsOpenDiary(true);
+        if (isChecked) setIsOpenDiary(true);
 
     }, [request.error, request.success, request.geting, availableClasses.length, isClasses, selectedClass]);
 
@@ -65,6 +65,11 @@ const ClassBoxList = props => {
         if (newValue !== value) {
             setIsOpenDiary(false);
         }
+    };
+
+    const changeClass = async () => {
+        await setSelectedClass({});
+        await setIsClasses(false);
     };
 
     const handleAlert = () => {
@@ -94,21 +99,23 @@ const ClassBoxList = props => {
                             textColor="primary"
                         >
                             {availableClasses.map((item, i) => {
-                                return <Tab className={classes.tabs} key={item.id} label={item.name} {...a11yProps(i)}/>
+                                return <Tab
+                                    disabled={!isChecked || !isOpenDiary}
+                                    className={classes.tabs}
+                                    key={item.id}
+                                    label={item.name}
+                                    {...a11yProps(i)}/>
                             })}
                         </Tabs>
                     </AppBar>
                     <Paper className={classes.root}>
                         {request.geting && <Spinner/>}
-                        {checked &&
+                        {isChecked &&
                         <Grow
                             in={isOpenDiary}
                             timeout={500}
-                            onExited={async () => {
-                                await setIsClasses(false);
-                                await setChecked(false);
-                                // await setSelectedClass({});
-                            }}
+                            onExited={changeClass}
+                            unmountOnExit
                         >
                             <Paper style={{width: '100%'}}>
                                 <DiaryList selectedClass={selectedClass} teacher={user}/>

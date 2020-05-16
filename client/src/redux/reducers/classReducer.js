@@ -29,43 +29,43 @@ const reducer = (state = initialState, action) => {
         case SELECT_CLASS:
             return {...state, selectedClass: action.classItem};
         case ADD_RATING_TO_STUDENT:
-            return {
-                ...state, teacherAllClass: state.teacherAllClass.map(classItem => {
 
-                    if (classItem.id === action.classId) {
-                        classItem.students.map(student => {
+            if (state.selectedClass.id === action.classId) {
+                return {
+                    ...state, selectedClass: {
+                        ...state.selectedClass,
+                        students: state.selectedClass.students.map(student => {
                             student.ratings.forEach(rating => {
+
                                 if (rating.id === action.rating.id) {
                                     student.ratings[student.ratings.indexOf(rating)] = action.rating;
-                                    return {...classItem.students, student}
                                 }
                             });
-                            return {...classItem.students, student}
+                            return student
                         })
-                    } else {
-                        return classItem
                     }
-                    return classItem
-                })
-            };
+                };
+            }
+            break;
         case UPDATE_RATING_TO_STUDENT:
-            return {
-                ...state, teacherAllClass: state.teacherAllClass.map(classItem => {
 
-                    if (classItem.id === action.classId) {
-                        classItem.students.map(student => {
+            if (state.selectedClass.id === action.classId) {
+                return {
+                    ...state, selectedClass: {
+                        ...state.selectedClass,
+                        students: state.selectedClass.students.map(student => {
 
                             if (student.id === action.studentId) {
                                 student.ratings = student.ratings.map(rating => {
                                     return (rating.id === action.rating.id) ? action.rating : rating
                                 });
                             }
-                            return {...classItem.students, student};
+                            return student;
                         })
                     }
-                    return classItem;
-                })
-            };
+                }
+            }
+            break;
         case ADD_USER_TO_CLASS:
             return {
                 ...state, allClasses: state.allClasses.map(item => {
@@ -94,14 +94,16 @@ const reducer = (state = initialState, action) => {
         case UPDATE_STUDENT_IN_TEACHER_CLASS:
             return {
                 ...state, teacherAllClass: state.teacherAllClass.map(item => {
-                    return {...item, students: item.students.map(student => {
+                    return {
+                        ...item, students: item.students.map(student => {
 
-                        if (student.id === action.student.id) {
-                            return action.student
-                        } else {
-                            return student
-                        }
-                    })}
+                            if (student.id === action.student.id) {
+                                return action.student
+                            } else {
+                                return student
+                            }
+                        })
+                    }
                 })
             };
         default:
