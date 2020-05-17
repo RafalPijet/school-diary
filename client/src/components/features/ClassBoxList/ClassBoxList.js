@@ -2,12 +2,12 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import clsx from "clsx";
 import {Paper} from "@material-ui/core";
-import {makeStyles, useTheme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassBoxListStyle";
 import Spinner from "../../common/Spinner/Spinner";
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
-import {Grow} from "@material-ui/core";
+import {Zoom} from "@material-ui/core";
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -55,7 +55,9 @@ const ClassBoxList = props => {
         setAlertIsOpen(request.error !== null);
         setIsChecked(Object.keys(selectedClass).length > 0);
 
-        if (isChecked) setIsOpenDiary(true);
+        if (isChecked) {
+            setIsOpenDiary(true);
+        }
 
     }, [request.error, request.success, request.geting, availableClasses.length, isClasses, selectedClass]);
 
@@ -108,19 +110,19 @@ const ClassBoxList = props => {
                             })}
                         </Tabs>
                     </AppBar>
-                    <Paper className={classes.root}>
+                    <Paper className={clsx(classes.root, classes.image)}>
                         {request.geting && <Spinner/>}
                         {isChecked &&
-                        <Grow
+                        <Zoom
                             in={isOpenDiary}
                             timeout={500}
                             onExited={changeClass}
                             unmountOnExit
                         >
-                            <Paper style={{width: '100%'}}>
+                            <Paper elevation={4} style={{width: '100%'}}>
                                 <DiaryList selectedClass={selectedClass} teacher={user}/>
                             </Paper>
-                        </Grow>
+                        </Zoom>
                         }
                     </Paper>
                     <Alert

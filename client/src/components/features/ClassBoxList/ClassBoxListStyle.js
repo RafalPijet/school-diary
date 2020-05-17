@@ -1,4 +1,5 @@
 import {style} from "../../../styles/global";
+import image from '../../../images/teacherDesk.png'
 
 const componentStyle = theme => ({
     root: {
@@ -11,6 +12,11 @@ const componentStyle = theme => ({
     },
     padding: {
         padding: `0 ${style.baseSize}`
+    },
+    image: {
+        backgroundImage: `url(${image})`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
     },
     subjectInfo: {
         width: '100%',

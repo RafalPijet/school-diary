@@ -45,7 +45,7 @@ const DiaryList = props => {
 
     return (
         <Paper elevation={3} className={classes.root}>
-            {request.updating ? <Typography>{`Preparing data...`}</Typography> :
+            {request.updating ? <Typography>{`Preparing data for new student...`}</Typography> :
                 <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>

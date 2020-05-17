@@ -93,18 +93,12 @@ const reducer = (state = initialState, action) => {
             };
         case UPDATE_STUDENT_IN_TEACHER_CLASS:
             return {
-                ...state, teacherAllClass: state.teacherAllClass.map(item => {
-                    return {
-                        ...item, students: item.students.map(student => {
-
-                            if (student.id === action.student.id) {
-                                return action.student
-                            } else {
-                                return student
-                            }
+                ...state, selectedClass:
+                    {
+                        ...state.selectedClass, students: state.selectedClass.students.map(student => {
+                            return (student.id === action.student.id) ? action.student : student
                         })
                     }
-                })
             };
         default:
             return state;
