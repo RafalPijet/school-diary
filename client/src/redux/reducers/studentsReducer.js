@@ -1,14 +1,21 @@
-import {LOAD_ALL_STUDENTS, UPDATE_STUDENT, DELETE_STUDENT, ADD_STUDENT} from "../actions/studentActions";
+import {
+    LOAD_ALL_STUDENTS,
+    UPDATE_STUDENT,
+    DELETE_STUDENT,
+    ADD_STUDENT,
+    SET_FREE_STUDENTS
+} from "../actions/studentActions";
 
 const initialState = {
-    allStudents: []
+    allStudents: [],
+    freeStudents: []
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_ALL_STUDENTS:
             return {...state, allStudents: action.students};
-        case ADD_STUDENT: 
+        case ADD_STUDENT:
             return {...state, allStudents: [...state.allStudents, action.student]};
         case UPDATE_STUDENT:
             return {...state, allStudents: state.allStudents.map(student => {
@@ -20,6 +27,8 @@ const reducer = (state = initialState, action) => {
                 })};
         case DELETE_STUDENT:
             return {...state, allStudents: state.allStudents.filter(student => student.id !== action.id)};
+        case SET_FREE_STUDENTS:
+            return {...state, freeStudents: action.students};
         default:
             return state
     }

@@ -14,16 +14,16 @@ const initialState = {
     teachers: [],
     parents: [],
     user: {
-        _id : "5e9fd27c00fe4800d6ccbc62",
+        _id : "5e9fd27c00fe4800d6ccbc31",
         students : [],
-        id : "9f588fad-c77b-4927-8cfc-03a8a0195be9",
-        status : "teacher",
-        subject : "math",
-        firstName : "David",
-        lastName : "Gahan",
-        telephone : "508 567 899",
-        email : "david@gmail.com",
-        password : "qqq",
+        id : "145d5787-e50e-4363-8e78-881b279f6eb5",
+        status : "principal",
+        subject : "",
+        firstName : "Rafal",
+        lastName : "Pijet",
+        telephone : "600 391 395",
+        email : "principal@gmail.com",
+        password : "qqq"
     }
 };
 

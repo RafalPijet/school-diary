@@ -12,16 +12,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import {a11yProps} from "../../../utilities/functions";
 import DiaryList from "../DiaryList/DiaryListContainer";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
-
-const a11yProps = index => {
-    return {
-        id: `full-width-tab-${index}`,
-        'aria-controls': `full-width-tabpanel-${index}`,
-    };
-};
 
 const ClassBoxList = props => {
     const {
@@ -111,7 +105,7 @@ const ClassBoxList = props => {
                         </Tabs>
                     </AppBar>
                     <Paper className={clsx(classes.root, classes.image)}>
-                        {request.geting && <Spinner/>}
+                        {request.geting && <Spinner style={{marginLeft: '92px', marginTop: '55px'}} />}
                         {isChecked &&
                         <Zoom
                             in={isOpenDiary}

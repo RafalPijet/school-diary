@@ -2,6 +2,7 @@ import {style} from "../../../styles/global";
 
 const componentStyle = theme => ({
     root: {
+        backgroundColor: theme.palette.secondary.dark,
         width: '100%',
         margin: 'auto',
     },

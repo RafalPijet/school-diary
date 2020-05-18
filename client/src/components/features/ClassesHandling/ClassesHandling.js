@@ -38,7 +38,7 @@ const ClassesHandling = props => {
 
     return (
         <Paper variant='outlined' className={classes.root}>
-            {(request.pending || request.working) && <Spinner/>}
+            {request.pending && <Spinner/>}
             {request.success &&
             <>
                 <ClassesPanel getPossibleTutors={getPossibleTutors} getClassGrade={getClassGrade}/>

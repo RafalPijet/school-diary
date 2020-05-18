@@ -1,10 +1,34 @@
 const Student = require('../models/student.model');
 const uuid = require('uuid');
 
+exports.getStudentsById = async (req, res) => {
+
+    try {
+        const {studentsId} = req.query;
+        let result = [];
+        const getStudents = () =>
+            studentsId.forEach(async id =>  {
+                    result = [...result, await Student.findOne({id})];
+                }
+            );
+        await getStudents(studentsId);
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getAllStudents = async (req, res) => {
 
     try {
-        res.status(200).json(await Student.find());
+        let result = await Student.find();
+        result = result.map(item => item.id);
+        // result = result.map(item => {
+            // item.ratings = [];
+            // item.parents = [];
+            // return item;
+        // });
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }
