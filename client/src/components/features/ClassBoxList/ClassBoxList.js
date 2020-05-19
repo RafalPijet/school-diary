@@ -52,7 +52,7 @@ const ClassBoxList = props => {
         if (isChecked) {
             setIsOpenDiary(true);
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [request.error, request.success, request.geting, availableClasses.length, isClasses, selectedClass]);
 
     const handleChange = (event, newValue) => {

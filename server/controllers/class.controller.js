@@ -50,6 +50,20 @@ exports.getAllClasses = async (req, res) => {
     }
 };
 
+exports.getStudentsFromClasses = async (req, res) => {
+
+    try {
+        let result = await Class.find();
+        result = result.map(item => {
+            return item.students.map(student => student.id);
+        });
+        let studentsId = Array.prototype.concat(...result);
+        res.status(200).json(studentsId);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.addClass = async (req, res) => {
 
     try {

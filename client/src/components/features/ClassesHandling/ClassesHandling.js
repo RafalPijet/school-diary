@@ -12,7 +12,20 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 
 
 const ClassesHandling = props => {
-    const {request, loadAllClasses, resetRequest, alertSuccess, setAlertSuccess} = props;
+    const {
+        request,
+        loadAllClasses,
+        loadAllStudents,
+        loadStudentsIdFromClasses,
+        resetRequest,
+        alertSuccess,
+        setAlertSuccess,
+        clearAllClasses,
+        clearAllStudents,
+        clearFreeStudents,
+        clearClassesStudents,
+        allClasses
+    } = props;
     const [classGrade, setClassGrade] = useState('none');
     const [possibleTutors, setPossibleTutors] = useState([]);
     const classes = useStyles();
@@ -20,6 +33,15 @@ const ClassesHandling = props => {
     useEffect(() => {
         resetRequest();
         loadAllClasses();
+        loadAllStudents();
+        loadStudentsIdFromClasses();
+
+        return () => {
+            clearAllClasses([]);
+            clearAllStudents([]);
+            clearFreeStudents([]);
+            clearClassesStudents([]);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -39,11 +61,11 @@ const ClassesHandling = props => {
     return (
         <Paper variant='outlined' className={classes.root}>
             {request.pending && <Spinner/>}
-            {request.success &&
+            {(request.success && allClasses.length) ?
             <>
                 <ClassesPanel getPossibleTutors={getPossibleTutors} getClassGrade={getClassGrade}/>
                 <ClassesContent possibleTutors={possibleTutors} classGrade={classGrade}/>
-            </>
+            </> : <></>
             }
             {request.error &&
             <Alert
@@ -67,9 +89,16 @@ const ClassesHandling = props => {
 ClassesHandling.propTypes = {
     request: PropTypes.object.isRequired,
     loadAllClasses: PropTypes.func.isRequired,
+    loadAllStudents: PropTypes.func.isRequired,
+    loadStudentsIdFromClasses: PropTypes.func.isRequired,
     resetRequest: PropTypes.func.isRequired,
     alertSuccess: PropTypes.object.isRequired,
-    setAlertSuccess: PropTypes.func.isRequired
+    setAlertSuccess: PropTypes.func.isRequired,
+    clearAllClasses: PropTypes.func.isRequired,
+    clearAllStudents: PropTypes.func.isRequired,
+    clearFreeStudents: PropTypes.func.isRequired,
+    clearClassesStudents: PropTypes.func.isRequired,
+    allClasses: PropTypes.array.isRequired
 };
 
 export default ClassesHandling;

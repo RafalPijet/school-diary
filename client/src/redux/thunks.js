@@ -29,7 +29,8 @@ import {
     updateStudent,
     deleteStudent,
     addStudent,
-    setFreeStudents
+    setFreeStudents,
+    setClassesStudents
 } from "./actions/studentActions";
 import {setAlertSuccess} from "./actions/valuesActions";
 
@@ -120,6 +121,21 @@ export const loadAllClassesRequest = () => {
     }
 };
 
+export const loadStudentsIdFromClasses = () => {
+    return async dispatch => {
+        dispatch(startUpdatingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/classes/students`);
+            dispatch(setClassesStudents(res.data));
+            dispatch(stopUpdatingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message))
+        }
+    }
+};
+
 export const loadAllClassByTeacherId = teacherId => {
     return async dispatch => {
         dispatch(startRequest());
@@ -182,6 +198,7 @@ export const updateClassRequest = classItem => {
             classItem.isStudents ? classAfterChange.students = classItem.students :
                 classAfterChange.subjectTeachers = classItem.subjectTeachers;
             dispatch(updateClass(classAfterChange));
+            if (classItem.isStudents) dispatch(loadStudentsIdFromClasses());
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -324,14 +341,28 @@ export const getAllStudentsRequest = () => {
     }
 };
 
-export const getStudentsById = studentsId => {
+export const getStudentsIdRequest = () => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/students/onlyid`);
+            dispatch(loadAllStudents(res.data));
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const getStudentsByIdRequest = studentsId => {
     return async dispatch => {
         dispatch(startWorkingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/select`, {params: {studentsId}});
-            console.log(res.data);
             dispatch(setFreeStudents(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {

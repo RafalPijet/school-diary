@@ -3,12 +3,14 @@ import {
     UPDATE_STUDENT,
     DELETE_STUDENT,
     ADD_STUDENT,
-    SET_FREE_STUDENTS
+    SET_FREE_STUDENTS,
+    SET_CLASSES_STUDENTS
 } from "../actions/studentActions";
 
 const initialState = {
     allStudents: [],
-    freeStudents: []
+    freeStudents: [],
+    classesStudents: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -29,6 +31,8 @@ const reducer = (state = initialState, action) => {
             return {...state, allStudents: state.allStudents.filter(student => student.id !== action.id)};
         case SET_FREE_STUDENTS:
             return {...state, freeStudents: action.students};
+        case SET_CLASSES_STUDENTS:
+            return {...state, classesStudents: action.students};
         default:
             return state
     }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
 import {AppBar, Tabs, Tab, Paper, Typography} from "@material-ui/core";
-import {Zoom, Fade} from "@material-ui/core";
+import {Zoom} from "@material-ui/core";
 import Spinner from "../../common/Spinner/Spinner";
 import componentStyle from "./ClassesContentStyle";
 import {a11yProps, sortByNameFromAToZ} from "../../../utilities/functions";
@@ -12,7 +12,15 @@ import ClassContent from "../ClassContent/ClassContentContainer";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ClassesContent = props => {
-    const {allClasses, classGrade, allStudents, loadAllStudents, possibleTutors, request, getStudentsById} = props;
+    const {
+        allClasses,
+        classGrade,
+        allStudents,
+        possibleTutors,
+        request,
+        getStudentsById,
+        classesStudents
+    } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const [newValue, setNewValue] = useState(0);
@@ -21,6 +29,8 @@ const ClassesContent = props => {
     const [classGradeIn, setClassGradeIn] = useState('none');
 
     useEffect(() => {
+
+        if (classesStudents.length && allStudents.length) prepareFreeStudents();
 
         if (classGrade !== 'none') {
             setFilteredClass(allClasses.filter(classItem => classItem.name.includes(classGrade)));
@@ -32,30 +42,19 @@ const ClassesContent = props => {
 
         if (classGrade !== classGradeIn) setValue(0);
 
-        if (allStudents.length === 0) loadAllStudents();
-
         if (filteredClass.length) setIsShow(true);
-        prepareFreeStudents();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allStudents, allClasses, classGrade]);
+    }, [allStudents, allClasses, classGrade, filteredClass.length, classesStudents]);
 
     const prepareFreeStudents = () => {
-        let studentsClassId = [];
         let result = [];
-        allClasses.forEach(item => {
-            let studentsId = item.students.map(student => student.id);
-            studentsId.forEach(id => studentsClassId.push(id));
-        });
         allStudents.forEach(id => {
 
-            if (!studentsClassId.includes(id)) result.push(id)
+            if (!classesStudents.includes(id)) result.push(id)
         });
 
         if (result.length) {
             getStudentsById(result);
-            // console.log(result);
         }
-        // setFreeStudents(result);
     };
 
     const handleChange = (event, newValue) => {
@@ -85,7 +84,7 @@ const ClassesContent = props => {
                         >
                             {filteredClass.map((item, i) => {
                                 return <Tab className={classes.tabs} key={item.id}
-                                            label={item.name}  {...a11yProps(i)}/>
+                                           label={item.name}  {...a11yProps(i)}/>
                             })}
                         </Tabs>
                     </AppBar>
@@ -120,8 +119,8 @@ ClassesContent.propTypes = {
         name: PropTypes.string.isRequired
     })),
     classGrade: PropTypes.string.isRequired,
+    classesStudents: PropTypes.array.isRequired,
     allStudents: PropTypes.array.isRequired,
-    loadAllStudents: PropTypes.func.isRequired,
     possibleTutors: PropTypes.array.isRequired,
     request: PropTypes.object.isRequired,
     getStudentsById: PropTypes.func.isRequired
