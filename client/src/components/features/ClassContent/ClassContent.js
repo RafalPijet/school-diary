@@ -37,7 +37,8 @@ const ClassContent = props => {
         possibleTutors,
         freeStudents,
         availableSubjects,
-        updateClass
+        updateClass,
+        studentMode
     } = props;
     const [checked, setChecked] = useState([]);
     const [leftList, setLeftList] = useState(classItem.students);
@@ -128,7 +129,8 @@ const ClassContent = props => {
     const leftChecked = intersection(checked, leftList);
     const rightChecked = intersection(checked, rightList);
 
-    const confirmUpdate = () => {
+    const confirmUpdate = async () => {
+        await studentMode(isStudentMode);
         updateClass({
             id: classItem.id,
             isStudents: isStudentMode,
@@ -213,7 +215,7 @@ const ClassContent = props => {
     const customList = (items, isStudent) => (
         <Paper
             className={clsx(classes.paper, !isVisible && classes.moreWidth, request.updating && !isTutor && classes.spinner)}>
-            {request.updating && !isTutor ? <Spinner/> :
+            {(request.updating) && !isTutor ? <Spinner/> :
                 <List dense component="div" role="list">
                     {items.map((value, i) => {
                         const labelId = `transfer-list-item-${value}-label`;
@@ -307,7 +309,8 @@ ClassContent.propTypes = {
     possibleTutors: PropTypes.array.isRequired,
     freeStudents: PropTypes.array.isRequired,
     availableSubjects: PropTypes.object.isRequired,
-    updateClass: PropTypes.func.isRequired
+    updateClass: PropTypes.func.isRequired,
+    studentMode: PropTypes.func.isRequired
 };
 
 export default ClassContent

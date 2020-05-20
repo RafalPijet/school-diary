@@ -19,7 +19,9 @@ const ClassesContent = props => {
         possibleTutors,
         request,
         getStudentsById,
-        classesStudents
+        classesStudents,
+        setFreeStudents,
+        isStudentMode
     } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -30,7 +32,7 @@ const ClassesContent = props => {
 
     useEffect(() => {
 
-        if (classesStudents.length && allStudents.length) prepareFreeStudents();
+        if (classesStudents.length && isStudentMode) prepareFreeStudents();
 
         if (classGrade !== 'none') {
             setFilteredClass(allClasses.filter(classItem => classItem.name.includes(classGrade)));
@@ -43,18 +45,17 @@ const ClassesContent = props => {
         if (classGrade !== classGradeIn) setValue(0);
 
         if (filteredClass.length) setIsShow(true);
-    }, [allStudents, allClasses, classGrade, filteredClass.length, classesStudents]);
+
+    }, [allClasses, classGrade, filteredClass.length, classesStudents.length, isStudentMode]);
 
     const prepareFreeStudents = () => {
+
         let result = [];
         allStudents.forEach(id => {
 
             if (!classesStudents.includes(id)) result.push(id)
         });
-
-        if (result.length) {
-            getStudentsById(result);
-        }
+        result.length ? getStudentsById(result) : setFreeStudents([]);
     };
 
     const handleChange = (event, newValue) => {
@@ -123,7 +124,9 @@ ClassesContent.propTypes = {
     allStudents: PropTypes.array.isRequired,
     possibleTutors: PropTypes.array.isRequired,
     request: PropTypes.object.isRequired,
-    getStudentsById: PropTypes.func.isRequired
+    getStudentsById: PropTypes.func.isRequired,
+    setFreeStudents: PropTypes.func.isRequired,
+    isStudentMode: PropTypes.bool.isRequired
 };
 
 export default ClassesContent;

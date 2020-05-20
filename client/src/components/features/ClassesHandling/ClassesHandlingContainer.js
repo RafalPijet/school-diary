@@ -20,7 +20,8 @@ import {
 } from "../../../redux/actions/requestActions";
 import {
    setAlertSuccess,
-   getAlertSuccess
+   getAlertSuccess,
+   setIsStudentMode
 } from "../../../redux/actions/valuesActions";
 
 const mapStateToProps = state => ({
@@ -34,6 +35,7 @@ const mapDispatchToProps = dispatch => ({
    clearAllStudents: data => dispatch(loadAllStudents(data)),
    clearFreeStudents: data => dispatch(setFreeStudents(data)),
    clearClassesStudents: data => dispatch(setClassesStudents(data)),
+   setIsStudentMode: isStudentMode => dispatch(setIsStudentMode(isStudentMode)),
    loadAllClasses: () => dispatch(loadAllClassesRequest()),
    loadAllStudents: () => dispatch(getStudentsIdRequest()),
    loadStudentsIdFromClasses: () => dispatch(loadStudentsIdFromClasses()),

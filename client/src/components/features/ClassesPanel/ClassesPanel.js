@@ -54,7 +54,8 @@ const ClassesPanel = props => {
             result = result.filter(name => name.substring(0, 1) === classGrade)
         }
         setAvailableClassNames(result);
-        setNewClass({...newClass, name: result[0]});
+        if (newClass.mainTeacher === 'unselected') setNewClass({...newClass, name: result[0]});
+
         let existedTutors = allClasses.map(item => item.mainTeacher.id);
         teachers.forEach(teacher => {
 
@@ -73,6 +74,7 @@ const ClassesPanel = props => {
     };
 
     const handleTutorChange = event => {
+        console.log(newClass);
         setNewClass({...newClass, mainTeacher: event.target.value});
     };
 

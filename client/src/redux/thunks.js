@@ -32,7 +32,7 @@ import {
     setFreeStudents,
     setClassesStudents
 } from "./actions/studentActions";
-import {setAlertSuccess} from "./actions/valuesActions";
+import {setAlertSuccess, setIsStudentMode} from "./actions/valuesActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -192,6 +192,7 @@ export const updateClassRequest = classItem => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/class`, classItem);
             let classAfterChange = res.data;
+            await setIsStudentMode(true);
             dispatch(setAlertSuccess(true,
                 `${classItem.isStudents ?
                     'Students' : 'Teachers'} list of ${classAfterChange.name} has been changed.`));
@@ -358,13 +359,13 @@ export const getStudentsIdRequest = () => {
 
 export const getStudentsByIdRequest = studentsId => {
     return async dispatch => {
-        dispatch(startWorkingRequest());
+        dispatch(startGetingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/select`, {params: {studentsId}});
             dispatch(setFreeStudents(res.data));
-            dispatch(stopWorkingRequest());
+            dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }
