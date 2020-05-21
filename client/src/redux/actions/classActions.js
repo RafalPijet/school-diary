@@ -12,6 +12,7 @@ export const ADD_USER_TO_CLASS = createActionName(reducerName, 'ADD_USER_TO_CLAS
 export const UPDATE_CLASS = createActionName(reducerName, 'UPDATE_CLASS');
 export const ADD_NEW_CLASS = createActionName(reducerName, 'ADD_NEW_CLASS');
 export const UPDATE_STUDENT_IN_TEACHER_CLASS = createActionName(reducerName, 'UPDATE_STUDENT_IN_TEACHER_CLASS');
+export const UPDATE_DATA_IN_SELECTED_CLASS = createActionName(reducerName, 'UPDATE_DATA_IN_SELECTED_CLASS');
 
 //CREATORS OF ACTIONS
 export const loadClassByTeacher = allClass => ({allClass, type: LOAD_CLASS_BY_TEACHER_ID});
@@ -24,7 +25,7 @@ export const addUserToClass = classContent => ({classContent, type: ADD_USER_TO_
 export const updateClass = classItem => ({classItem, type: UPDATE_CLASS});
 export const addNewClass = newClass => ({newClass, type: ADD_NEW_CLASS});
 export const updateStudentInTeacherClass = student => ({student, type: UPDATE_STUDENT_IN_TEACHER_CLASS});
-
+export const updateDataInSelectedClass = data => ({data, type: UPDATE_DATA_IN_SELECTED_CLASS});
 
 //SELECTORS
 export const getTeacherAllClass = state => state.classes.teacherAllClass;

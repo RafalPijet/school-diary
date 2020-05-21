@@ -5,6 +5,7 @@ const componentStyle = theme => ({
         width: '100%',
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'center',
         backgroundColor: theme.palette.action.adding,
         padding: style.smallSize
     },

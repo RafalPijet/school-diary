@@ -32,16 +32,29 @@ exports.getClassById = async (req, res) => {
     }
 };
 
+exports.getClassByIdForPrincipal = async (req, res) => {
+
+    try {
+        let {id} = req.params;
+        let classItem = await Class.findOne({id});
+        let result = {
+            students: classItem.students,
+            subjectTeachers: classItem.subjectTeachers
+        };
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getAllClasses = async (req, res) => {
 
     try {
         let result = await Class.find();
         result = result.map(item => {
-                item.students.map(student => {
-                    student.ratings = [];
-                    student.parents = [];
-                    return student
-                });
+            item.students = [];
+            item.subjectTeachers = [];
+            item.mainTeacher = {id: item.mainTeacher.id};
                 return item
         });
         res.status(200).json(result);

@@ -21,7 +21,10 @@ const ClassesContent = props => {
         getStudentsById,
         classesStudents,
         setFreeStudents,
-        isStudentMode
+        isStudentMode,
+        setSelectedClass,
+        selectedClass,
+        loadDataForClass
     } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -44,9 +47,16 @@ const ClassesContent = props => {
 
         if (classGrade !== classGradeIn) setValue(0);
 
-        if (filteredClass.length) setIsShow(true);
+        if (filteredClass.length && !isShow) prepareContentClass();
+        setIsShow(Object.entries(selectedClass).length > 0);
+        // if (filteredClass.length) setIsShow(true);
 
     }, [allClasses, classGrade, filteredClass.length, classesStudents.length, isStudentMode]);
+
+    const prepareContentClass = () => {
+        setSelectedClass(filteredClass[value]);
+        loadDataForClass(filteredClass[value].id);
+    };
 
     const prepareFreeStudents = () => {
 
@@ -63,9 +73,10 @@ const ClassesContent = props => {
         setNewValue(newValue);
     };
 
-    const changeClass = () => {
-        setIsShow(true);
-        setValue(newValue);
+    const changeClass = async () => {
+        await setValue(newValue);
+        await setSelectedClass({});
+        loadDataForClass(filteredClass[value].id);
     };
 
     return (
@@ -97,10 +108,11 @@ const ClassesContent = props => {
                                 onExited={changeClass}
                             >
                                 <Paper elevation={4} style={{width: '100%'}}>
+                                    {(Object.entries(selectedClass).length > 0 && !request.geting) &&
                                     <ClassContent
-                                        classItem={filteredClass[value]}
+                                        classItem={selectedClass}
                                         possibleTutors={possibleTutors}
-                                    />
+                                    />}
                                 </Paper>
                             </Zoom>
                         }
@@ -126,7 +138,10 @@ ClassesContent.propTypes = {
     request: PropTypes.object.isRequired,
     getStudentsById: PropTypes.func.isRequired,
     setFreeStudents: PropTypes.func.isRequired,
-    isStudentMode: PropTypes.bool.isRequired
+    isStudentMode: PropTypes.bool.isRequired,
+    setSelectedClass: PropTypes.func.isRequired,
+    selectedClass: PropTypes.object.isRequired,
+    loadDataForClass: PropTypes.func.isRequired
 };
 
 export default ClassesContent;

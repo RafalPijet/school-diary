@@ -1,9 +1,9 @@
 import {connect} from 'react-redux';
 import {getRequest} from "../../../redux/actions/requestActions";
-import {getAllClasses} from "../../../redux/actions/classActions";
+import {getAllClasses, getSelectedClass, setSelectedClass} from "../../../redux/actions/classActions";
 import {getIsStudentMode} from "../../../redux/actions/valuesActions";
 import {getAllStudents, getClassesStudents, setFreeStudents} from "../../../redux/actions/studentActions";
-import {getStudentsByIdRequest} from "../../../redux/thunks";
+import {getStudentsByIdRequest, loadDataForClassByIdRequest} from "../../../redux/thunks";
 import ClassesContent from './ClassesContent'
 
 const mapStateToProps = state => ({
@@ -11,12 +11,15 @@ const mapStateToProps = state => ({
     allStudents: getAllStudents(state),
     request: getRequest(state),
     classesStudents: getClassesStudents(state),
-    isStudentMode: getIsStudentMode(state)
+    isStudentMode: getIsStudentMode(state),
+    selectedClass: getSelectedClass(state)
 });
 
 const mapDispatchToProps = dispatch => ({
     getStudentsById: studentsId => dispatch(getStudentsByIdRequest(studentsId)),
-    setFreeStudents: students => dispatch(setFreeStudents(students))
+    setFreeStudents: students => dispatch(setFreeStudents(students)),
+    setSelectedClass: classItem => dispatch(setSelectedClass(classItem)),
+    loadDataForClass: id => dispatch(loadDataForClassByIdRequest(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClassesContent);

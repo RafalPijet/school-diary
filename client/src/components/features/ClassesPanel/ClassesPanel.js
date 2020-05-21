@@ -65,6 +65,11 @@ const ClassesPanel = props => {
                 getPossibleTutors(possibleTutors);
             }
         });
+
+        if (existedTutors.length === teachers.length) {
+            setAvailableTutors([]);
+            getPossibleTutors([]);
+        }
     };
 
     const addClassHandling = () => {
@@ -74,7 +79,6 @@ const ClassesPanel = props => {
     };
 
     const handleTutorChange = event => {
-        console.log(newClass);
         setNewClass({...newClass, mainTeacher: event.target.value});
     };
 
@@ -89,6 +93,9 @@ const ClassesPanel = props => {
 
     return (
         <Paper elevation={3} className={classes.root}>
+            <span style={{paddingLeft: '5px'}}>
+                classes: <Typography display='inline' variant='h6'>{allClasses.length}</Typography>
+            </span>
             <span className={classes.classGrade}>
                 <FormControl>
                 <InputLabel id='choose-class-grade'>

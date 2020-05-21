@@ -7,7 +7,8 @@ import {
     ADD_USER_TO_CLASS,
     UPDATE_CLASS,
     ADD_NEW_CLASS,
-    UPDATE_STUDENT_IN_TEACHER_CLASS
+    UPDATE_STUDENT_IN_TEACHER_CLASS,
+    UPDATE_DATA_IN_SELECTED_CLASS
 } from "../actions/classActions";
 
 const initialState = {
@@ -99,6 +100,14 @@ const reducer = (state = initialState, action) => {
                             return (student.id === action.student.id) ? action.student : student
                         })
                     }
+            };
+        case UPDATE_DATA_IN_SELECTED_CLASS:
+            return {
+                ...state, selectedClass: {
+                    ...state.selectedClass,
+                    students: action.data.students,
+                    subjectTeachers: action.data.subjectTeachers
+                }
             };
         default:
             return state;

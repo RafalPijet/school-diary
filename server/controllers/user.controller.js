@@ -50,8 +50,16 @@ exports.deleteUser = async (req, res) => {
 exports.getTeachers = async (req, res) => {
 
     try {
-        let users = await User.find();
-        let teachers = users.filter(user => user.status === 'teacher');
+        let teachers = await User.find({status: 'teacher'});
+        teachers = teachers.map(teacher => {
+            return {
+                _id: teacher._id,
+                id: teacher.id,
+                subject: teacher.subject,
+                lastName: teacher.lastName,
+                firstName: teacher.firstName
+            };
+        });
         res.status(200).json(teachers);
     } catch (err) {
         res.status(500).json(err);

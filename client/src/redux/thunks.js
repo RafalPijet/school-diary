@@ -9,7 +9,8 @@ import {
     updateClass,
     addNewClass,
     updateStudentInTeacherClass,
-    setSelectedClass
+    setSelectedClass,
+    updateDataInSelectedClass
 } from "./actions/classActions";
 import {
     startRequest,
@@ -159,6 +160,21 @@ export const loadClassById = id => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class/${id}`);
             dispatch(setSelectedClass(res.data));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const loadDataForClassByIdRequest = id => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/class/principal/${id}`);
+            dispatch(updateDataInSelectedClass(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
