@@ -6,11 +6,12 @@ import {
     addRatingToStudent,
     updateRatingToStudent,
     loadAllClasses,
-    updateClass,
     addNewClass,
     updateStudentInTeacherClass,
     setSelectedClass,
-    updateDataInSelectedClass
+    updateDataInSelectedClass,
+    updateTutorInSelectedClass,
+    updateListInSelectedClass
 } from "./actions/classActions";
 import {
     startRequest,
@@ -33,7 +34,7 @@ import {
     setFreeStudents,
     setClassesStudents
 } from "./actions/studentActions";
-import {setAlertSuccess, setIsStudentMode} from "./actions/valuesActions";
+import {setAlertSuccess} from "./actions/valuesActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -192,9 +193,10 @@ export const updateTutorClassRequest = classItem => {
             dispatch(setAlertSuccess(true,
                 `${res.data.name} tutor has been changed to ${res.data.mainTeacher.lastName}
                  ${res.data.mainTeacher.firstName}`));
-            dispatch(updateClass(res.data));
+            dispatch(updateTutorInSelectedClass(res.data.mainTeacher));
             dispatch(stopUpdatingRequest());
         } catch (err) {
+            console.log(err.message);
             dispatch(errorRequest(err.message));
         }
     }
@@ -207,15 +209,13 @@ export const updateClassRequest = classItem => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/class`, classItem);
-            let classAfterChange = res.data;
-            await setIsStudentMode(true);
             dispatch(setAlertSuccess(true,
                 `${classItem.isStudents ?
-                    'Students' : 'Teachers'} list of ${classAfterChange.name} has been changed.`));
-            classItem.isStudents ? classAfterChange.students = classItem.students :
-                classAfterChange.subjectTeachers = classItem.subjectTeachers;
-            dispatch(updateClass(classAfterChange));
-            if (classItem.isStudents) dispatch(loadStudentsIdFromClasses());
+                    'Students' : 'Teachers'} list of ${res.data} has been changed.`));
+
+            if (classItem.isStudents) await dispatch(loadStudentsIdFromClasses());
+            dispatch(updateListInSelectedClass(classItem.isStudents,
+                classItem.isStudents ? classItem.students : classItem.subjectTeachers));
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -375,13 +375,13 @@ export const getStudentsIdRequest = () => {
 
 export const getStudentsByIdRequest = studentsId => {
     return async dispatch => {
-        dispatch(startGetingRequest());
+        dispatch(startUpdatingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/select`, {params: {studentsId}});
             dispatch(setFreeStudents(res.data));
-            dispatch(stopGetingRequest());
+            dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

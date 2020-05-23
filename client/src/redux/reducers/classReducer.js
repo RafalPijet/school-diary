@@ -4,11 +4,11 @@ import {
     ADD_RATING_TO_STUDENT,
     UPDATE_RATING_TO_STUDENT,
     LOAD_ALL_CLASSES,
-    ADD_USER_TO_CLASS,
-    UPDATE_CLASS,
     ADD_NEW_CLASS,
     UPDATE_STUDENT_IN_TEACHER_CLASS,
-    UPDATE_DATA_IN_SELECTED_CLASS
+    UPDATE_DATA_IN_SELECTED_CLASS,
+    UPDATE_TUTOR_IN_SELECTED_CLASS,
+    UPDATE_LIST_IN_SELECTED_CLASS
 } from "../actions/classActions";
 
 const initialState = {
@@ -67,27 +67,6 @@ const reducer = (state = initialState, action) => {
                 }
             }
             break;
-        case ADD_USER_TO_CLASS:
-            return {
-                ...state, allClasses: state.allClasses.map(item => {
-
-                    if (item.id === action.classContent.id) {
-                        return action.classContent
-                    } else {
-                        return item
-                    }
-                })
-            };
-        case UPDATE_CLASS:
-            return {
-                ...state, allClasses: state.allClasses.map(item => {
-                    if (item.id === action.classItem.id) {
-                        return action.classItem;
-                    } else {
-                        return item;
-                    }
-                })
-            };
         case ADD_NEW_CLASS:
             return {
                 ...state, allClasses: [...state.allClasses, action.newClass]
@@ -107,6 +86,19 @@ const reducer = (state = initialState, action) => {
                     ...state.selectedClass,
                     students: action.data.students,
                     subjectTeachers: action.data.subjectTeachers
+                }
+            };
+        case UPDATE_TUTOR_IN_SELECTED_CLASS:
+            return {
+                ...state, selectedClass: {
+                    ...state.selectedClass, mainTeacher: action.tutor
+                }
+            };
+        case UPDATE_LIST_IN_SELECTED_CLASS:
+            return {
+                ...state, selectedClass: {
+                    ...state.selectedClass,
+                    [action.isStudent ? 'students' : 'subjectTeachers']: action.list
                 }
             };
         default:

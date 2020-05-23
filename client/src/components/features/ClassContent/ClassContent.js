@@ -95,7 +95,8 @@ const ClassContent = props => {
             setLeftDesc('students');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isStudentMode, isTeacherMode, isVisible, isShowButtons, teachers, classItem.students]);
+    }, [isStudentMode, isTeacherMode, isVisible, isShowButtons,
+        teachers, classItem.students, classItem.subjectTeachers]);
 
     useEffect(() => {
 
@@ -251,7 +252,7 @@ const ClassContent = props => {
             <Grid item>
                 {customList(leftList.sort(sortByLastnameFromAToZ), isTypeStudent)}
                 <Typography className={classes.description} variant='subtitle2'>
-                    {`${leftDesc}: ${leftList.length}`}
+                    {`${leftDesc}: ${request.updating ? '...' : leftList.length}`}
                 </Typography>
             </Grid>
             <Zoom in={isShowButtons}>
@@ -283,7 +284,7 @@ const ClassContent = props => {
             <Grid item>
                 {customList(rightList.sort(sortByLastnameFromAToZ), isTypeTeacher)}
                 <Typography className={classes.description} variant='subtitle2'>
-                    {`${rightDesc}: ${rightList.length}`}
+                    {`${rightDesc}: ${request.updating ? '...' : rightList.length}`}
                 </Typography>
             </Grid>
             <NavClassPanel

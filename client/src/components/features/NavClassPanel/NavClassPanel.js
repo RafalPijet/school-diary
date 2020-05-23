@@ -153,10 +153,10 @@ const NavClassPanel = props => {
                         TransitionComponent={Fade}
                         enterDelay={1000}
                     >
-                        <span className={(request.updating || request.geting) ? classes.progress : ''}>
+                        <span className={request.updating ? classes.progress : ''}>
                             <Button
                                 variant='outlined'
-                                disabled={request.updating || request.geting}
+                                disabled={request.updating}
                                 className={clsx(classes.buttons, isStudentsMode && classes.buttonsActive)}
                                 onClick={() => {
                                     setIsStudentsMode(!isStudentsMode);
@@ -181,7 +181,7 @@ const NavClassPanel = props => {
                         <span className={request.updating ? classes.progress : ''}>
                              <Button
                                  variant='outlined'
-                                 disabled={request.updating || request.geting}
+                                 disabled={request.updating}
                                  className={clsx(classes.buttons, isTeachersMode && classes.buttonsActive)}
                                  onClick={() => {
                                      setIsTeachersMode(!isTeachersMode);

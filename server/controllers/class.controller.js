@@ -38,8 +38,18 @@ exports.getClassByIdForPrincipal = async (req, res) => {
         let {id} = req.params;
         let classItem = await Class.findOne({id});
         let result = {
-            students: classItem.students,
-            subjectTeachers: classItem.subjectTeachers
+            students: classItem.students.map(student => {
+                student.ratings = [];
+                student.parents = [];
+                return student
+            }),
+            subjectTeachers: classItem.subjectTeachers.map(teacher => ({
+                id: teacher.id,
+                _id: teacher._id,
+                subject: teacher.subject,
+                firstName: teacher.firstName,
+                lastName: teacher.lastName
+            }))
         };
         res.status(200).json(result);
     } catch (err) {
@@ -115,7 +125,11 @@ exports.updateTutorClass = async (req, res) => {
     try {
         let selectedClass = await Class.findOne({id: req.body.id});
         selectedClass.mainTeacher = req.body.mainTeacher;
-        res.status(200).json(await selectedClass.save());
+        let savedClass = await selectedClass.save();
+        res.status(200).json({
+            mainTeacher: savedClass.mainTeacher,
+            name: savedClass.name
+        });
     } catch (err) {
         res.status(500).json(err);
     }
@@ -126,9 +140,9 @@ exports.updateClass = async (req, res) => {
     try {
         let {id, isStudents, students, subjectTeachers} = req.body;
         let selectedClass = await Class.findOne({id});
-        await isStudents ? selectedClass.students = students :
-            selectedClass.subjectTeachers = subjectTeachers;
-        res.status(200).json(await selectedClass.save());
+        isStudents ? selectedClass.students = students : selectedClass.subjectTeachers = subjectTeachers;
+        await selectedClass.save();
+        res.status(200).json(selectedClass.name);
     } catch (err) {
         res.status(500).json(err);
     }

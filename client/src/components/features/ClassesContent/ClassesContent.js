@@ -22,16 +22,30 @@ const ClassesContent = props => {
         classesStudents,
         setFreeStudents,
         isStudentMode,
+        setIsStudentMode,
         setSelectedClass,
         selectedClass,
-        loadDataForClass
+        loadDataForClass,
+        teachers
     } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const [newValue, setNewValue] = useState(0);
     const [isShow, setIsShow] = useState(false);
+    const [isPrepare, setIsPrepare] = useState(false);
     const [filteredClass, setFilteredClass] = useState(allClasses);
     const [classGradeIn, setClassGradeIn] = useState('none');
+
+    useEffect(() => {
+
+        if (classGrade !== classGradeIn) {
+            setValue(0);
+            setFilteredClass(allClasses.filter(classItem => classItem.name.includes(classGrade)));
+            setClassGradeIn(classGrade);
+            setIsPrepare(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [classGrade]);
 
     useEffect(() => {
 
@@ -45,21 +59,21 @@ const ClassesContent = props => {
             setClassGradeIn(classGrade);
         }
 
-        if (classGrade !== classGradeIn) setValue(0);
-
-        if (filteredClass.length && !isShow) prepareContentClass();
-        setIsShow(Object.entries(selectedClass).length > 0);
-        // if (filteredClass.length) setIsShow(true);
-
-    }, [allClasses, classGrade, filteredClass.length, classesStudents.length, isStudentMode]);
+        if (filteredClass.length && !isPrepare && teachers.length) prepareContentClass();
+        setIsShow(Object.entries(selectedClass).length > 0 && isPrepare);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allClasses, classGrade, filteredClass.length, teachers.length, selectedClass, classGradeIn]);
 
     const prepareContentClass = () => {
-        setSelectedClass(filteredClass[value]);
-        loadDataForClass(filteredClass[value].id);
+        setIsPrepare(true);
+        let classItem = filteredClass[value];
+        classItem.mainTeacher = teachers.find(teacher => (teacher.id === classItem.mainTeacher.id));
+        setSelectedClass(classItem);
+        loadDataForClass(classItem.id);
     };
 
     const prepareFreeStudents = () => {
-
+        setIsStudentMode(false);
         let result = [];
         allStudents.forEach(id => {
 
@@ -74,9 +88,10 @@ const ClassesContent = props => {
     };
 
     const changeClass = async () => {
+        await setIsPrepare(false);
         await setValue(newValue);
         await setSelectedClass({});
-        loadDataForClass(filteredClass[value].id);
+        loadDataForClass(filteredClass[newValue].id);
     };
 
     return (
@@ -95,20 +110,20 @@ const ClassesContent = props => {
                             scrollButtons='auto'
                         >
                             {filteredClass.map((item, i) => {
-                                return <Tab className={classes.tabs} key={item.id}
+                                return <Tab className={classes.tabs} key={item.id} disabled={request.geting}
                                            label={item.name}  {...a11yProps(i)}/>
                             })}
                         </Tabs>
                     </AppBar>
                     <Paper className={classes.content}>
-                        {request.working ? <Spinner style={{marginLeft: '92px', marginTop: '55px'}}/> :
+                        {request.geting ? <Spinner style={{marginLeft: '92px', marginTop: '55px'}}/> :
                             <Zoom
                                 in={isShow}
                                 timeout={500}
                                 onExited={changeClass}
                             >
                                 <Paper elevation={4} style={{width: '100%'}}>
-                                    {(Object.entries(selectedClass).length > 0 && !request.geting) &&
+                                    {((Object.entries(selectedClass).length > 0)) &&
                                     <ClassContent
                                         classItem={selectedClass}
                                         possibleTutors={possibleTutors}
@@ -139,9 +154,11 @@ ClassesContent.propTypes = {
     getStudentsById: PropTypes.func.isRequired,
     setFreeStudents: PropTypes.func.isRequired,
     isStudentMode: PropTypes.bool.isRequired,
+    setIsStudentMode: PropTypes.func.isRequired,
     setSelectedClass: PropTypes.func.isRequired,
     selectedClass: PropTypes.object.isRequired,
-    loadDataForClass: PropTypes.func.isRequired
+    loadDataForClass: PropTypes.func.isRequired,
+    teachers: PropTypes.array.isRequired
 };
 
 export default ClassesContent;
