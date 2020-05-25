@@ -8,7 +8,9 @@ import {
     UPDATE_STUDENT_IN_TEACHER_CLASS,
     UPDATE_DATA_IN_SELECTED_CLASS,
     UPDATE_TUTOR_IN_SELECTED_CLASS,
-    UPDATE_LIST_IN_SELECTED_CLASS
+    UPDATE_TUTOR_IN_ALL_CLASSES,
+    UPDATE_LIST_IN_SELECTED_CLASS,
+    DELETE_CLASS_IN_ALL_CLASSES
 } from "../actions/classActions";
 
 const initialState = {
@@ -94,6 +96,16 @@ const reducer = (state = initialState, action) => {
                     ...state.selectedClass, mainTeacher: action.tutor
                 }
             };
+        case UPDATE_TUTOR_IN_ALL_CLASSES:
+            return {
+                ...state, allClasses: state.allClasses.map(item => {
+
+                    if (item.id === action.classId) {
+                        item.mainTeacher = {id: action.tutorId};
+                    }
+                    return item;
+                })
+            };
         case UPDATE_LIST_IN_SELECTED_CLASS:
             return {
                 ...state, selectedClass: {
@@ -101,6 +113,8 @@ const reducer = (state = initialState, action) => {
                     [action.isStudent ? 'students' : 'subjectTeachers']: action.list
                 }
             };
+        case DELETE_CLASS_IN_ALL_CLASSES:
+            return {...state, allClasses: state.allClasses.filter(item => item.id !== action.id)};
         default:
             return state;
     }

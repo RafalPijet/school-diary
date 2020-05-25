@@ -289,6 +289,7 @@ const ClassContent = props => {
             </Grid>
             <NavClassPanel
                 classId={classItem.id}
+                name={classItem.name}
                 tutor={classItem.mainTeacher}
                 possibleTutors={possibleTutors}
                 getModeStatus={getModeStatus}

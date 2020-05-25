@@ -11,7 +11,9 @@ import {
     setSelectedClass,
     updateDataInSelectedClass,
     updateTutorInSelectedClass,
-    updateListInSelectedClass
+    updateListInSelectedClass,
+    updateTutorInAllClasses,
+    deleteClassInAllClasses
 } from "./actions/classActions";
 import {
     startRequest,
@@ -34,7 +36,7 @@ import {
     setFreeStudents,
     setClassesStudents
 } from "./actions/studentActions";
-import {setAlertSuccess} from "./actions/valuesActions";
+import {setAlertSuccess, setTutorIsUse} from "./actions/valuesActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -193,7 +195,9 @@ export const updateTutorClassRequest = classItem => {
             dispatch(setAlertSuccess(true,
                 `${res.data.name} tutor has been changed to ${res.data.mainTeacher.lastName}
                  ${res.data.mainTeacher.firstName}`));
-            dispatch(updateTutorInSelectedClass(res.data.mainTeacher));
+            await dispatch(updateTutorInSelectedClass(res.data.mainTeacher));
+            await dispatch(updateTutorInAllClasses(classItem.id, res.data.mainTeacher.id));
+            dispatch(setTutorIsUse(true));
             dispatch(stopUpdatingRequest());
         } catch (err) {
             console.log(err.message);
@@ -336,9 +340,26 @@ export const addClassRequest = payload => {
             newClass.mainTeacher = payload.mainTeacher;
             dispatch(addNewClass(newClass));
             dispatch(setAlertSuccess(true, `${payload.name} has been added.`));
+            dispatch(setTutorIsUse(true));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
+        }
+    }
+};
+
+export const deleteClassByIdRequest = id => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.delete(`${API_URL}/class/${id}`);
+            dispatch(setAlertSuccess(true, `${res.data.name} has been removed.`));
+            dispatch(deleteClassInAllClasses(id));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };

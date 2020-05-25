@@ -19,7 +19,18 @@ import componentStyle from './ClassesPanelStyle'
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ClassesPanel = props => {
-    const {allClasses, addClass, loadTeachers, request, teachers, availableNames, getClassGrade, getPossibleTutors} = props;
+    const {
+        allClasses,
+        addClass,
+        loadTeachers,
+        request,
+        teachers,
+        availableNames,
+        getClassGrade,
+        getPossibleTutors,
+        tutorIsUse,
+        setTutorIsUse
+    } = props;
     const [newClass, setNewClass] = useState({
         name: '',
         mainTeacher: 'unselected',
@@ -34,11 +45,13 @@ const ClassesPanel = props => {
         setIsPossible(newClass.mainTeacher !== 'unselected');
 
         if (teachers.length === 0) loadTeachers();
-        prepareData();
+        if (allClasses.length && teachers.length && tutorIsUse) prepareData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [availableNames.grade, availableNames.type, classGrade, teachers, newClass.mainTeacher, allClasses]);
+    }, [availableNames.grade, availableNames.type, classGrade,
+        teachers, newClass.mainTeacher, allClasses, tutorIsUse]);
 
     const prepareData = () => {
+        console.log('PrepareData');
         let result = [];
         let possibleTutors = [];
         availableNames.grade.forEach(grade => {
@@ -54,8 +67,8 @@ const ClassesPanel = props => {
             result = result.filter(name => name.substring(0, 1) === classGrade)
         }
         setAvailableClassNames(result);
-        if (newClass.mainTeacher === 'unselected') setNewClass({...newClass, name: result[0]});
 
+        if (newClass.mainTeacher === 'unselected') setNewClass({...newClass, name: result[0]});
         let existedTutors = allClasses.map(item => item.mainTeacher.id);
         teachers.forEach(teacher => {
 
@@ -70,6 +83,7 @@ const ClassesPanel = props => {
             setAvailableTutors([]);
             getPossibleTutors([]);
         }
+        setTutorIsUse(false);
     };
 
     const addClassHandling = () => {
@@ -85,6 +99,7 @@ const ClassesPanel = props => {
     const handleClassGrade = event => {
         setClassGrade(event.target.value);
         getClassGrade(event.target.value);
+        setTutorIsUse(true);
     };
 
     const handleClassName = event => {
@@ -182,7 +197,9 @@ ClassesPanel.propTypes = {
     addClass: PropTypes.func.isRequired,
     availableNames: PropTypes.object.isRequired,
     getClassGrade: PropTypes.func.isRequired,
-    getPossibleTutors: PropTypes.func.isRequired
+    getPossibleTutors: PropTypes.func.isRequired,
+    tutorIsUse: PropTypes.bool.isRequired,
+    setTutorIsUse: PropTypes.func.isRequired
 };
 
 export default ClassesPanel;

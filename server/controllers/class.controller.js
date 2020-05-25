@@ -147,3 +147,15 @@ exports.updateClass = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.deleteClassById = async (req, res) => {
+
+    try {
+        const {id} = req.params;
+        let classItem = await Class.findOne({id});
+        classItem.remove();
+        res.status(200).json({name: classItem.name})
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

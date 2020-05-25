@@ -5,6 +5,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {AppBar, Tabs, Tab, Paper, Typography} from "@material-ui/core";
 import {Zoom} from "@material-ui/core";
 import Spinner from "../../common/Spinner/Spinner";
+import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 import componentStyle from "./ClassesContentStyle";
 import {a11yProps, sortByNameFromAToZ} from "../../../utilities/functions";
 import ClassContent from "../ClassContent/ClassContentContainer";
@@ -26,7 +27,10 @@ const ClassesContent = props => {
         setSelectedClass,
         selectedClass,
         loadDataForClass,
-        teachers
+        teachers,
+        modalYesNot,
+        deleteClass,
+        setModalYesNot
     } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -94,6 +98,14 @@ const ClassesContent = props => {
         loadDataForClass(filteredClass[newValue].id);
     };
 
+    const removeClass = async isConfirm => {
+        if (isConfirm) await deleteClass(modalYesNot.content.data.id);
+        setModalYesNot(false, {
+            description: '',
+            data: {}
+        });
+    };
+
     return (
         <Paper
             elevation={3}
@@ -134,6 +146,12 @@ const ClassesContent = props => {
                     </Paper>
                 </> : <Typography variant='h6'>Nothing to show...</Typography>
             }
+            {modalYesNot.isOpen &&
+            <ModalAreYouSure
+                description={modalYesNot.content.description}
+                isOpen={modalYesNot.isOpen}
+                isConfirm={removeClass}/>
+            }
         </Paper>
     )
 };
@@ -158,7 +176,10 @@ ClassesContent.propTypes = {
     setSelectedClass: PropTypes.func.isRequired,
     selectedClass: PropTypes.object.isRequired,
     loadDataForClass: PropTypes.func.isRequired,
-    teachers: PropTypes.array.isRequired
+    teachers: PropTypes.array.isRequired,
+    modalYesNot: PropTypes.object.isRequired,
+    setModalYesNot: PropTypes.func.isRequired,
+    deleteClass: PropTypes.func.isRequired
 };
 
 export default ClassesContent;

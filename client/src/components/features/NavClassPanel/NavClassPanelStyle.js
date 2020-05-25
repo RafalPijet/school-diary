@@ -44,6 +44,14 @@ const componentStyle = theme => ({
             backgroundColor: theme.palette.action.dark
         }
     },
+    buttonDelete: {
+        outline: 'none !important',
+        backgroundColor: theme.palette.primary.light,
+        color: theme.palette.action.light,
+        '&:hover': {
+            color: theme.palette.action.main
+        }
+    },
     searchField: {
         padding: '5px'
     },

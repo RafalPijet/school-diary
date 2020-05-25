@@ -21,6 +21,7 @@ import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import SchoolIcon from '@material-ui/icons/School';
 import DoneIcon from '@material-ui/icons/Done';
+import DeleteIcon from '@material-ui/icons/Delete';
 import componentStyle from "./NavClassPanelStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
@@ -29,6 +30,7 @@ const NavClassPanel = props => {
     const {
         request,
         classId,
+        name,
         tutor,
         possibleTutors,
         getModeStatus, subjects,
@@ -37,7 +39,8 @@ const NavClassPanel = props => {
         isChanging,
         updateTutor,
         confirmUpdate,
-        getIsTutor
+        getIsTutor,
+        setModalYesNot
     } = props;
     const classes = useStyles();
     const [newTutor, setNewTutor] = useState('unselected');
@@ -46,6 +49,7 @@ const NavClassPanel = props => {
     const [isTeachersMode, setIsTeachersMode] = useState(false);
     const [selectedSubject, setSelectedSubject] = useState('all');
     const [filteredStudents, setFilteredStudents] = useState('');
+    const [isDeleteVisible, setIsDeleteVisible] = useState(true);
 
     useEffect(() => {
         setIsPossible(newTutor !== 'unselected' && !isStudentsMode && !isTeachersMode);
@@ -56,6 +60,8 @@ const NavClassPanel = props => {
             setIsTeachersMode(false);
             setIsPossible(false);
         }
+
+        setIsDeleteVisible(!isStudentsMode && !isTeachersMode && !request.updating);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newTutor, isStudentsMode, isTeachersMode, request.updating]);
 
@@ -80,6 +86,13 @@ const NavClassPanel = props => {
             setNewTutor('unselected');
             getIsTutor(true)
         }
+    };
+
+    const removeClass = () => {
+        setModalYesNot(true, {
+            description: `Do you want remove ${name}?`,
+            data: {id: classId}
+        });
     };
 
     return (
@@ -162,6 +175,7 @@ const NavClassPanel = props => {
                                     setIsStudentsMode(!isStudentsMode);
                                     setIsTeachersMode(false);
                                     setFilteredStudents('');
+                                    // setIsDeleteVisible(false);
                                 }}
                             >
                                 <SwapHorizIcon/>
@@ -187,6 +201,7 @@ const NavClassPanel = props => {
                                      setIsTeachersMode(!isTeachersMode);
                                      setIsStudentsMode(false);
                                      setSelectedSubject('all');
+                                     // setIsDeleteVisible(false);
                                  }}
                              >
                                 <SwapHorizIcon/>
@@ -228,7 +243,38 @@ const NavClassPanel = props => {
                                 </FormControl>
                             </Zoom>
                         </Grid>
-                        <Grid item lg={3} component='span' style={{display: 'flex', justifyContent: 'center'}}>
+                        <Grid
+                            hidden={!isDeleteVisible}
+                            item
+                            lg={3}
+                            component='span'
+                            style={{display: 'flex', justifyContent: 'center'}}
+                        >
+                            <Tooltip
+                                title='Remove current class'
+                                classes={{tooltip: classes.tooltip}}
+                                placement='top-end'
+                                arrow
+                                TransitionComponent={Fade}
+                                enterDelay={1000}
+                            >
+                            <span className={request.updating ? classes.progress : ''}>
+                                <IconButton
+                                    className={classes.buttonDelete}
+                                    onClick={removeClass}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </span>
+                            </Tooltip>
+                        </Grid>
+                        <Grid
+                            hidden={isDeleteVisible}
+                            item
+                            lg={3}
+                            component='span'
+                            style={{display: 'flex', justifyContent: 'center'}}
+                        >
                             <Tooltip
                                 title='Confirm new list content'
                                 classes={{tooltip: classes.tooltip}}
@@ -265,9 +311,11 @@ NavClassPanel.propTypes = {
     getFilteredStudents: PropTypes.func.isRequired,
     isChanging: PropTypes.bool.isRequired,
     classId: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     updateTutor: PropTypes.func.isRequired,
     confirmUpdate: PropTypes.func.isRequired,
-    getIsTutor: PropTypes.func.isRequired
+    getIsTutor: PropTypes.func.isRequired,
+    setModalYesNot: PropTypes.func.isRequired
 };
 
 export default NavClassPanel;

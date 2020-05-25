@@ -12,5 +12,6 @@ router.route('/class/tutor').put(classController.updateTutorClass);
 router.route('/class').put(classController.updateClass);
 router.route('/class/student').post(classController.addStudent);
 router.route('/class/teacher').post(classController.addTeacher);
+router.route('/class/:id').delete(classController.deleteClassById);
 
 module.exports = router;
