@@ -36,7 +36,7 @@ import {
     setFreeStudents,
     setClassesStudents
 } from "./actions/studentActions";
-import {setAlertSuccess, setTutorIsUse} from "./actions/valuesActions";
+import {setAlertSuccess, setTutorIsUse, setIsStudentMode} from "./actions/valuesActions";
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -356,7 +356,10 @@ export const deleteClassByIdRequest = id => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/class/${id}`);
             dispatch(setAlertSuccess(true, `${res.data.name} has been removed.`));
-            dispatch(deleteClassInAllClasses(id));
+            await dispatch(deleteClassInAllClasses(id));
+            await dispatch(loadStudentsIdFromClasses());
+            dispatch(setTutorIsUse(true));
+            dispatch(setIsStudentMode(true));
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

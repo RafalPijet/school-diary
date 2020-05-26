@@ -15,7 +15,8 @@ const mapStateToProps = state => ({
     isStudentMode: getIsStudentMode(state),
     selectedClass: getSelectedClass(state),
     teachers: getTeachers(state),
-    modalYesNot: getModalYesNot(state)
+    modalYesNot: getModalYesNot(state),
+
 });
 
 const mapDispatchToProps = dispatch => ({

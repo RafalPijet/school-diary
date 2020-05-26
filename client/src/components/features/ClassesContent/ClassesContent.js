@@ -39,6 +39,7 @@ const ClassesContent = props => {
     const [isPrepare, setIsPrepare] = useState(false);
     const [filteredClass, setFilteredClass] = useState(allClasses);
     const [classGradeIn, setClassGradeIn] = useState('none');
+    const [isDelete, setIsDelete] = useState(false);
 
     useEffect(() => {
 
@@ -99,11 +100,21 @@ const ClassesContent = props => {
     };
 
     const removeClass = async isConfirm => {
-        if (isConfirm) await deleteClass(modalYesNot.content.data.id);
-        setModalYesNot(false, {
-            description: '',
-            data: {}
-        });
+
+        if (isConfirm) {
+            await setIsDelete(true);
+            await setIsShow(false);
+        }
+        setModalYesNot(false, modalYesNot.content);
+    };
+
+    const deleteGo = async () => {
+        setValue(0);
+        setNewValue(0);
+        await deleteClass(modalYesNot.content.data.id);
+        await setSelectedClass({});
+        setIsDelete(false);
+        setModalYesNot(false, {description: '', data: {}});
     };
 
     return (
@@ -123,7 +134,7 @@ const ClassesContent = props => {
                         >
                             {filteredClass.map((item, i) => {
                                 return <Tab className={classes.tabs} key={item.id} disabled={request.geting}
-                                           label={item.name}  {...a11yProps(i)}/>
+                                            label={item.name}  {...a11yProps(i)}/>
                             })}
                         </Tabs>
                     </AppBar>
@@ -132,7 +143,7 @@ const ClassesContent = props => {
                             <Zoom
                                 in={isShow}
                                 timeout={500}
-                                onExited={changeClass}
+                                onExited={isDelete ? deleteGo : changeClass}
                             >
                                 <Paper elevation={4} style={{width: '100%'}}>
                                     {((Object.entries(selectedClass).length > 0)) &&

@@ -51,7 +51,6 @@ const ClassesPanel = props => {
         teachers, newClass.mainTeacher, allClasses, tutorIsUse]);
 
     const prepareData = () => {
-        console.log('PrepareData');
         let result = [];
         let possibleTutors = [];
         availableNames.grade.forEach(grade => {

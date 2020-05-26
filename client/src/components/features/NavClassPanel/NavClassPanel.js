@@ -175,7 +175,6 @@ const NavClassPanel = props => {
                                     setIsStudentsMode(!isStudentsMode);
                                     setIsTeachersMode(false);
                                     setFilteredStudents('');
-                                    // setIsDeleteVisible(false);
                                 }}
                             >
                                 <SwapHorizIcon/>
@@ -201,7 +200,6 @@ const NavClassPanel = props => {
                                      setIsTeachersMode(!isTeachersMode);
                                      setIsStudentsMode(false);
                                      setSelectedSubject('all');
-                                     // setIsDeleteVisible(false);
                                  }}
                              >
                                 <SwapHorizIcon/>
@@ -212,7 +210,7 @@ const NavClassPanel = props => {
                 </Grid>
                 <Grid item lg={5}>
                     <Grid container>
-                        <Grid item lg={9} component='span'>
+                        <Grid item lg={8} component='span'>
                             <Zoom in={isStudentsMode}>
                                 <TextField
                                     hidden={!isStudentsMode}
@@ -244,55 +242,51 @@ const NavClassPanel = props => {
                             </Zoom>
                         </Grid>
                         <Grid
-                            hidden={!isDeleteVisible}
                             item
-                            lg={3}
+                            lg={4}
                             component='span'
                             style={{display: 'flex', justifyContent: 'center'}}
                         >
-                            <Tooltip
-                                title='Remove current class'
-                                classes={{tooltip: classes.tooltip}}
-                                placement='top-end'
-                                arrow
-                                TransitionComponent={Fade}
-                                enterDelay={1000}
-                            >
+                            <Grid item lg={6} component='span' style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <Tooltip
+                                    title='Remove current class'
+                                    classes={{tooltip: classes.tooltip}}
+                                    placement='top-end'
+                                    arrow
+                                    TransitionComponent={Fade}
+                                    enterDelay={1000}
+                                >
                             <span className={request.updating ? classes.progress : ''}>
                                 <IconButton
+                                    disabled={!isDeleteVisible}
                                     className={classes.buttonDelete}
                                     onClick={removeClass}
                                 >
                                     <DeleteIcon/>
                                 </IconButton>
                             </span>
-                            </Tooltip>
-                        </Grid>
-                        <Grid
-                            hidden={isDeleteVisible}
-                            item
-                            lg={3}
-                            component='span'
-                            style={{display: 'flex', justifyContent: 'center'}}
-                        >
-                            <Tooltip
-                                title='Confirm new list content'
-                                classes={{tooltip: classes.tooltip}}
-                                placement='top-end'
-                                arrow
-                                TransitionComponent={Fade}
-                                enterDelay={1000}
-                            >
+                                </Tooltip>
+                            </Grid>
+                            <Grid item lg={6} component='span' style={{display: 'flex', justifyContent: 'center'}}>
+                                <Tooltip
+                                    title='Confirm new list content'
+                                    classes={{tooltip: classes.tooltip}}
+                                    placement='top-end'
+                                    arrow
+                                    TransitionComponent={Fade}
+                                    enterDelay={1000}
+                                >
                             <span className={request.updating ? classes.progress : ''}>
                                 <IconButton
-                                    disabled={!isChanging}
+                                    disabled={!isChanging || isDeleteVisible}
                                     className={classes.buttonsActive}
                                     onClick={confirmUpdate}
                                 >
                                     <DoneIcon/>
                                 </IconButton>
                             </span>
-                            </Tooltip>
+                                </Tooltip>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
