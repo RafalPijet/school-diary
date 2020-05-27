@@ -13,6 +13,13 @@ const componentStyle = theme => ({
     tabs: {
         backgroundColor: theme.palette.action.tab,
         fontWeight: 800
+    },
+    content: {
+        backgroundColor: theme.palette.secondary.dark,
+        width: '100%',
+        height: '480px',
+        padding: '5px',
+        marginTop: theme.spacing(2)
     }
 });
 

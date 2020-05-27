@@ -382,6 +382,23 @@ export const getAllStudentsRequest = () => {
     }
 };
 
+export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            let start = Math.ceil((page - 1) * itemsPerPage);
+            let limit = itemsPerPage;
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/students/${start}/${limit}`);
+            console.log(res.data);
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const getStudentsIdRequest = () => {
     return async dispatch => {
         dispatch(startRequest());

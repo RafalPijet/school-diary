@@ -43,6 +43,38 @@ exports.getStudentsId = async (req, res) => {
     }
 };
 
+exports.getStudentsWithRange = async (req, res) => {
+
+    try {
+        let {start, limit} = req.params;
+        start = parseInt(start);
+        limit = parseInt(limit);
+        let students = await Student.find();
+        let amount = await Student.countDocuments();
+        let result = [];
+
+        for (let i = students.length - 1; i > -1; i--) {
+            result = [...result, students[i]]
+        }
+        let selectedStudents = students.slice(start, start + limit);
+        selectedStudents = selectedStudents.map(student => {
+            return {
+                id: student.id,
+                firstName: student.firstName,
+                lastName: student.lastName,
+                birthDate: student.birthDate,
+                parents: student.parents.map(parent => parent.id)
+            }
+        });
+        res.status(200).json({
+            selectedStudents,
+            amount
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.addStudent = async (req, res) => {
 
     try {

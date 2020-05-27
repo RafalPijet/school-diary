@@ -1,42 +1,39 @@
 import React, {useState, useEffect} from 'react';
 import {Paper, AppBar, Tabs, Tab} from "@material-ui/core";
-import SwipeableViews from 'react-swipeable-views';
-import {makeStyles, useTheme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from 'prop-types';
 import Spinner from "../../common/Spinner/Spinner";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ListIcon from '@material-ui/icons/List';
-import TabPanelStudents from "../../common/TabPanelStudents/TabPanelStudents";
+import StudentForm from "../StudentForm/StudentFormContainer";
+import StudentsTable from "../StudentsTable/StudentsTableContainer";
 import Alert from "../../common/Alert/Alert";
+import {a11yProps} from "../../../utilities/functions";
 import componentStyle from "./StudentsHandlingStyle";
 
 const useStyles = makeStyles(theme => componentStyle((theme)));
 
-const a11yProps = index => {
-    return {
-        id: `full-width-tab-${index}`,
-        'aria-controls': `full-width-tabpanel-${index}`,
-    };
-};
-
 const StudentsHandling = props => {
-    const {request, resetRequest, loadAllStudents, alertSuccess, setAlertSuccess} = props;
+    const {
+        request,
+        resetRequest,
+        loadAllStudents,
+        alertSuccess,
+        setAlertSuccess,
+        loadStudentsWithRange
+    } = props;
     const [value, setValue] = useState(0);
     const classes = useStyles();
-    const theme = useTheme();
 
     useEffect(() => {
         resetRequest();
         loadAllStudents();
+        loadStudentsWithRange(1, 5);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-    };
-
-    const handleChangeIndex = (index) => {
-        setValue(index);
     };
 
     const handleAlert = () => {
@@ -55,15 +52,10 @@ const StudentsHandling = props => {
                              icon={<PersonAddIcon/>} {...a11yProps(1)}/>
                     </Tabs>
                 </AppBar>
-                <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={value}
-                    onChangeIndex={handleChangeIndex}
-                    style={{width: '100%'}}
-                >
-                    <TabPanelStudents isAdding={false} value={value} index={0} dir={theme.direction}/>
-                    <TabPanelStudents isAdding={true} value={value} index={1} dir={theme.direction}/>
-                </SwipeableViews>
+                <Paper className={classes.content} elevation={9}>
+                    {value === 0 && <StudentsTable/>}
+                    {value === 1 && <StudentForm/>}
+                </Paper>
             </>
             }
             <Alert
@@ -81,7 +73,8 @@ StudentsHandling.propTypes = {
     request: PropTypes.object.isRequired,
     loadAllStudents: PropTypes.func.isRequired,
     alertSuccess: PropTypes.object.isRequired,
-    setAlertSuccess: PropTypes.func.isRequired
+    setAlertSuccess: PropTypes.func.isRequired,
+    loadStudentsWithRange: PropTypes.func.isRequired
 };
 
 export default StudentsHandling;
