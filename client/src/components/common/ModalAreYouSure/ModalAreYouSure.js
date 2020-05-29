@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ModalAreYouSure = props => {
-    const {isOpen, isConfirm, description} = props;
+    const {isOpen, isConfirm, description, ...otherProps} = props;
     const classes = useStyles();
 
     return (
@@ -32,6 +32,7 @@ const ModalAreYouSure = props => {
                 keepMounted
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
+                {...otherProps}
             >
                 <DialogTitle id='alert-dialog-slide-title'>
                     Are you sure?

@@ -1,7 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {makeStyles} from "@material-ui/core/styles";
+import clsx from "clsx";
 import {
     TableContainer,
+    Grid,
     Paper,
     Table,
     TableBody,
@@ -10,14 +13,43 @@ import {
     TableFooter,
     TablePagination as MaterialPagination
 } from '@material-ui/core';
+import Spinner from "../../common/Spinner/Spinner";
 import TablePagination from "../../common/TablePagination/TablePagination";
+import StudentItem from "../StudentItem/StudentItemContainer";
+import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
+import componentStyle from './StudentsTableStyle'
+
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const StudentsTable = props => {
-    const {students} = props;
+    const {
+        selectedStudents,
+        allStudents,
+        loadStudentsNames,
+        loadStudentsWithRange,
+        request,
+        modalYesNot,
+        setModalYesNot,
+        deleteStudent
+    } = props;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const classes = useStyles();
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage);
+    useEffect(() => {
+        if (!allStudents.length) loadStudentsNames();
+        loadStudentsWithRange(page + 1, rowsPerPage);
+    }, [page, rowsPerPage]);
+
+    const handleDeleteStudent = isConfirm => {
+        const {studentId, className} = modalYesNot.content.data;
+
+        if (isConfirm) deleteStudent(studentId, className);
+        setModalYesNot(false, {
+            description: '',
+            data: {}
+        });
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -29,61 +61,70 @@ const StudentsTable = props => {
     };
 
     return (
-        <div>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableBody>
-                        {(rowsPerPage > 0 ? students.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) :
-                            students).map(student => (
-                            <TableRow key={student.id}>
-                                <TableCell component='th' scope='row'>
-                                    {`${student.lastName} ${student.firstName}`}
-                                </TableCell>
-                                <TableCell align='center'>
-                                    {student.birthDate.substring(0, 10)}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        {emptyRows > 0 && (
-                            <TableRow style={{height: 53 * emptyRows}}>
-                                <TableCell colSpan={6}/>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <MaterialPagination
-                                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={3}
-                                count={students.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                SelectProps={{
-                                    inputProps: { 'aria-label': 'rows per page' },
-                                    native: true,
-                                }}
-                                onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
-                                ActionsComponent={TablePagination}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
-        </div>
+        <Grid container justify='center' alignItems='center' style={{height: '470px'}}>
+            {request.working ? <Spinner/> :
+                <>
+                    <Paper className={clsx(classes.table, request.geting ? classes.spinner : '')}>
+                        {request.geting ? <Spinner/> :
+                            <>
+                                {selectedStudents.map(student => (
+                                     <StudentItem key={student.id} student={student}/>
+                                ))}
+
+                            </>
+                        }
+                        <ModalAreYouSure
+                            description={modalYesNot.content.description}
+                            isOpen={modalYesNot.isOpen}
+                            isConfirm={handleDeleteStudent}/>
+                    </Paper>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableFooter>
+                                <TableRow>
+                                    <MaterialPagination
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        colSpan={3}
+                                        count={allStudents.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        SelectProps={{
+                                            inputProps: {'aria-label': 'rows per page'},
+                                            native: true,
+                                        }}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                        ActionsComponent={TablePagination}
+                                    />
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </TableContainer>
+                </>
+            }
+        </Grid>
     )
 };
 
 StudentsTable.propTypes = {
-    students: PropTypes.arrayOf(PropTypes.shape({
-        ratings: PropTypes.array.isRequired,
+    selectedStudents: PropTypes.arrayOf(PropTypes.shape({
         parents: PropTypes.array.isRequired,
         id: PropTypes.string.isRequired,
-        _id: PropTypes.string.isRequired,
+        className: PropTypes.string.isRequired,
         firstName: PropTypes.string.isRequired,
         lastName: PropTypes.string.isRequired,
         birthDate: PropTypes.string.isRequired
-    }))
+    })),
+    loadStudentsWithRange: PropTypes.func.isRequired,
+    loadStudentsNames: PropTypes.func.isRequired,
+    request: PropTypes.object.isRequired,
+    allStudents: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+    })),
+    modalYesNot: PropTypes.object.isRequired,
+    setModalYesNot: PropTypes.func.isRequired,
+    deleteStudent: PropTypes.func.isRequired
 };
 
 export default StudentsTable;

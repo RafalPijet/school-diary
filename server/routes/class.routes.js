@@ -3,6 +3,7 @@ const router = express.Router();
 const classController = require('../controllers/class.controller');
 
 router.route('/classes/students').get(classController.getStudentsFromClasses);
+router.route('/classes/students/name').get(classController.getClassNameForStudents);
 router.route('/classes/:teacherId').get(classController.getClassByTeacherId);
 router.route('/class/:id').get(classController.getClassById);
 router.route('/class').get(classController.getAllClasses);
@@ -10,6 +11,7 @@ router.route('/class/principal/:id').get(classController.getClassByIdForPrincipa
 router.route('/class').post(classController.addClass);
 router.route('/class/tutor').put(classController.updateTutorClass);
 router.route('/class').put(classController.updateClass);
+router.route('/class/name/student').put(classController.deleteStudentFromClass);
 router.route('/class/student').post(classController.addStudent);
 router.route('/class/teacher').post(classController.addTeacher);
 router.route('/class/:id').delete(classController.deleteClassById);

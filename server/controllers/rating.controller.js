@@ -55,7 +55,9 @@ exports.deleteRatingById = async (req, res) => {
 exports.deleteRating = async (req, res) => {
 
     try {
-        res.status(200).json(await Rating.findOneAndDelete({id: req.params.id}))
+        const {ratingsId} = req.body;
+        console.log(ratingsId);
+        res.status(200).json(await Rating.remove({id: ratingsId}))
     } catch (err) {
         res.status(500).json(err);
     }

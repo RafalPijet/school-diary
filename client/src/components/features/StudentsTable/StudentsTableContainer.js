@@ -1,9 +1,22 @@
 import {connect} from 'react-redux';
+import {getRequest} from "../../../redux/actions/requestActions";
+import {getStudentsWithRangeRequest, getStudentsNamesRequest,deleteStudentRequest} from "../../../redux/thunks";
+import {getAllStudents, getFreeStudents} from "../../../redux/actions/studentActions";
+import {getModalYesNot, setModalYesNot} from "../../../redux/actions/valuesActions";
 import StudentsTable from "./StudentsTable";
-import {getAllStudents} from "../../../redux/actions/studentActions";
 
 const mapStateToProps = state => ({
-    students: getAllStudents(state)
+    selectedStudents: getAllStudents(state),
+    allStudents: getFreeStudents(state),
+    request: getRequest(state),
+    modalYesNot: getModalYesNot(state)
 });
 
-export default connect(mapStateToProps)(StudentsTable);
+const mapDispatchToProps = dispatch => ({
+    loadStudentsWithRange: (page, itemsPerPage) => dispatch(getStudentsWithRangeRequest(page, itemsPerPage)),
+    loadStudentsNames: () => dispatch(getStudentsNamesRequest()),
+    setModalYesNot: (isOpen, content) => dispatch(setModalYesNot(isOpen, content)),
+    deleteStudent: (studentId, className) => dispatch(deleteStudentRequest(studentId, className))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentsTable);

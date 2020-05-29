@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Paper, AppBar, Tabs, Tab} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from 'prop-types';
-import Spinner from "../../common/Spinner/Spinner";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ListIcon from '@material-ui/icons/List';
 import StudentForm from "../StudentForm/StudentFormContainer";
@@ -17,20 +16,11 @@ const StudentsHandling = props => {
     const {
         request,
         resetRequest,
-        loadAllStudents,
         alertSuccess,
-        setAlertSuccess,
-        loadStudentsWithRange
+        setAlertSuccess
     } = props;
     const [value, setValue] = useState(0);
     const classes = useStyles();
-
-    useEffect(() => {
-        resetRequest();
-        loadAllStudents();
-        loadStudentsWithRange(1, 5);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -42,8 +32,6 @@ const StudentsHandling = props => {
 
     return (
         <Paper variant='outlined' className={classes.root}>
-            {request.pending && <Spinner/>}
-            {request.success &&
             <>
                 <AppBar position='static' className={classes.tabs}>
                     <Tabs value={value} onChange={handleChange} textColor='primary' variant='fullWidth'>
@@ -57,7 +45,6 @@ const StudentsHandling = props => {
                     {value === 1 && <StudentForm/>}
                 </Paper>
             </>
-            }
             <Alert
                 isOpenAlert={alertSuccess.isOpen || request.error !== null}
                 variant={alertSuccess.isOpen ? 'success' : 'error'}
@@ -71,10 +58,8 @@ const StudentsHandling = props => {
 StudentsHandling.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
-    loadAllStudents: PropTypes.func.isRequired,
     alertSuccess: PropTypes.object.isRequired,
-    setAlertSuccess: PropTypes.func.isRequired,
-    loadStudentsWithRange: PropTypes.func.isRequired
+    setAlertSuccess: PropTypes.func.isRequired
 };
 
 export default StudentsHandling;

@@ -6,6 +6,6 @@ router.route('/rating').post(ratingController.addNewRating);
 router.route('/ratings/:id').post(ratingController.addNewRatingById);
 router.route('/ratings/:id').put(ratingController.updateRatingById);
 router.route('/ratings/:id/:_id').delete(ratingController.deleteRatingById);
-router.route('/rating/:id').delete(ratingController.deleteRating);
+router.route('/ratings').delete(ratingController.deleteRating);
 
 module.exports = router;

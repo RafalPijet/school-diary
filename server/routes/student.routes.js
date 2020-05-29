@@ -5,6 +5,7 @@ const studentController = require('../controllers/student.controller');
 router.route('/students').get(studentController.getAllStudents);
 router.route('/students/onlyid').get(studentController.getStudentsId);
 router.route('/students/select').get(studentController.getStudentsById);
+router.route('/students/names').get(studentController.getStudentsNames);
 router.route('/students/:start/:limit').get(studentController.getStudentsWithRange);
 router.route('/student').post(studentController.addStudent);
 router.route('/student/subject').post(studentController.addSubjectToStudent);

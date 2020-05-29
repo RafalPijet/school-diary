@@ -65,7 +65,7 @@ exports.getAllClasses = async (req, res) => {
             item.students = [];
             item.subjectTeachers = [];
             item.mainTeacher = {id: item.mainTeacher.id};
-                return item
+            return item
         });
         res.status(200).json(result);
     } catch (err) {
@@ -82,6 +82,26 @@ exports.getStudentsFromClasses = async (req, res) => {
         });
         let studentsId = Array.prototype.concat(...result);
         res.status(200).json(studentsId);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.getClassNameForStudents = async (req, res) => {
+
+    try {
+        const {studentsId} = req.query;
+        let classes = await Class.find();
+        let result = [];
+        await classes.forEach(classItem => {
+            classItem.students.forEach(student => {
+
+                if (studentsId.includes(student.id)) {
+                    result = [...result, {id: student.id, name: classItem.name}]
+                }
+            })
+        });
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -155,6 +175,19 @@ exports.deleteClassById = async (req, res) => {
         let classItem = await Class.findOne({id});
         classItem.remove();
         res.status(200).json({name: classItem.name})
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.deleteStudentFromClass = async (req, res) => {
+
+    try {
+        const {className, studentId} = req.body;
+        let classItem = await Class.findOne({name: className});
+        await classItem.students.filter(student => student.id !== studentId);
+        await classItem.save();
+        res.status(200).json(studentId);
     } catch (err) {
         res.status(500).json(err);
     }

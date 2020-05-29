@@ -381,17 +381,59 @@ export const getAllStudentsRequest = () => {
         }
     }
 };
-
+/*todo*/
 export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
     return async dispatch => {
-        dispatch(startWorkingRequest());
+        dispatch(startGetingRequest());
 
         try {
+            let result = [];
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/${start}/${limit}`);
-            console.log(res.data);
+            let studentsId = res.data.map(item => item.id);
+            let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+            await res.data.forEach(student => {
+                resNext.data.forEach(item => {
+
+                    if (student.id === item.id) {
+                        result = [...result, {
+                            id: student.id,
+                            className: item.name,
+                            firstName: student.firstName,
+                            lastName: student.lastName,
+                            birthDate: student.birthDate,
+                            parents: student.parents
+                        }]
+                    }
+                })
+            });
+            studentsId = result.map(student => student.id);
+            res.data.forEach(student => {
+
+                if (!studentsId.includes(student.id)) {
+                    student.className = 'no assigned';
+                    result = [...result, student];
+                }
+            });
+
+            dispatch(loadAllStudents(result));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const getStudentsNamesRequest = () => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/students/names`);
+            dispatch(setFreeStudents(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -458,18 +500,28 @@ export const updateStudentRequest = student => {
         }
     }
 };
-
-export const deleteStudentRequest = student => {
+/*todo*/
+export const deleteStudentRequest = (studentId, className) => {
     return async dispatch => {
-        dispatch(startRequest());
+        dispatch(startUpdatingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.delete(`${API_URL}/student/${student.id}`);
-            if (res.status === 200) {
-                dispatch(deleteStudent(student.id));
-                dispatch(stopRequest());
+            let res = await axios.delete(`${API_URL}/student/${studentId}`);
+
+            if (className !== 'no assigned') {
+                let res1 = await axios.put(`${API_URL}/class/name/student`,
+                    {studentId: res.data.studentId, className});
+
             }
+
+            if (res.data.ratings.length) {
+                let res2 = await axios.delete(`${API_URL}/ratings`, {data: {ratingsId: res.data.ratings}})
+            }
+            // console.log(res.data);
+            // dispatch(deleteStudent(student.id));
+            dispatch(setAlertSuccess(true, `Student ${res.data.studentName} has been removed.`));
+            dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }

@@ -157,12 +157,10 @@ const ClassesContent = props => {
                     </Paper>
                 </> : <Typography variant='h6'>Nothing to show...</Typography>
             }
-            {modalYesNot.isOpen &&
             <ModalAreYouSure
                 description={modalYesNot.content.description}
                 isOpen={modalYesNot.isOpen}
                 isConfirm={removeClass}/>
-            }
         </Paper>
     )
 };

@@ -43,6 +43,22 @@ exports.getStudentsId = async (req, res) => {
     }
 };
 
+exports.getStudentsNames = async (req, res) => {
+
+    try {
+        let result = await Student.find();
+        result = result.map(item => {
+            return {
+                id: item.id,
+                name: `${item.lastName} ${item.firstName}`
+            }
+        });
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getStudentsWithRange = async (req, res) => {
 
     try {
@@ -50,13 +66,13 @@ exports.getStudentsWithRange = async (req, res) => {
         start = parseInt(start);
         limit = parseInt(limit);
         let students = await Student.find();
-        let amount = await Student.countDocuments();
+
         let result = [];
 
         for (let i = students.length - 1; i > -1; i--) {
             result = [...result, students[i]]
         }
-        let selectedStudents = students.slice(start, start + limit);
+        let selectedStudents = result.slice(start, start + limit);
         selectedStudents = selectedStudents.map(student => {
             return {
                 id: student.id,
@@ -66,10 +82,7 @@ exports.getStudentsWithRange = async (req, res) => {
                 parents: student.parents.map(parent => parent.id)
             }
         });
-        res.status(200).json({
-            selectedStudents,
-            amount
-        });
+        res.status(200).json(selectedStudents);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -117,7 +130,13 @@ exports.deleteStudent = async (req, res) => {
 
     try {
         let student = await Student.findOne({id: req.params.id});
-        res.status(200).json(student.remove());
+        await student.remove();
+        res.status(200).json({
+            studentId: student.id,
+            studentName: `${student.lastName} ${student.firstName}`,
+            ratings: student.ratings.map(rating => rating.id),
+            parents: student.parents.map(parent => parent.id)
+        });
     } catch (err) {
         res.status(500).json(err);
     }
