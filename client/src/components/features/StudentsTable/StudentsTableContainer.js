@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => ({
     loadStudentsWithRange: (page, itemsPerPage) => dispatch(getStudentsWithRangeRequest(page, itemsPerPage)),
     loadStudentsNames: () => dispatch(getStudentsNamesRequest()),
     setModalYesNot: (isOpen, content) => dispatch(setModalYesNot(isOpen, content)),
-    deleteStudent: (studentId, className) => dispatch(deleteStudentRequest(studentId, className))
+    deleteStudent: studentId => dispatch(deleteStudentRequest(studentId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentsTable);

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Paper, AppBar, Tabs, Tab} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from 'prop-types';
@@ -17,10 +17,29 @@ const StudentsHandling = props => {
         request,
         resetRequest,
         alertSuccess,
-        setAlertSuccess
+        setAlertSuccess,
+        allStudents,
+        freeStudents,
+        clearAllStudents,
+        clearFreeStudents
     } = props;
     const [value, setValue] = useState(0);
+    const [isReady, setIsReady] = useState(false);
     const classes = useStyles();
+
+    useEffect(() => {
+
+        if (!allStudents.length && !freeStudents.length && !isReady) {
+            setIsReady(true);
+        }
+    }, [allStudents, freeStudents, isReady]);
+
+    useEffect(() => {
+        return () => {
+            clearAllStudents([]);
+            clearFreeStudents([]);
+        }
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -41,7 +60,7 @@ const StudentsHandling = props => {
                     </Tabs>
                 </AppBar>
                 <Paper className={classes.content} elevation={9}>
-                    {value === 0 && <StudentsTable/>}
+                    {value === 0 && isReady && <StudentsTable/>}
                     {value === 1 && <StudentForm/>}
                 </Paper>
             </>
@@ -59,7 +78,11 @@ StudentsHandling.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
     alertSuccess: PropTypes.object.isRequired,
-    setAlertSuccess: PropTypes.func.isRequired
+    setAlertSuccess: PropTypes.func.isRequired,
+    allStudents: PropTypes.array.isRequired,
+    freeStudents: PropTypes.array.isRequired,
+    clearAllStudents: PropTypes.func.isRequired,
+    clearFreeStudents: PropTypes.func.isRequired
 };
 
 export default StudentsHandling;

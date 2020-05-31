@@ -11,7 +11,6 @@ router.route('/class/principal/:id').get(classController.getClassByIdForPrincipa
 router.route('/class').post(classController.addClass);
 router.route('/class/tutor').put(classController.updateTutorClass);
 router.route('/class').put(classController.updateClass);
-router.route('/class/name/student').put(classController.deleteStudentFromClass);
 router.route('/class/student').post(classController.addStudent);
 router.route('/class/teacher').post(classController.addTeacher);
 router.route('/class/:id').delete(classController.deleteClassById);

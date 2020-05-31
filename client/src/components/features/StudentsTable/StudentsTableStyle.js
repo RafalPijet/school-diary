@@ -6,7 +6,8 @@ const componentStyle = theme => ({
         alignItems: 'center',
         height: '408px',
         marginBottom: theme.spacing(1),
-        overflow: 'auto'
+        overflow: 'auto',
+        backgroundColor: theme.palette.secondary.dark
     },
     spinner: {
         justifyContent: 'center'

@@ -1,30 +1,104 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types';
 import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
-import {Paper, Typography, Grid, Tooltip, IconButton, Fade} from "@material-ui/core";
+import {Paper, Typography, Grid, Tooltip, IconButton, Fade, TextField} from "@material-ui/core";
 import Parents from '@material-ui/icons/Wc';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import CloseIcon from '@material-ui/icons/Close';
+import DoneIcon from '@material-ui/icons/Done';
 import componentStyle from "./StudentItemStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const StudentItem = props => {
-    const {id, firstName, lastName, birthDate, className, parents} = props.student;
-    const {request, setModalYesNot} = props;
+    const {request, setModalYesNot, student} = props;
+    const [data, setData] = useState({
+        firstName: student.firstName,
+        lastName: student.lastName,
+        birthDate: student.birthDate
+    });
+    const [isEdit, setIsEdit] = useState(false);
+    const [isShowConfirm, setIsShowConfirm] = useState(false);
     const classes = useStyles();
+
+    useEffect(() => {
+        setIsShowConfirm(student.firstName !== data.firstName ||
+            student.lastName !== data.lastName ||
+            student.birthDate !== data.birthDate)
+    }, [data.firstName, data.lastName, data.birthDate]);
+
+    const handleEdit = () => {
+        setIsEdit(!isEdit);
+
+        if (isShowConfirm) {
+            setData({
+                firstName: student.firstName,
+                lastName: student.lastName,
+                birthDate: student.birthDate
+            })
+        }
+    };
+
+    const handleChange = event => {
+        setData({...data, [event.target.name]: event.target.value});
+    };
+
+    const handleRemove = () => {
+        setModalYesNot(true, {
+            description: `Do you want remove student ${data.lastName} ${data.firstName}?`,
+            data: {studentId: student.id}
+        })
+    };
+
+    const handleUpdate = () => {
+        setIsShowConfirm(false);
+        setIsEdit(false);
+        let studentsAfterChange = {
+            id: student.id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            birthDate: data.birthDate
+        };
+        console.log(studentsAfterChange)
+    };
+
     return (
         <Paper className={classes.root} variant='outlined'>
             <Grid container>
                 <Grid item lg={6} className={classes.names}>
-                    <Typography display='inline'>{`${lastName} ${firstName}`}</Typography>
+                    <Typography hidden={isEdit} display='inline'>{`${data.lastName} ${data.firstName}`}</Typography>
+                    <TextField
+                        name='lastName'
+                        value={data.lastName}
+                        hidden={!isEdit}
+                        label='Last name'
+                        size='small'
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        name='firstName'
+                        value={data.firstName}
+                        hidden={!isEdit}
+                        label='First name'
+                        size='small'
+                        onChange={handleChange}
+                    />
                 </Grid>
                 <Grid item lg={2} className={clsx(classes.names, classes.justifyCenter)}>
-                    <Typography display='inline'>{birthDate.substring(0, 10)}</Typography>
+                    <Typography hidden={isEdit} display='inline'>{data.birthDate.substring(0, 10)}</Typography>
+                    <TextField
+                        name='birthDate'
+                        value={data.birthDate.substring(0, 10)}
+                        hidden={!isEdit}
+                        type='date'
+                        size='small'
+                        onChange={handleChange}
+                    />
                 </Grid>
                 <Grid item lg={2} className={clsx(classes.names, classes.justifyCenter)}>
-                    <Typography display='inline'>{className}</Typography>
+                    <Typography display='inline'>{student.className}</Typography>
                 </Grid>
                 <Grid item lg={2} className={classes.buttons}>
                     <Tooltip
@@ -36,14 +110,15 @@ const StudentItem = props => {
                     >
                         <span className={request.updating && classes.progress}>
                             <IconButton
-                                disabled={!parents.length || request.updating}
+                                disabled={!student.parents.length || request.updating}
+                                className={classes.button}
                             >
                                 <Parents fontSize='small'/>
                             </IconButton>
                         </span>
                     </Tooltip>
                     <Tooltip
-                        title='Edit'
+                        title={`${isEdit ? 'Close edit mode' : 'Open edit mode'}`}
                         placement='top'
                         arrow
                         TransitionComponent={Fade}
@@ -51,15 +126,16 @@ const StudentItem = props => {
                     >
                         <span className={request.updating && classes.progress}>
                             <IconButton
-                                className={classes.edit}
+                                className={clsx(classes.button, isEdit ? classes.close : classes.edit)}
                                 disabled={request.updating}
+                                onClick={handleEdit}
                             >
-                                <EditIcon fontSize='small'/>
+                                {isEdit ? <CloseIcon fontSize='small'/> : <EditIcon fontSize='small'/>}
                             </IconButton>
                         </span>
                     </Tooltip>
                     <Tooltip
-                        title='Delete'
+                        title={isShowConfirm ? 'Confirm updating' : 'Remove student'}
                         placement='top'
                         arrow
                         TransitionComponent={Fade}
@@ -67,14 +143,11 @@ const StudentItem = props => {
                     >
                         <span className={request.updating && classes.progress}>
                             <IconButton
-                                className={classes.delete}
+                                className={clsx(classes.button,isShowConfirm ? classes.edit : classes.delete)}
                                 disabled={request.updating}
-                                onClick={() => setModalYesNot(true, {
-                                    description: `Do you want remove student ${lastName} ${firstName}?`,
-                                    data: {studentId: id, className}
-                                })}
+                                onClick={(isEdit && isShowConfirm) ? handleUpdate : handleRemove}
                             >
-                                <DeleteIcon fontSize='small'/>
+                                {isShowConfirm ? <DoneIcon fontSize='small'/> : <DeleteIcon fontSize='small'/>}
                             </IconButton>
                         </span>
                     </Tooltip>

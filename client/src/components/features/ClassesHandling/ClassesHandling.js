@@ -24,8 +24,11 @@ const ClassesHandling = props => {
         clearAllStudents,
         clearFreeStudents,
         clearClassesStudents,
+        clearSelectedClass,
+        clearTeachers,
         allClasses,
-        setIsStudentMode
+        setIsStudentMode,
+        setTutorIsUse
     } = props;
     const [classGrade, setClassGrade] = useState('none');
     const [possibleTutors, setPossibleTutors] = useState([]);
@@ -42,7 +45,10 @@ const ClassesHandling = props => {
             clearAllStudents([]);
             clearFreeStudents([]);
             clearClassesStudents([]);
+            clearSelectedClass({});
+            clearTeachers([]);
             setIsStudentMode(true);
+            setTutorIsUse(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -100,8 +106,11 @@ ClassesHandling.propTypes = {
     clearAllStudents: PropTypes.func.isRequired,
     clearFreeStudents: PropTypes.func.isRequired,
     clearClassesStudents: PropTypes.func.isRequired,
+    clearSelectedClass: PropTypes.func.isRequired,
+    clearTeachers: PropTypes.func.isRequired,
     allClasses: PropTypes.array.isRequired,
-    setIsStudentMode: PropTypes.func.isRequired
+    setIsStudentMode: PropTypes.func.isRequired,
+    setTutorIsUse: PropTypes.func.isRequired
 };
 
 export default ClassesHandling;

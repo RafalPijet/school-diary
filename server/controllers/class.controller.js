@@ -179,16 +179,3 @@ exports.deleteClassById = async (req, res) => {
         res.status(500).json(err);
     }
 };
-
-exports.deleteStudentFromClass = async (req, res) => {
-
-    try {
-        const {className, studentId} = req.body;
-        let classItem = await Class.findOne({name: className});
-        await classItem.students.filter(student => student.id !== studentId);
-        await classItem.save();
-        res.status(200).json(studentId);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};

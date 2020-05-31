@@ -1,6 +1,13 @@
 import axios from 'axios';
 import {API_URL} from "../config";
-import {setUser, setLogin, loadTeachers, loadParents, updateParent, deleteParent} from "./actions/usersActions";
+import {
+    setUser,
+    setLogin,
+    loadTeachers,
+    loadParents,
+    updateParent,
+    deleteParent
+} from "./actions/usersActions";
 import {
     loadClassByTeacher,
     addRatingToStudent,
@@ -31,7 +38,6 @@ import {
 import {
     loadAllStudents,
     updateStudent,
-    deleteStudent,
     addStudent,
     setFreeStudents,
     setClassesStudents
@@ -500,8 +506,9 @@ export const updateStudentRequest = student => {
         }
     }
 };
+
 /*todo*/
-export const deleteStudentRequest = (studentId, className) => {
+export const deleteStudentRequest = studentId => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
 
@@ -509,17 +516,12 @@ export const deleteStudentRequest = (studentId, className) => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/student/${studentId}`);
 
-            if (className !== 'no assigned') {
-                let res1 = await axios.put(`${API_URL}/class/name/student`,
-                    {studentId: res.data.studentId, className});
-
-            }
-
             if (res.data.ratings.length) {
-                let res2 = await axios.delete(`${API_URL}/ratings`, {data: {ratingsId: res.data.ratings}})
+                await axios.delete(`${API_URL}/ratings`,
+                    {data: {ratingsId: res.data.ratings}})
             }
-            // console.log(res.data);
-            // dispatch(deleteStudent(student.id));
+            dispatch(getStudentsNamesRequest());
+            dispatch(getStudentsWithRangeRequest(1, 5));
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} has been removed.`));
             dispatch(stopUpdatingRequest());
         } catch (err) {

@@ -132,10 +132,8 @@ exports.deleteStudent = async (req, res) => {
         let student = await Student.findOne({id: req.params.id});
         await student.remove();
         res.status(200).json({
-            studentId: student.id,
             studentName: `${student.lastName} ${student.firstName}`,
-            ratings: student.ratings.map(rating => rating.id),
-            parents: student.parents.map(parent => parent.id)
+            ratings: student.ratings.map(rating => rating.id)
         });
     } catch (err) {
         res.status(500).json(err);

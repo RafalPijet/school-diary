@@ -37,14 +37,15 @@ const StudentsTable = props => {
     const classes = useStyles();
 
     useEffect(() => {
+
         if (!allStudents.length) loadStudentsNames();
         loadStudentsWithRange(page + 1, rowsPerPage);
     }, [page, rowsPerPage]);
 
     const handleDeleteStudent = isConfirm => {
-        const {studentId, className} = modalYesNot.content.data;
+        const {studentId} = modalYesNot.content.data;
 
-        if (isConfirm) deleteStudent(studentId, className);
+        if (isConfirm) deleteStudent(studentId);
         setModalYesNot(false, {
             description: '',
             data: {}
@@ -110,7 +111,7 @@ StudentsTable.propTypes = {
     selectedStudents: PropTypes.arrayOf(PropTypes.shape({
         parents: PropTypes.array.isRequired,
         id: PropTypes.string.isRequired,
-        className: PropTypes.string.isRequired,
+        className: PropTypes.string,
         firstName: PropTypes.string.isRequired,
         lastName: PropTypes.string.isRequired,
         birthDate: PropTypes.string.isRequired

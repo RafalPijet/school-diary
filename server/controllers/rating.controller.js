@@ -56,7 +56,6 @@ exports.deleteRating = async (req, res) => {
 
     try {
         const {ratingsId} = req.body;
-        console.log(ratingsId);
         res.status(200).json(await Rating.remove({id: ratingsId}))
     } catch (err) {
         res.status(500).json(err);

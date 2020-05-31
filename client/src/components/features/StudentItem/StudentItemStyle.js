@@ -10,6 +10,9 @@ const componentStyle = theme => ({
         display: 'inline-flex',
         justifyContent: 'space-around'
     },
+    button: {
+        outline: 'none !important'
+    },
     names: {
         display: 'flex',
         alignItems: 'center'
@@ -22,6 +25,9 @@ const componentStyle = theme => ({
     },
     edit: {
         color: theme.palette.action.dark
+    },
+    close: {
+        color: theme.palette.action.warning
     },
     progress: {
         cursor: 'progress'
