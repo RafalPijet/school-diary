@@ -4,11 +4,18 @@ const componentStyle = theme => ({
     root: {
         width: '100%',
         padding: `${style.smallSize} ${style.baseSize}`,
-        marginBottom: theme.spacing(1)
+        marginBottom: theme.spacing(1),
+        '&:hover': {
+            backgroundColor: theme.palette.action.item,
+        }
+    },
+    item: {
+        backgroundColor: theme.palette.action.item
     },
     buttons: {
         display: 'inline-flex',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        padding: `${style.smallSize} 0`
     },
     button: {
         outline: 'none !important'

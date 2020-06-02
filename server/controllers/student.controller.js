@@ -1,6 +1,24 @@
 const Student = require('../models/student.model');
 const uuid = require('uuid');
 
+exports.getStudentById = async (req, res) => {
+
+    try {
+        const {id} = req.params;
+        let student = await Student.findOne({id});
+        let selectedStudent = {
+            id: student.id,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            birthDate: student.birthDate,
+            parents: student.parents.map(parent => parent.id)
+        };
+        res.status(200).json(selectedStudent);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getStudentsById = async (req, res) => {
 
     try {
@@ -109,6 +127,21 @@ exports.updateStudent = async (req, res) => {
         student.lastName = req.body.lastName;
         student.birthDate = req.body.birthDate;
         res.status(200).json(await student.save());
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.updateStudentBasicData = async (req, res) => {
+
+    try {
+        const {id, firstName, lastName, birthDate} = req.body;
+        let student = await Student.findOne({id});
+        student.firstName = firstName;
+        student.lastName = lastName;
+        student.birthDate = birthDate;
+        await student.save();
+        res.status(200).json({studentName: `${student.firstName} ${student.lastName}`});
     } catch (err) {
         res.status(500).json(err);
     }

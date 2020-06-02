@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import StudentForm from "./StudentForm";
 import {addStudentRequest} from "../../../redux/thunks";
 import {getRequest} from "../../../redux/actions/requestActions";
-import {getMaxBirthDate, setAlertSuccess} from "../../../redux/actions/valuesActions";
+import {getMaxBirthDate} from "../../../redux/actions/valuesActions";
 import {getStudentsAmount} from "../../../redux/actions/studentActions";
 
 const mapStateToProps = state => ({
@@ -12,8 +12,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-   addStudent: student => dispatch(addStudentRequest(student)),
-   alertSuccess: (isOpen, message) => dispatch(setAlertSuccess(isOpen, message))
+   addStudent: student => dispatch(addStudentRequest(student))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentForm)

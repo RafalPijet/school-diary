@@ -26,7 +26,8 @@ const appThemeOptions = {
                 warning: orange[700],
                 tab: blueGrey[100],
                 adding: blueGrey[300],
-                header: grey[200]
+                header: grey[200],
+                item: grey[300]
             },
             scales: {
                 first: amber[500],
@@ -60,7 +61,8 @@ const appThemeOptions = {
                 warning: orange[500],
                 tab: blueGrey[700],
                 adding: blueGrey[600],
-                header: grey[700]
+                header: grey[700],
+                item: grey[600]
             },
             scales: {
                 first: yellow[200],

@@ -387,7 +387,31 @@ export const getAllStudentsRequest = () => {
         }
     }
 };
-/*todo*/
+
+export const getStudentByIdRequest = id => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/student/${id}`);
+            let studentsId = [id];
+            let student = res.data;
+            let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+
+            if (resNext.data.length) {
+                student.className = resNext.data[0].name;
+            } else {
+                student.className = 'no assigned';
+            }
+            dispatch(loadAllStudents([student]));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startGetingRequest());
@@ -484,6 +508,8 @@ export const addStudentRequest = student => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/student`, student);
+            dispatch(setAlertSuccess(true,
+                `Student ${res.data.firstName} ${res.data.lastName} has be added.`));
             dispatch(addStudent(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
@@ -498,7 +524,7 @@ export const updateStudentRequest = student => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.put(`${API_URL}/student`, student);
+            let res = await axios.put(`${API_URL}/student/parents`, student);
             dispatch(updateStudent(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
@@ -507,7 +533,24 @@ export const updateStudentRequest = student => {
     }
 };
 
-/*todo*/
+export const updateStudentBasicDataRequest = student => {
+    return async dispatch => {
+        dispatch(startAddingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/student/basic`,
+                {id: student.id, firstName: student.firstName,
+                    lastName: student.lastName, birthDate: student.birthDate});
+            dispatch(setAlertSuccess(true, `Student ${res.data.studentName} data has been changed.`));
+            dispatch(updateStudent(student));
+            dispatch(stopAddingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const deleteStudentRequest = studentId => {
     return async dispatch => {
         dispatch(startUpdatingRequest());

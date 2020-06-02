@@ -9,7 +9,7 @@ import componentStyle from "./StudentFormStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const StudentForm = props => {
-    const {request, addStudent, maxBirthDate, studentsAmount, alertSuccess} = props;
+    const {request, addStudent, maxBirthDate, studentsAmount} = props;
     const [newStudent, setNewStudent] = useState({
         firstName: '',
         lastName: '',
@@ -28,7 +28,6 @@ const StudentForm = props => {
             (new Date(newStudent.birthDate) < new Date(maxBirthDate)));
 
         if (amount !== studentsAmount) {
-            alertSuccess(true, `Student ${newStudent.firstName} ${newStudent.lastName} has be added.`);
             setAmount(studentsAmount);
             setNewStudent({...newStudent,
                 firstName: '',
@@ -98,8 +97,7 @@ StudentForm.propTypes = {
     request: PropTypes.object.isRequired,
     addStudent: PropTypes.func.isRequired,
     maxBirthDate: PropTypes.string.isRequired,
-    studentsAmount: PropTypes.number.isRequired,
-    alertSuccess: PropTypes.func.isRequired
+    studentsAmount: PropTypes.number.isRequired
 };
 
 export default StudentForm;
