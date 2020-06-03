@@ -69,8 +69,18 @@ exports.getTeachers = async (req, res) => {
 exports.getParents = async (req, res) => {
 
     try {
-        let users = await User.find();
-        let parents = users.filter(user => user.status === 'parent');
+        let parents = await User.find({status: 'parent'});
+        parents = await parents.map(parent => {
+            return {
+                id: parent.id,
+                _id: parent._id,
+                firstName: parent.firstName,
+                lastName: parent.lastName,
+                email: parent.email,
+                telephone: parent.telephone,
+                students: parent.students
+            }
+        });
         res.status(200).json(parents)
     } catch (err) {
         res.status(500).json(err);

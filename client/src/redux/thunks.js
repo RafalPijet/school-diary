@@ -42,7 +42,12 @@ import {
     setFreeStudents,
     setClassesStudents
 } from "./actions/studentActions";
-import {setAlertSuccess, setTutorIsUse, setIsStudentMode} from "./actions/valuesActions";
+import {
+    setAlertSuccess,
+    setTutorIsUse,
+    setIsStudentMode
+} from "./actions/valuesActions";
+import store from './store';
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -206,7 +211,6 @@ export const updateTutorClassRequest = classItem => {
             dispatch(setTutorIsUse(true));
             dispatch(stopUpdatingRequest());
         } catch (err) {
-            console.log(err.message);
             dispatch(errorRequest(err.message));
         }
     }
@@ -306,7 +310,7 @@ export const loadTeachersRequest = () => {
         }
     }
 };
-
+/*todo*/
 export const loadParentsRequest = () => {
     return async dispatch => {
         dispatch(startRequest());
@@ -314,18 +318,32 @@ export const loadParentsRequest = () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let parents = await axios.get(`${API_URL}/users/parents`);
-            let students = await axios.get(`${API_URL}/students`);
-            let allParents = [];
-            parents.data.forEach(parent => {
+            const allStudents = store.getState().students.allStudents;
+            let studentsId = [];
+            await parents.data.forEach(parent => {
                 let studentsForParent = [];
-                students.data.forEach(student => {
+                allStudents.forEach(student => {
 
                     if (parent.students.includes(student._id)) {
                         studentsForParent.push(student);
+                        studentsId = [...studentsId, student.id]
                     }
                 });
                 parent.students = studentsForParent;
-                allParents = [...allParents, parent]
+            });
+            let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+            let studentsInClassesId = res.data.map(item => item.id);
+            let allParents = parents.data;
+            await allParents.forEach(parent => {
+                parent.students = parent.students.map(student => {
+
+                    if (studentsInClassesId.includes(student.id)) {
+                        student.className = res.data.find(item => item.id === student.id).name
+                    } else {
+                        student.className = 'none class'
+                    }
+                    return student;
+                })
             });
             dispatch(loadParents(allParents));
             dispatch(stopRequest());
@@ -540,8 +558,10 @@ export const updateStudentBasicDataRequest = student => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/student/basic`,
-                {id: student.id, firstName: student.firstName,
-                    lastName: student.lastName, birthDate: student.birthDate});
+                {
+                    id: student.id, firstName: student.firstName,
+                    lastName: student.lastName, birthDate: student.birthDate
+                });
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} data has been changed.`));
             dispatch(updateStudent(student));
             dispatch(stopAddingRequest());

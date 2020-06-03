@@ -7,51 +7,26 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fade from '@material-ui/core/Fade';
-// import './ParentItemCollapse.scss';
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
-import {checkStudentClass} from "../../../utilities/functions";
+import componentStyle from "./ParentItemCollapseStyle";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    button: {
-        color: theme.palette.action.light
-    },
-    info: {
-        backgroundColor: theme.palette.secondary.dark,
-        width: '240px',
-        height: '88px',
-        padding: theme.spacing(1),
-        overflow: 'auto'
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ParentItemCollapse = props => {
-    const {parent, allClasses, allStudents, updateUser, updateStudent, request, deleteParent} = props;
-    const [parentStudents, setParentStudents] = useState([]);
+    const {parent, parentStudents, allStudents, updateUser, updateStudent, request, deleteParent} = props;
+
     const [studentsWithoutParent, setStudentsWithoutParent] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [parentStudentsId, setParentStudentsId] = useState(parentStudents.map(student => student.id));
     const classes = useStyles();
 
     useEffect(() => {
-        let parentStudents = [];
-        parent.students.forEach(student => {
-            let item = {
-                id: student.id,
-                className: checkStudentClass(allClasses, student.id) !== null ?
-                    checkStudentClass(allClasses, student.id) : "None class",
-                firstName: student.firstName,
-                lastName: student.lastName
-            };
-            parentStudents = [...parentStudents, item];
-        });
-        setParentStudents(parentStudents);
-        setStudentsWithoutParent(allStudents.filter(student => student.parents.length === 0));
-    }, [allClasses, allStudents, parent]);
+
+        if (!studentsWithoutParent.length) {
+            let freeStudents = allStudents.filter(student => !parentStudentsId.includes(student.id));
+            setStudentsWithoutParent(freeStudents);
+        }
+    }, [allStudents]);
 
     const getNewStudentForParent = async student => {
         parent.students.push(student);
@@ -146,7 +121,7 @@ const ParentItemCollapse = props => {
 
 ParentItemCollapse.propTypes = {
     parent: PropTypes.object.isRequired,
-    allClasses: PropTypes.array.isRequired,
+    parentStudents: PropTypes.array.isRequired,
     allStudents: PropTypes.array.isRequired,
     updateUser: PropTypes.func.isRequired,
     updateStudent: PropTypes.func.isRequired,

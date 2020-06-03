@@ -110,7 +110,7 @@ const ParentItem = props => {
                     </Grid>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <ParentItemCollapse parent={parent}/>
+                    <ParentItemCollapse parent={parent} parentStudents={parent.students}/>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>
