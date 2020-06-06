@@ -117,16 +117,20 @@ exports.addStudent = async (req, res) => {
     }
 };
 
-exports.updateStudent = async (req, res) => {
+exports.updateStudentParents = async (req, res) => {
 
     try {
-        let student = await Student.findOne({id: req.body.id});
-        student.ratings = req.body.ratings;
-        student.parents = req.body.parents;
-        student.firstName = req.body.firstName;
-        student.lastName = req.body.lastName;
-        student.birthDate = req.body.birthDate;
-        res.status(200).json(await student.save());
+        const {id} = req.params;
+        const {parent, isAdd} = req.body;
+        let student = await Student.findOne({id});
+
+        if (isAdd) {
+            student.parents = [...student.parents, parent];
+        } else {
+            student.parents = await student.parents.filter(item => item.id !== parent.id);
+        }
+        await student.save();
+        res.status(200).json({studentId: student.id});
     } catch (err) {
         res.status(500).json(err);
     }

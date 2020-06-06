@@ -21,6 +21,10 @@ a, a:hover, a:visited {
   text-decoration: none;
 }
 
+button {
+  outline: none !important;
+}
+
 .color-red {
   color: #EA2027;
   background-color: #343A40;

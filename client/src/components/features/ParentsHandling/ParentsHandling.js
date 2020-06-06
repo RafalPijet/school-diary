@@ -15,7 +15,9 @@ const ParentsHandling = props => {
         request,
         parents,
         resetRequest,
-        allStudents
+        allStudents,
+        clearParents,
+        clearStudents
     } = props;
     const [selectedItem, setSelectedItem] = useState(0);
     const [isReady, setReady] = useState(false);
@@ -30,9 +32,15 @@ const ParentsHandling = props => {
         }
 
         return () => {
-            resetRequest();
+
+            if (allStudents.length && parents.length) {
+                resetRequest();
+                clearParents([]);
+                clearStudents([]);
+            }
         }
-    }, [allStudents.length]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allStudents.length, parents.length]);
 
     const collapseHandling = index => {
         setSelectedItem(index);
@@ -82,7 +90,9 @@ ParentsHandling.propTypes = {
     resetRequest: PropTypes.func.isRequired,
     parents: PropTypes.array.isRequired,
     request: PropTypes.object.isRequired,
-    allStudents: PropTypes.array.isRequired
+    allStudents: PropTypes.array.isRequired,
+    clearParents: PropTypes.func.isRequired,
+    clearStudents: PropTypes.func.isRequired
 };
 
 export default ParentsHandling;

@@ -10,7 +10,7 @@ router.route('/students/:start/:limit').get(studentController.getStudentsWithRan
 router.route('/student/:id').get(studentController.getStudentById);
 router.route('/student').post(studentController.addStudent);
 router.route('/student/subject').post(studentController.addSubjectToStudent);
-router.route('/student/parents').put(studentController.updateStudent);
+router.route('/student/parents/:id').put(studentController.updateStudentParents);
 router.route('/student/basic').put(studentController.updateStudentBasicData);
 router.route('/student/:id').delete(studentController.deleteStudent);
 

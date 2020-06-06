@@ -6,7 +6,8 @@ import {
     loadTeachers,
     loadParents,
     updateParent,
-    deleteParent
+    deleteParent,
+    updateParentStudentClassName
 } from "./actions/usersActions";
 import {
     loadClassByTeacher,
@@ -90,15 +91,15 @@ export const addUser = user => {
         }
     }
 };
-
-export const updateUserRequest = user => {
+/*todo*/
+export const updateUserRequest = (id, studentsList) => {
     return async dispatch => {
         dispatch(startAddingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.put(`${API_URL}/users`, user);
-            dispatch(updateParent(res.data));
+            let res = await axios.put(`${API_URL}/users/parent/${id}`, {studentsList});
+            dispatch(updateParent(res.data.id, studentsList));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -535,15 +536,25 @@ export const addStudentRequest = student => {
         }
     }
 };
-
-export const updateStudentRequest = student => {
+/*todo*/
+export const updateStudentRequest = (id, parent, isAdd) => {
     return async dispatch => {
         dispatch(startAddingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.put(`${API_URL}/student/parents`, student);
-            dispatch(updateStudent(res.data));
+            let res = await axios.put(`${API_URL}/student/parents/${id}`, {parent: parent, isAdd});
+
+            if (isAdd) {
+                let studentsId = [res.data.studentId];
+                let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+
+                if (resNext.data.length) {
+                    dispatch(updateParentStudentClassName(parent.id, res.data.studentId, resNext.data[0].name));
+                } else {
+                    dispatch(updateParentStudentClassName(parent.id, res.data.studentId, 'none class'));
+                }
+            }
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

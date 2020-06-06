@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import clsx from "clsx";
 import SelectItem from "../../common/SelectItem/SelectItem";
 import {makeStyles} from "@material-ui/core/styles";
+import Spinner from "../../common/Spinner/Spinner";
 import {Paper, Typography} from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,35 +15,33 @@ import componentStyle from "./ParentItemCollapseStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ParentItemCollapse = props => {
-    const {parent, parentStudents, allStudents, updateUser, updateStudent, request, deleteParent} = props;
+    const {parent, allStudents, updateUser, updateStudent, request, deleteParent} = props;
 
     const [studentsWithoutParent, setStudentsWithoutParent] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [parentStudentsId, setParentStudentsId] = useState(parentStudents.map(student => student.id));
+    const [parentStudentsId, setParentStudentsId] = useState(parent.students.map(student => student.id));
     const classes = useStyles();
 
     useEffect(() => {
+        setParentStudentsId(parent.students.map(student => student.id));
+    }, [parent.students]);
 
-        if (!studentsWithoutParent.length) {
-            let freeStudents = allStudents.filter(student => !parentStudentsId.includes(student.id));
-            setStudentsWithoutParent(freeStudents);
-        }
-    }, [allStudents]);
+    useEffect(() => {
+        let freeStudents = allStudents.filter(student => !parentStudentsId.includes(student.id));
+        setStudentsWithoutParent(freeStudents);
+
+    }, [allStudents, parent.students, parentStudentsId]);
 
     const getNewStudentForParent = async student => {
-        parent.students.push(student);
-        await updateUser(parent);
-        parent.students = [];
-        student.parents.push(parent);
-        updateStudent(student);
+        let students = [...parent.students, student];
+        await updateUser(parent.id, students);
+        updateStudent(student.id, parent, true);
     };
 
-    const removeStudentFromParent = student => {
-        let removedStudent = parent.students.find(item => item.id === student.id);
-        removedStudent.parents = [];
-        parent.students = parent.students.filter(item => item.id !== student.id);
-        updateUser(parent);
-        updateStudent(removedStudent);
+    const removeStudentFromParent = async student => {
+        let students = parent.students.filter(item => item.id !== student.id);
+        await updateUser(parent.id, students);
+        updateStudent(student.id, parent, false);
     };
 
     const modalHandling = isDelete => {
@@ -65,47 +65,57 @@ const ParentItemCollapse = props => {
                     disabled={request.adding}
                     title='Remove parent'
                     arrow
-                    placement='top'
+                    classes={{tooltip: classes.tooltip}}
+                    placement='top-start'
                     TransitionComponent={Fade}
                     TransitionProps={{timeout: 1000}}
                 >
-                <span>
+                <span className={request.adding ? classes.progress : ''}>
                     <IconButton
                         disabled={request.adding}
                         aria-label='remove'
                         className={classes.button}
                         onClick={() => setIsModalOpen(true)}
                     >
-                    <DeleteIcon fontSize='large'/>
+                    <DeleteIcon fontSize='small'/>
 
                 </IconButton>
                 </span>
                 </Tooltip>
                 <SelectItem
+                    parentId={`${parent.id} add`}
                     list={studentsWithoutParent}
                     isAdd={true}
                     selectName='unassigned students'
                     buttonName="Assign"
-                    helperText='assign a student to the parent'
-                    isDisabled={request.adding || !studentsWithoutParent.length}
+                    isDisabled={request.adding}
                     confirmSelect={getNewStudentForParent}
                 />
                 <SelectItem
-                    list={parentStudents}
+                    parentId={parent.id}
+                    list={parent.students}
                     isAdd={false}
                     selectName='assigned students'
                     buttonName='Unassign'
-                    helperText='unassign a student to the parent'
                     confirmSelect={removeStudentFromParent}
-                    isDisabled={request.adding || !parentStudents.length}/>
-                <Paper variant='outlined' className={classes.info}>
-                    {parentStudents.length ? parentStudents.map((student, i) => {
-                        return (
-                            <Typography key={i} variant='subtitle1'>
-                                {`${i + 1}. ${student.firstName} ${student.lastName} - ${student.className}`}
-                            </Typography>
-                        )
-                    }) : <Typography>The parent has no student assigned</Typography>}
+                    isDisabled={request.adding}/>
+                <Paper variant='outlined' className={clsx(classes.info, request.adding && classes.spinner)}>
+                    {request.adding ? <Spinner/> :
+                        parent.students.length ? parent.students.map((student, i) => {
+                            return (
+                                <div key={i}>
+                                    <Typography className={classes.second} display='inline'>
+                                        {`${i + 1}. `}
+                                    </Typography>
+                                    <Typography variant='subtitle2' display='inline'>
+                                        {`${student.firstName} ${student.lastName}`}
+                                    </Typography>
+                                    <Typography className={classes.second} display='inline'>
+                                        {` ${student.birthDate.substring(0, 10)}, ${student.className}`}
+                                    </Typography>
+                                </div>
+                            )
+                        }) : <Typography variant='subtitle2'>The parent has no student assigned</Typography>}
                 </Paper>
             </div>
             <ModalAreYouSure
@@ -121,7 +131,6 @@ const ParentItemCollapse = props => {
 
 ParentItemCollapse.propTypes = {
     parent: PropTypes.object.isRequired,
-    parentStudents: PropTypes.array.isRequired,
     allStudents: PropTypes.array.isRequired,
     updateUser: PropTypes.func.isRequired,
     updateStudent: PropTypes.func.isRequired,

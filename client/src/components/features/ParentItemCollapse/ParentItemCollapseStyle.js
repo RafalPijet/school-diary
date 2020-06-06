@@ -1,3 +1,5 @@
+import {style} from "../../../styles/global";
+
 const componentStyle = theme => ({
     root: {
         width: '100%',
@@ -6,14 +8,30 @@ const componentStyle = theme => ({
         alignItems: 'center'
     },
     button: {
-        color: theme.palette.action.light
+        color: theme.palette.action.light,
+        backgroundColor: theme.palette.primary.light,
     },
     info: {
         backgroundColor: theme.palette.secondary.dark,
-        width: '240px',
-        height: '88px',
+        width: '300px',
+        height: '60px',
         padding: theme.spacing(1),
         overflow: 'auto'
+    },
+    second: {
+        fontSize: style.baseSize,
+        color: theme.palette.primary.light
+    },
+    tooltip: {
+        backgroundColor: theme.palette.secondary.light
+    },
+    spinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    progress: {
+        cursor: 'progress'
     }
 });
 
