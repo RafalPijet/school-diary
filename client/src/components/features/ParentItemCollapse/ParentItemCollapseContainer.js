@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateUser: (id, studentsList) => dispatch(updateUserRequest(id, studentsList)),
+    updateUser: (id, studentsList, data) => dispatch(updateUserRequest(id, studentsList, data)),
     updateStudent: (id, parent, isAdd) => dispatch(updateStudentRequest(id, parent, isAdd)),
     deleteParent: id => dispatch(deleteParentRequest(id))
 });

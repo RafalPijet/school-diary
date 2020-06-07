@@ -6,8 +6,8 @@ import {
     loadTeachers,
     loadParents,
     updateParent,
-    deleteParent,
-    updateParentStudentClassName
+    updateParentStudentClassName,
+    loadParentsName
 } from "./actions/usersActions";
 import {
     loadClassByTeacher,
@@ -91,8 +91,8 @@ export const addUser = user => {
         }
     }
 };
-/*todo*/
-export const updateUserRequest = (id, studentsList) => {
+
+export const updateUserRequest = (id, studentsList, data) => {
     return async dispatch => {
         dispatch(startAddingRequest());
 
@@ -100,13 +100,16 @@ export const updateUserRequest = (id, studentsList) => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/users/parent/${id}`, {studentsList});
             dispatch(updateParent(res.data.id, studentsList));
+            dispatch(setAlertSuccess(true,
+                `Student ${data.studentName} ${data.isAdd ?
+                    'has been assigned' : 'is no longer assigned'} to a parent ${data.parentName}.`));
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
         }
     }
 };
-
+/*todo*/
 export const deleteParentRequest = id => {
     return async dispatch => {
         dispatch(startRequest());
@@ -114,7 +117,8 @@ export const deleteParentRequest = id => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/users/${id}`);
-            if (res.status === 200) dispatch(deleteParent(id));
+            await dispatch(loadParentsRequest());
+            dispatch(setAlertSuccess(true, `Parent ${res.data.name} has been removed.`));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));
@@ -406,6 +410,21 @@ export const getAllStudentsRequest = () => {
         }
     }
 };
+/*todo*/
+export const getParentsNameRequest = () => {
+    return async dispatch => {
+        dispatch(startWorkingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/users/parents/name`);
+            dispatch(loadParentsName(res.data));
+            dispatch(stopWorkingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
 
 export const getStudentByIdRequest = id => {
     return async dispatch => {
@@ -536,7 +555,7 @@ export const addStudentRequest = student => {
         }
     }
 };
-/*todo*/
+
 export const updateStudentRequest = (id, parent, isAdd) => {
     return async dispatch => {
         dispatch(startAddingRequest());

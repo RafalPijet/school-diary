@@ -11,8 +11,16 @@ const componentStyle = theme => ({
         display: 'flex',
         justifyContent: 'center',
         padding: `0 ${style.baseSize}`,
-        height: '572px'
-    }
+        height: '515px',
+        overflow: 'auto'
+    },
+    footer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: '52px',
+        marginBottom: style.smallSize
+    },
 });
 
 export default componentStyle;

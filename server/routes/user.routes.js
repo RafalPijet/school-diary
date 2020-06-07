@@ -8,5 +8,6 @@ router.route('/users/parent/:id').put(userController.updateParentStudents);
 router.route('/users/:id').delete(userController.deleteUser);
 router.route('/users/teachers').get(userController.getTeachers);
 router.route('/users/parents').get(userController.getParents);
+router.route('/users/parents/name').get(userController.getParentsName);
 
 module.exports = router;

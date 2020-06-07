@@ -33,14 +33,24 @@ const ParentItemCollapse = props => {
     }, [allStudents, parent.students, parentStudentsId]);
 
     const getNewStudentForParent = async student => {
+        let data = {
+            studentName: `${student.lastName} ${student.firstName}`,
+            parentName: `${parent.lastName} ${parent.firstName}`,
+            isAdd: true
+        };
         let students = [...parent.students, student];
-        await updateUser(parent.id, students);
+        await updateUser(parent.id, students, data);
         updateStudent(student.id, parent, true);
     };
 
     const removeStudentFromParent = async student => {
+        let data = {
+            studentName: `${student.lastName} ${student.firstName}`,
+            parentName: `${parent.lastName} ${parent.firstName}`,
+            isAdd: false
+        };
         let students = parent.students.filter(item => item.id !== student.id);
-        await updateUser(parent.id, students);
+        await updateUser(parent.id, students, data);
         updateStudent(student.id, parent, false);
     };
 
@@ -49,9 +59,8 @@ const ParentItemCollapse = props => {
 
         if (isDelete) {
             if (parent.students.length) {
-                parent.students.forEach(item => {
-                    item.parents = [];
-                    updateStudent(item);
+                parent.students.forEach(student => {
+                    updateStudent(student.id, parent, false);
                 })
             }
             deleteParent(parent.id);

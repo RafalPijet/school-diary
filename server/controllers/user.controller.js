@@ -39,7 +39,8 @@ exports.deleteUser = async (req, res) => {
 
     try {
         let user = await User.findOne({id: req.params.id});
-        res.status(200).json(user.remove());
+        user.remove();
+        res.status(200).json({name: `${user.lastName} ${user.firstName}`});
     } catch (err) {
         res.status(500).json(err);
     }
@@ -80,6 +81,22 @@ exports.getParents = async (req, res) => {
             }
         });
         res.status(200).json(parents)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.getParentsName = async (req, res) => {
+
+    try {
+        let parents = await User.find({status: 'parent'});
+        parents = parents.map(parent => {
+            return {
+                id: parent.id,
+                name: `${parent.lastName} ${parent.firstName}`
+            }
+        });
+        res.status(200).json(parents);
     } catch (err) {
         res.status(500).json(err);
     }

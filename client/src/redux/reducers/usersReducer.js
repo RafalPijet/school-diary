@@ -6,7 +6,8 @@ import {
     LOAD_PARENTS,
     UPDATE_PARENT,
     DELETE_PARENT,
-    UPDATE_PARENT_STUDENT_CLASS_NAME
+    UPDATE_PARENT_STUDENT_CLASS_NAME,
+    LOAD_PARENTS_NAME
 } from "../actions/usersActions";
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
     register: {email: {}, password: {}},
     teachers: [],
     parents: [],
+    parentsName: [],
     user: {
         _id: "5e9fd27c00fe4800d6ccbc31",
         students: [],
@@ -66,6 +68,8 @@ const reducer = (state = initialState, action) => {
                 }
                 return parent;
                 })};
+        case LOAD_PARENTS_NAME:
+            return {...state, parentsName: action.parents};
         default:
             return state
     }
