@@ -7,7 +7,8 @@ import {
     loadParents,
     updateParent,
     updateParentStudentClassName,
-    loadParentsName
+    loadParentsName,
+    removeParentName
 } from "./actions/usersActions";
 import {
     loadClassByTeacher,
@@ -110,14 +111,15 @@ export const updateUserRequest = (id, studentsList, data) => {
     }
 };
 /*todo*/
-export const deleteParentRequest = id => {
+export const deleteParentRequest = (id, page) => {
     return async dispatch => {
         dispatch(startRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/users/${id}`);
-            await dispatch(loadParentsRequest());
+            dispatch(removeParentName(id));
+            await dispatch(loadParentsRequestWithRange(page + 1, 7));
             dispatch(setAlertSuccess(true, `Parent ${res.data.name} has been removed.`));
             dispatch(stopRequest());
         } catch (err) {
@@ -315,14 +317,51 @@ export const loadTeachersRequest = () => {
         }
     }
 };
-/*todo*/
-export const loadParentsRequest = () => {
+
+export const loadParentByIdRequest = id => {
     return async dispatch => {
         dispatch(startRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let parents = await axios.get(`${API_URL}/users/parents`);
+            let res = await axios.get(`${API_URL}/users/parent/${id}`);
+            let studentsId = res.data.students.map(student => student.id);
+            let parent = res.data;
+
+            if (studentsId.length) {
+                let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+                let studentsIdInClasses = resNext.data.map(item => item.id);
+                parent.students = parent.students.map(student => {
+
+                    if (studentsIdInClasses.includes(student.id)) {
+                        let classItem = resNext.data.find(item => item.id === student.id);
+                        student.className = classItem.name;
+                    } else {
+                        student.className = 'no class'
+                    }
+                    return student
+                });
+            }
+            dispatch(loadParents([parent]));
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+/*todo*/
+export const loadParentsRequestWithRange = (page, itemsPerPage) => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let studentsInClassesId = [];
+            let classNames = [];
+            let start = Math.ceil((page - 1) * itemsPerPage);
+            let limit = itemsPerPage;
+            let parents = await axios.get(`${API_URL}/users/parents/${start}/${limit}`);
             const allStudents = store.getState().students.allStudents;
             let studentsId = [];
             await parents.data.forEach(parent => {
@@ -336,14 +375,19 @@ export const loadParentsRequest = () => {
                 });
                 parent.students = studentsForParent;
             });
-            let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
-            let studentsInClassesId = res.data.map(item => item.id);
+
+            if (studentsId.length) {
+                let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+                classNames = res.data;
+                studentsInClassesId = classNames.map(item => item.id);
+            }
+
             let allParents = parents.data;
             await allParents.forEach(parent => {
                 parent.students = parent.students.map(student => {
 
                     if (studentsInClassesId.includes(student.id)) {
-                        student.className = res.data.find(item => item.id === student.id).name
+                        student.className = classNames.find(item => item.id === student.id).name
                     } else {
                         student.className = 'none class'
                     }
@@ -410,7 +454,7 @@ export const getAllStudentsRequest = () => {
         }
     }
 };
-/*todo*/
+
 export const getParentsNameRequest = () => {
     return async dispatch => {
         dispatch(startWorkingRequest());
@@ -449,7 +493,7 @@ export const getStudentByIdRequest = id => {
         }
     }
 };
-
+/*todo*/
 export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startGetingRequest());

@@ -15,7 +15,7 @@ import componentStyle from "./ParentItemCollapseStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ParentItemCollapse = props => {
-    const {parent, allStudents, updateUser, updateStudent, request, deleteParent} = props;
+    const {parent, allStudents, updateUser, updateStudent, request, deleteParent, page} = props;
 
     const [studentsWithoutParent, setStudentsWithoutParent] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,7 +63,7 @@ const ParentItemCollapse = props => {
                     updateStudent(student.id, parent, false);
                 })
             }
-            deleteParent(parent.id);
+            deleteParent(parent.id, page);
         }
     };
 
@@ -144,7 +144,8 @@ ParentItemCollapse.propTypes = {
     updateUser: PropTypes.func.isRequired,
     updateStudent: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
-    deleteParent: PropTypes.func.isRequired
+    deleteParent: PropTypes.func.isRequired,
+    page: PropTypes.number.isRequired
 };
 
 export default ParentItemCollapse;

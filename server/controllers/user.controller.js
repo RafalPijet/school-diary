@@ -65,11 +65,47 @@ exports.getTeachers = async (req, res) => {
     }
 };
 
+exports.getParentById = async (req, res) => {
+
+    try {
+        const {id} = req.params;
+        let parent = await User.findOne({id});
+        let result = {
+            id: parent.id,
+            _id: parent._id,
+            firstName: parent.firstName,
+            lastName: parent.lastName,
+            email: parent.email,
+            telephone: parent.telephone,
+            students: parent.students.map(student => {
+                return {
+                    id: student.id,
+                    _id: student._id,
+                    birthDate: student.birthDate,
+                    firstName: student.firstName,
+                    lastName: student.lastName
+                }
+            })
+        };
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.getParents = async (req, res) => {
 
     try {
+        let {start, limit} = req.params;
+        start = parseInt(start);
+        limit = parseInt(limit);
         let parents = await User.find({status: 'parent'});
-        parents = await parents.map(parent => {
+        let result = [];
+        for (let i = parents.length - 1; i > -1; i--) {
+            result = [...result, parents[i]]
+        }
+        let selectedParents = result.slice(start, start + limit);
+        selectedParents = await selectedParents.map(parent => {
             return {
                 id: parent.id,
                 _id: parent._id,
@@ -80,7 +116,7 @@ exports.getParents = async (req, res) => {
                 students: parent.students
             }
         });
-        res.status(200).json(parents)
+        res.status(200).json(selectedParents);
     } catch (err) {
         res.status(500).json(err);
     }

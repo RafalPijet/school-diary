@@ -5,27 +5,12 @@ import {ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Link} from
 import {Grid, Typography} from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ParentItemCollapse from '../ParentItemCollapse/ParentItemCollapseContainer';
-// import './ParentItem.scss';
+import componentStyle from "./ParentItemStyle";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        margin: `${theme.spacing(.2)}px 0`
-    },
-    item: {
-        backgroundColor: theme.palette.secondary.dark
-    },
-    select: {
-        width: '100%',
-        margin: `${theme.spacing(1)}px 0`
-    },
-    selected: {
-        fontWeight: '800'
-    }
-}));
+const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ParentItem = props => {
-    const {parent, i, selectedItem, collapseHandling} = props;
+    const {parent, i, selectedItem, collapseHandling, page} = props;
     const classes = useStyles();
 
     useEffect(() => {
@@ -110,7 +95,7 @@ const ParentItem = props => {
                     </Grid>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <ParentItemCollapse parent={parent}/>
+                    <ParentItemCollapse page={page} parent={parent}/>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>
@@ -121,7 +106,8 @@ ParentItem.propTypes = {
     parent: PropTypes.object.isRequired,
     i: PropTypes.number.isRequired,
     selectedItem: PropTypes.number,
-    collapseHandling: PropTypes.func.isRequired
+    collapseHandling: PropTypes.func.isRequired,
+    page: PropTypes.number.isRequired
 };
 
 export default ParentItem;

@@ -84,9 +84,7 @@ exports.getStudentsWithRange = async (req, res) => {
         start = parseInt(start);
         limit = parseInt(limit);
         let students = await Student.find();
-
         let result = [];
-
         for (let i = students.length - 1; i > -1; i--) {
             result = [...result, students[i]]
         }

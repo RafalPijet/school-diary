@@ -12,7 +12,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     updateUser: (id, studentsList, data) => dispatch(updateUserRequest(id, studentsList, data)),
     updateStudent: (id, parent, isAdd) => dispatch(updateStudentRequest(id, parent, isAdd)),
-    deleteParent: id => dispatch(deleteParentRequest(id))
+    deleteParent: (id, page) => dispatch(deleteParentRequest(id, page))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ParentItemCollapse);

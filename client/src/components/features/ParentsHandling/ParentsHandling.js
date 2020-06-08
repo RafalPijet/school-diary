@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
+import clsx from "clsx";
 import Spinner from '../../common/Spinner/Spinner';
 import ParentItem from '../ParentItem/ParentItem';
 import Alert from "../../common/Alert/Alert";
@@ -24,6 +25,7 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 const ParentsHandling = props => {
     const {
         loadParents,
+        loadParent,
         loadStudents,
         loadParentName,
         request,
@@ -38,9 +40,10 @@ const ParentsHandling = props => {
         setAlertSuccess
     } = props;
     const [selectedItem, setSelectedItem] = useState(0);
+    const [selectedParent, setSelectedParent] = useState(null);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [isReady, setReady] = useState(false);
+    const [isSearch, setIsSearch] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -52,10 +55,17 @@ const ParentsHandling = props => {
 
         if (allStudents.length && !isReady) {
             setReady(true);
-            loadParents();
+            loadParents(page + 1, 7);
+        }
+
+        if (request.pending) setSelectedItem(0);
+
+        if (selectedParent === null && isSearch) {
+            loadParents(page + 1, 7);
+            setIsSearch(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allStudents.length, parents.length]);
+    }, [allStudents.length, parents.length, page, request.pending, selectedParent]);
 
     useEffect(() => {
         return () => {
@@ -76,12 +86,18 @@ const ParentsHandling = props => {
     };
 
     const handleChangePage = (event, newPage) => {
+        setReady(false);
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+    const handleSearch = value => {
+        setSelectedParent(value);
+
+        if (value !== null) {
+            loadParent(value.id);
+            setIsSearch(true);
+            setPage(0);
+        }
     };
 
     return (
@@ -106,13 +122,16 @@ const ParentsHandling = props => {
                     <Typography style={{paddingLeft: '34px'}} variant='subtitle2' color='primary'>Students</Typography>
                 </Grid>
             </Grid>
-            <Grid container className={classes.content}>
+            <Grid container className={clsx(classes.content,
+                !request.working && !request.pending && parents.length < 7 ? classes.noFull : '',
+                (request.pending || request.working) ? classes.spinner : '')}>
                 {request.pending || request.working ? <Spinner/> :
                     parents.map((parent, i) => {
                         return <ParentItem
                             i={i}
                             key={i}
                             parent={parent}
+                            page={page}
                             selectedItem={selectedItem}
                             collapseHandling={collapseHandling}
                         />
@@ -120,28 +139,30 @@ const ParentsHandling = props => {
             </Grid>
             <TableContainer className={classes.footer} component={Paper}>
                 <Autocomplete
+                    hidden={request.working}
                     id='search-parent'
                     renderInput={params => <TextField {...params} label='Search parent'/>}
                     options={parentsName}
                     getOptionLabel={parent => parent.name}
                     size='small'
                     style={{width: 300, paddingLeft: '15px'}}
+                    onChange={(e, value) => handleSearch(value)}
                 />
                 <Table>
                     <TableFooter>
                         <TableRow>
                             <MaterialPagination
-                                rowsPerPageOptions={[5, 10, 25]}
+                                hidden={request.working || selectedParent !== null}
+                                rowsPerPageOptions={[7]}
                                 colSpan={3}
-                                count={parents.length}
-                                rowsPerPage={rowsPerPage}
+                                count={parentsName.length}
+                                rowsPerPage={7}
                                 page={page}
                                 SelectProps={{
                                     inputProps: {'aria-label': 'rows per page'},
                                     native: true,
                                 }}
                                 onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
                                 ActionsComponent={TablePagination}
                             />
                         </TableRow>
@@ -160,6 +181,7 @@ const ParentsHandling = props => {
 
 ParentsHandling.propTypes = {
     loadParents: PropTypes.func.isRequired,
+    loadParent: PropTypes.func.isRequired,
     loadStudents: PropTypes.func.isRequired,
     loadParentName: PropTypes.func.isRequired,
     resetRequest: PropTypes.func.isRequired,

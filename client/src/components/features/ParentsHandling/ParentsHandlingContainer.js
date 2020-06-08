@@ -1,13 +1,19 @@
 import {connect} from 'react-redux';
 import ParentsHandling from './ParentsHandling';
-import {loadParentsRequest, getAllStudentsRequest, getParentsNameRequest} from "../../../redux/thunks";
+import {
+    loadParentsRequestWithRange,
+    loadParentByIdRequest,
+    getAllStudentsRequest,
+    getParentsNameRequest
+} from "../../../redux/thunks";
 import {getRequest, resetRequest} from "../../../redux/actions/requestActions";
 import {getAllStudents, loadAllStudents} from "../../../redux/actions/studentActions";
 import {getParents, loadParents, getParentsName, loadParentsName} from "../../../redux/actions/usersActions";
 import {getAlertSuccess, setAlertSuccess} from "../../../redux/actions/valuesActions";
 
 const mapDispatchToProps = dispatch => ({
-    loadParents: () => dispatch(loadParentsRequest()),
+    loadParents: (page, itemsPerPage) => dispatch(loadParentsRequestWithRange(page, itemsPerPage)),
+    loadParent: id => dispatch(loadParentByIdRequest(id)),
     loadStudents: () => dispatch(getAllStudentsRequest()),
     loadParentName: () => dispatch(getParentsNameRequest()),
     resetRequest: () => dispatch(resetRequest()),

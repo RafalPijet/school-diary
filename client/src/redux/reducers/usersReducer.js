@@ -7,7 +7,8 @@ import {
     UPDATE_PARENT,
     DELETE_PARENT,
     UPDATE_PARENT_STUDENT_CLASS_NAME,
-    LOAD_PARENTS_NAME
+    LOAD_PARENTS_NAME,
+    REMOVE_PARENT_NAME
 } from "../actions/usersActions";
 
 const initialState = {
@@ -70,6 +71,8 @@ const reducer = (state = initialState, action) => {
                 })};
         case LOAD_PARENTS_NAME:
             return {...state, parentsName: action.parents};
+        case REMOVE_PARENT_NAME:
+            return {...state, parentsName: state.parentsName.filter(parent => parent.id !== action.id)};
         default:
             return state
     }
