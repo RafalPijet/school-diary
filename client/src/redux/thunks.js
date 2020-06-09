@@ -7,8 +7,8 @@ import {
     loadParents,
     updateParent,
     updateParentStudentClassName,
-    loadParentsName,
-    removeParentName
+    loadUsersName,
+    removeUserName
 } from "./actions/usersActions";
 import {
     loadClassByTeacher,
@@ -118,7 +118,7 @@ export const deleteParentRequest = (id, page) => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/users/${id}`);
-            dispatch(removeParentName(id));
+            dispatch(removeUserName(id));
             await dispatch(loadParentsRequestWithRange(page + 1, 7));
             dispatch(setAlertSuccess(true, `Parent ${res.data.name} has been removed.`));
             dispatch(stopRequest());
@@ -351,6 +351,23 @@ export const loadParentByIdRequest = id => {
 };
 
 /*todo*/
+export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let start = Math.ceil((page - 1) * itemsPerPage);
+            let limit = itemsPerPage;
+            let teachers = await axios.get(`${API_URL}/users/teacher/${start}/${limit}`);
+            console.log(teachers.data);
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const loadParentsRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startRequest());
@@ -361,7 +378,7 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
             let classNames = [];
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
-            let parents = await axios.get(`${API_URL}/users/parents/${start}/${limit}`);
+            let parents = await axios.get(`${API_URL}/users/parent/${start}/${limit}`);
             const allStudents = store.getState().students.allStudents;
             let studentsId = [];
             await parents.data.forEach(parent => {
@@ -455,14 +472,14 @@ export const getAllStudentsRequest = () => {
     }
 };
 
-export const getParentsNameRequest = () => {
+export const getUsersNameRequest = status => {
     return async dispatch => {
         dispatch(startWorkingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.get(`${API_URL}/users/parents/name`);
-            dispatch(loadParentsName(res.data));
+            let res = await axios.get(`${API_URL}/users/name/${status}`);
+            dispatch(loadUsersName(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

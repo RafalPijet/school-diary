@@ -65,19 +65,22 @@ exports.getTeachers = async (req, res) => {
     }
 };
 
-exports.getParentById = async (req, res) => {
+exports.getUserById = async (req, res) => {
 
     try {
-        const {id} = req.params;
-        let parent = await User.findOne({id});
+        const {id, status} = req.params;
+        let user = await User.findOne({id});
         let result = {
-            id: parent.id,
-            _id: parent._id,
-            firstName: parent.firstName,
-            lastName: parent.lastName,
-            email: parent.email,
-            telephone: parent.telephone,
-            students: parent.students.map(student => {
+            id: user.id,
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            telephone: user.telephone,
+        };
+
+        if (status === 'parent') {
+            result.students = user.students.map(student => {
                 return {
                     id: student.id,
                     _id: student._id,
@@ -86,53 +89,56 @@ exports.getParentById = async (req, res) => {
                     lastName: student.lastName
                 }
             })
-        };
+        } else {
+            result.subject = user.subject;
+        }
         res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }
 };
 
-exports.getParents = async (req, res) => {
+exports.getUsers = async (req, res) => {
 
     try {
-        let {start, limit} = req.params;
+        let {start, limit, status} = req.params;
         start = parseInt(start);
         limit = parseInt(limit);
-        let parents = await User.find({status: 'parent'});
+        let users = await User.find({status});
         let result = [];
-        for (let i = parents.length - 1; i > -1; i--) {
-            result = [...result, parents[i]]
+        for (let i = users.length - 1; i > -1; i--) {
+            result = [...result, users[i]]
         }
-        let selectedParents = result.slice(start, start + limit);
-        selectedParents = await selectedParents.map(parent => {
+        let selectedUsers = result.slice(start, start + limit);
+        selectedUsers = await selectedUsers.map(user => {
             return {
-                id: parent.id,
-                _id: parent._id,
-                firstName: parent.firstName,
-                lastName: parent.lastName,
-                email: parent.email,
-                telephone: parent.telephone,
-                students: parent.students
+                id: user.id,
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                telephone: user.telephone,
+                [status === 'parent' ? 'students' : 'subject']: status === 'parent' ? user.students : user.subject,
             }
         });
-        res.status(200).json(selectedParents);
+        res.status(200).json(selectedUsers);
     } catch (err) {
         res.status(500).json(err);
     }
 };
 
-exports.getParentsName = async (req, res) => {
+exports.getUsersName = async (req, res) => {
 
     try {
-        let parents = await User.find({status: 'parent'});
-        parents = parents.map(parent => {
+        const {status} = req.params;
+        let users = await User.find({status});
+        users = users.map(user => {
             return {
-                id: parent.id,
-                name: `${parent.lastName} ${parent.firstName}`
+                id: user.id,
+                name: `${user.lastName} ${user.firstName}`
             }
         });
-        res.status(200).json(parents);
+        res.status(200).json(users);
     } catch (err) {
         res.status(500).json(err);
     }

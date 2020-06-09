@@ -7,8 +7,8 @@ router.route('/users').post(userController.addUser);
 router.route('/users/parent/:id').put(userController.updateParentStudents);
 router.route('/users/:id').delete(userController.deleteUser);
 router.route('/users/teachers').get(userController.getTeachers);
-router.route('/users/parents/:start/:limit').get(userController.getParents);
-router.route('/users/parents/name').get(userController.getParentsName);
-router.route('/users/parent/:id').get(userController.getParentById);
+router.route('/users/:status/:start/:limit').get(userController.getUsers);
+router.route('/users/name/:status').get(userController.getUsersName);
+router.route('/users/:status/:id').get(userController.getUserById);
 
 module.exports = router;

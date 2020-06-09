@@ -7,8 +7,8 @@ import {
     UPDATE_PARENT,
     DELETE_PARENT,
     UPDATE_PARENT_STUDENT_CLASS_NAME,
-    LOAD_PARENTS_NAME,
-    REMOVE_PARENT_NAME
+    LOAD_USERS_NAME,
+    REMOVE_USER_NAME
 } from "../actions/usersActions";
 
 const initialState = {
@@ -16,7 +16,7 @@ const initialState = {
     register: {email: {}, password: {}},
     teachers: [],
     parents: [],
-    parentsName: [],
+    usersName: [],
     user: {
         _id: "5e9fd27c00fe4800d6ccbc31",
         students: [],
@@ -69,10 +69,10 @@ const reducer = (state = initialState, action) => {
                 }
                 return parent;
                 })};
-        case LOAD_PARENTS_NAME:
-            return {...state, parentsName: action.parents};
-        case REMOVE_PARENT_NAME:
-            return {...state, parentsName: state.parentsName.filter(parent => parent.id !== action.id)};
+        case LOAD_USERS_NAME:
+            return {...state, usersName: action.users};
+        case REMOVE_USER_NAME:
+            return {...state, usersName: state.usersName.filter(user => user.id !== action.id)};
         default:
             return state
     }

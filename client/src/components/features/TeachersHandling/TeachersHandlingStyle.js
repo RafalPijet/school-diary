@@ -8,7 +8,7 @@ const componentStyle = theme => ({
         padding: `${style.smallSize} 0 0 22px`,
     },
     content: {
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         flexDirection: 'column',
         padding: `0 ${style.baseSize}`,
         height: '515px'
@@ -20,12 +20,6 @@ const componentStyle = theme => ({
         height: '52px',
         marginBottom: style.smallSize
     },
-    spinner: {
-        justifyContent: 'center !important'
-    },
-    noFull: {
-        justifyContent: 'flex-start !important'
-    }
 });
 
 export default componentStyle;

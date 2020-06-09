@@ -18,7 +18,6 @@ import ClassDiaries from './components/pages/ClassDiaries/ClassDiaries';
 import TeacherData from './components/pages/TeacherData/TeacherData';
 import HomePrincipal from './components/pages/HomePrincipal/HomePrincipal';
 import Classes from './components/pages/Classes/Classes';
-import TeachersConfig from './components/pages/TeachersConfig/TeachersConfig';
 import Students from './components/pages/Students/Students';
 import Parents from './components/pages/Parents/Parents';
 import Logout from './components/pages/Logout/Logout';
@@ -58,7 +57,7 @@ const App = props => {
                 <Switch>
                     <Route path='/' exact component={HomePrincipal}/>
                     <Route path='/classes' exact component={Classes}/>
-                    <Route path='/teachers' exact component={TeachersConfig}/>
+                    <Route path='/teachers' exact component={Teachers}/>
                     <Route path='/students' exact component={Students}/>
                     <Route path='/parents' exact component={Parents}/>
                     <Route path='/logout' exact component={Logout}/>

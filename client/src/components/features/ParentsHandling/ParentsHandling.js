@@ -50,7 +50,7 @@ const ParentsHandling = props => {
 
         if (!parentsName.length && !allStudents.length) {
             loadStudents();
-            loadParentName();
+            loadParentName('parent');
         }
 
         if (allStudents.length && !isReady) {
