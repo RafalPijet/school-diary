@@ -350,6 +350,41 @@ export const loadParentByIdRequest = id => {
     }
 };
 
+export const loadTeacherByIdRequest = id => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/users/teacher/${id}`);
+            let teacher = res.data;
+            let resNext = await axios.get(`${API_URL}/classes/teachers/name`,
+                {params: {teachersId: [teacher.id]}});
+
+            if (resNext.data.tutors.length) {
+                teacher.tutorClass = resNext.data.tutors[0].tutorClass
+            } else {
+                teacher.tutorClass = 'no assigned'
+            }
+
+            if (resNext.data.teachersInClass.length) {
+                teacher.teacherClasses = resNext.data.teachersInClass.map(item => {
+                    return {
+                        className: item.className,
+                        studentsAmount: item.studentsAmount
+                    }
+                })
+            } else {
+                teacher.teacherClasses = []
+            }
+            dispatch(loadTeachers([teacher]));
+            dispatch(stopRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 /*todo*/
 export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
@@ -360,7 +395,32 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
             let teachers = await axios.get(`${API_URL}/users/teacher/${start}/${limit}`);
-            console.log(teachers.data);
+            let teachersId = teachers.data.map(teacher => teacher.id);
+            let selectedTeachers = teachers.data;
+            let res = await axios.get(`${API_URL}/classes/teachers/name`, {params: {teachersId}});
+            const {teachersInClass, tutors} = res.data;
+            let tutorsId = tutors.map(tutor => tutor.tutorId);
+            await selectedTeachers.forEach(teacher => {
+                let teacherClasses = [];
+
+                if (tutorsId.includes(teacher.id)) {
+                    teacher.tutorClass = tutors.find(item => item.tutorId === teacher.id).tutorClass;
+                } else {
+                    teacher.tutorClass = 'no assigned'
+                }
+
+                teachersInClass.forEach(item => {
+
+                    if (item.id === teacher.id) {
+                        teacherClasses = [...teacherClasses, {
+                            className: item.className,
+                            studentsAmount: item.studentsAmount
+                        }]
+                    }
+                });
+                teacher.teacherClasses = teacherClasses;
+            });
+            dispatch(loadTeachers(selectedTeachers));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

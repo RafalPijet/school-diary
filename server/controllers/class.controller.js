@@ -107,6 +107,38 @@ exports.getClassNameForStudents = async (req, res) => {
     }
 };
 
+exports.getClassNameForTeachers = async (req, res) => {
+
+    try {
+        const {teachersId} = req.query;
+        let classes = await Class.find();
+        let teachersInClass = [];
+        let tutors = [];
+        await classes.forEach(classItem => {
+
+            if (teachersId.includes(classItem.mainTeacher.id)) {
+                tutors = [...tutors, {
+                    tutorId: classItem.mainTeacher.id,
+                    tutorClass: classItem.name
+                }]
+            }
+            classItem.subjectTeachers.forEach(teacher => {
+
+                if (teachersId.includes(teacher.id)) {
+                    teachersInClass = [...teachersInClass, {
+                        id: teacher.id,
+                        className: classItem.name,
+                        studentsAmount: classItem.students.length
+                    }]
+                }
+            });
+        });
+        res.status(200).json({tutors, teachersInClass});
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.addClass = async (req, res) => {
 
     try {

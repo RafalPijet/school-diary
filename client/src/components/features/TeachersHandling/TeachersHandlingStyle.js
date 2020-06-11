@@ -5,13 +5,13 @@ const componentStyle = theme => ({
         backgroundColor: theme.palette.secondary.light
     },
     info: {
-        padding: `${style.smallSize} 0 0 22px`,
+        padding: `${style.smallSize} ${style.baseSize} 0 22px`,
     },
     content: {
-        justifyContent: 'center',
-        flexDirection: 'column',
-        padding: `0 ${style.baseSize}`,
-        height: '515px'
+        justifyContent: 'flex-start',
+        padding: `10px ${style.baseSize} 0`,
+        height: '515px',
+        overflow: 'auto'
     },
     footer: {
         display: 'flex',
@@ -20,6 +20,12 @@ const componentStyle = theme => ({
         height: '52px',
         marginBottom: style.smallSize
     },
+    column: {
+        flexDirection: 'column',
+    },
+    center: {
+        justifyContent: 'center !important'
+    }
 });
 
 export default componentStyle;
