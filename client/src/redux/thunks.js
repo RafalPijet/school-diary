@@ -128,6 +128,23 @@ export const deleteParentRequest = (id, page) => {
     }
 };
 
+export const deleteTeacherRequest = (id, page, rowsPerPage) => {
+    return async dispatch => {
+        dispatch(startAddingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.delete(`${API_URL}/users/${id}`);
+            dispatch(removeUserName(id));
+            await dispatch(loadTeachersRequestWithRange(page + 1, rowsPerPage));
+            dispatch(setAlertSuccess(true, `Teacher ${res.data.name} has been removed.`));
+            dispatch(stopAddingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const loadAllClassesRequest = () => {
     return async dispatch => {
         dispatch(startRequest());

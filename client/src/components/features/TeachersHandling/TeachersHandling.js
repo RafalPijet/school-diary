@@ -15,7 +15,9 @@ import {
 } from "@material-ui/core";
 import {Autocomplete} from "@material-ui/lab";
 import Spinner from "../../common/Spinner/Spinner";
-import TeacherItem from "../TeacherItem/TeacherItem";
+import Alert from "../../common/Alert/Alert";
+import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
+import TeacherItem from "../TeacherItem/TeacherItemContainer";
 import componentStyle from "./TeachersHandlingStyle";
 import TablePagination from "../../common/TablePagination/TablePagination";
 
@@ -28,7 +30,15 @@ const TeachersHandling = props => {
         request,
         loadTeachersName,
         loadTeachers,
-        loadTeacher
+        loadTeacher,
+        resetRequest,
+        modalYesNot,
+        setModalYesNot,
+        alertSuccess,
+        setAlertSuccess,
+        deleteTeacher,
+        clearTeachers,
+        clearTeachersName
     } = props;
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [page, setPage] = useState(0);
@@ -55,6 +65,13 @@ const TeachersHandling = props => {
 
     }, [teachersName, page, rowsPerPage, selectedTeacher]);
 
+    useEffect(() => {
+        return () => {
+            clearTeachersName([]);
+            clearTeachers([]);
+        }
+    }, []);
+
     const handleSearch = value => {
         setSelectedTeacher(value);
 
@@ -74,6 +91,27 @@ const TeachersHandling = props => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
         setReady(false);
+    };
+
+    const errorHandling = async () => {
+        await resetRequest();
+        await setPage(0);
+        await loadTeachersName('teacher');
+        loadTeachers(page + 1, rowsPerPage);
+    };
+
+    const alertHandling = () => {
+        setAlertSuccess(false, '')
+    };
+
+    const deleteHandling = async isDelete => {
+        let teacherId = await modalYesNot.content.data.id;
+        setModalYesNot(false, {
+            description: '',
+            data: {}
+        });
+
+        if (isDelete) deleteTeacher(teacherId, page, rowsPerPage)
     };
 
     return (
@@ -100,7 +138,7 @@ const TeachersHandling = props => {
                 (request.working || request.pending) ? classes.center : '',
                 teachers.length < 7 ? classes.column : '')}>
                 {(request.working || request.pending) ? <Spinner/> :
-                    teachers.map(teacher => {
+                    isReady && teachers.length && teachers.map(teacher => {
                         return <TeacherItem key={teacher.id} teacher={teacher}/>
                     })
                 }
@@ -120,7 +158,7 @@ const TeachersHandling = props => {
                     <TableFooter>
                         <TableRow>
                             <MaterialPagination
-                                hidden={!teachersName.length}
+                                hidden={!teachersName.length || isSearch}
                                 rowsPerPageOptions={[7, 15, 25]}
                                 colSpan={3}
                                 count={teachersName.length}
@@ -138,6 +176,17 @@ const TeachersHandling = props => {
                     </TableFooter>
                 </Table>
             </TableContainer>
+            <Alert
+                isOpenAlert={request.error !== null || alertSuccess.isOpen}
+                variant={alertSuccess.isOpen ? 'success' : 'error'}
+                message={alertSuccess.isOpen ? alertSuccess.message : request.error}
+                handleCloseHandling={alertSuccess.isOpen ? alertHandling : errorHandling}
+            />
+            <ModalAreYouSure
+                description={modalYesNot.content.description}
+                isOpen={modalYesNot.isOpen}
+                isConfirm={deleteHandling}
+            />
         </Paper>
     )
 };
@@ -148,7 +197,15 @@ TeachersHandling.propTypes = {
     request: PropTypes.object.isRequired,
     loadTeachersName: PropTypes.func.isRequired,
     loadTeachers: PropTypes.func.isRequired,
-    loadTeacher: PropTypes.func.isRequired
+    loadTeacher: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired,
+    modalYesNot: PropTypes.object.isRequired,
+    setModalYesNot: PropTypes.func.isRequired,
+    alertSuccess: PropTypes.object.isRequired,
+    setAlertSuccess: PropTypes.func.isRequired,
+    deleteTeacher: PropTypes.func.isRequired,
+    clearTeachers: PropTypes.func.isRequired,
+    clearTeachersName: PropTypes.func.isRequired
 };
 
 export default TeachersHandling;

@@ -16,9 +16,19 @@ import componentStyle from "./TeacherItemStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const TeacherItem = props => {
-    const {teacher} = props;
+    const {teacher, request, setModalYesNot} = props;
     const classes = useStyles();
     let counter = 0;
+
+    const removeHandling = () => {
+        setModalYesNot(true,
+            {
+                description: `Do you want remove ${teacher.lastName} ${teacher.firstName} teacher?`,
+                data: {
+                    id: teacher.id
+                }
+            })
+    };
 
     return (
         <Paper variant='outlined' className={classes.root}>
@@ -68,7 +78,11 @@ const TeacherItem = props => {
                     >
                         <span>
                             <IconButton
+                                disabled={request.adding ||
+                                teacher.teacherClasses.length > 0 ||
+                                teacher.tutorClass !== 'no assigned'}
                                 className={classes.delete}
+                                onClick={removeHandling}
                             >
                                 <DeleteIcon fontSize='small'/>
                             </IconButton>
@@ -81,7 +95,9 @@ const TeacherItem = props => {
 };
 
 TeacherItem.propTypes = {
-    teacher: PropTypes.object.isRequired
+    teacher: PropTypes.object.isRequired,
+    request: PropTypes.object.isRequired,
+    setModalYesNot: PropTypes.func.isRequired
 };
 
 export default TeacherItem
