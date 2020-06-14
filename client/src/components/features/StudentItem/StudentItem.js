@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types';
 import clsx from "clsx";
+import {Redirect} from "react-router";
 import {makeStyles} from "@material-ui/core/styles";
 import Spinner from "../../common/Spinner/Spinner";
 import {Paper, Typography, Grid, Tooltip, IconButton, Fade, TextField} from "@material-ui/core";
@@ -21,7 +22,8 @@ const StudentItem = props => {
         updateStudent,
         getStudentIdUpdated,
         studentIdUpdated,
-        maxBirthDate
+        maxBirthDate,
+        setAvailable
     } = props;
     const [data, setData] = useState({
         firstName: student.firstName,
@@ -32,6 +34,7 @@ const StudentItem = props => {
     const [isShowConfirm, setIsShowConfirm] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isDateError, setIsDateError] = useState(false);
+    const [isRedirect, setIsRedirect] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -75,6 +78,11 @@ const StudentItem = props => {
         })
     };
 
+    const handleParents = async () => {
+        await setAvailable(student.parents);
+        setIsRedirect(true);
+    };
+
     const handleUpdate = () => {
         setIsShowConfirm(false);
         setIsEdit(false);
@@ -92,6 +100,7 @@ const StudentItem = props => {
 
     return (
         <Paper className={clsx(classes.root, isEdit && classes.item)} variant='outlined'>
+            {isRedirect && <Redirect to='/parents/available'/>}
             <Grid container>
                 <Grid item lg={6} className={classes.names}>
                     {((isUpdating && data.firstName !== student.firstName) ||
@@ -101,7 +110,7 @@ const StudentItem = props => {
                         <>
                             <Typography hidden={isEdit} style={{fontWeight: '700'}}
                                         display='inline'>{`${data.lastName} ${data.firstName}`}</Typography>
-                            < TextField
+                            <TextField
                                 name='lastName'
                                 value={data.lastName}
                                 hidden={!isEdit}
@@ -153,6 +162,7 @@ const StudentItem = props => {
                             <IconButton
                                 disabled={!student.parents.length || request.updating || request.adding}
                                 className={classes.button}
+                                onClick={handleParents}
                             >
                                 <Parents fontSize='small'/>
                             </IconButton>
@@ -206,7 +216,8 @@ StudentItem.propTypes = {
     updateStudent: PropTypes.func.isRequired,
     studentIdUpdated: PropTypes.string,
     getStudentIdUpdated: PropTypes.func.isRequired,
-    maxBirthDate: PropTypes.string.isRequired
+    maxBirthDate: PropTypes.string.isRequired,
+    setAvailable: PropTypes.func.isRequired
 };
 
 export default StudentItem;

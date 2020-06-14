@@ -62,7 +62,7 @@ const TeachersHandling = props => {
             loadTeachers(page + 1, rowsPerPage);
             setIsSearch(false);
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachersName, page, rowsPerPage, selectedTeacher]);
 
     useEffect(() => {
@@ -70,6 +70,7 @@ const TeachersHandling = props => {
             clearTeachersName([]);
             clearTeachers([]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSearch = value => {

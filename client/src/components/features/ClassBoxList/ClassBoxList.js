@@ -55,6 +55,13 @@ const ClassBoxList = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [request.error, request.success, request.geting, availableClasses.length, isClasses, selectedClass]);
 
+    useEffect(() => {
+        return () => {
+            setSelectedClass({});
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
 

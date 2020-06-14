@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import {getRequest} from "../../../redux/actions/requestActions";
 import {setModalYesNot} from "../../../redux/actions/valuesActions";
 import {updateStudentBasicDataRequest} from "../../../redux/thunks";
-import {getMaxBirthDate} from "../../../redux/actions/valuesActions";
+import {getMaxBirthDate, setAvailable} from "../../../redux/actions/valuesActions";
 import StudentItem from "./StudentItem";
 
 const mapStateToProps = state => ({
@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     setModalYesNot: (isOpen, content) => dispatch(setModalYesNot(isOpen, content)),
-    updateStudent: student => dispatch(updateStudentBasicDataRequest(student))
+    updateStudent: student => dispatch(updateStudentBasicDataRequest(student)),
+    setAvailable: parents => dispatch(setAvailable(parents))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentItem);

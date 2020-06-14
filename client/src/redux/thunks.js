@@ -8,7 +8,8 @@ import {
     updateParent,
     updateParentStudentClassName,
     loadUsersName,
-    removeUserName
+    removeUserName,
+    addParent
 } from "./actions/usersActions";
 import {
     loadClassByTeacher,
@@ -335,7 +336,7 @@ export const loadTeachersRequest = () => {
     }
 };
 
-export const loadParentByIdRequest = id => {
+export const loadParentByIdRequest = (id, isAdd) => {
     return async dispatch => {
         dispatch(startRequest());
 
@@ -359,7 +360,7 @@ export const loadParentByIdRequest = id => {
                     return student
                 });
             }
-            dispatch(loadParents([parent]));
+            isAdd ? dispatch(addParent(parent)) : dispatch(loadParents([parent]));
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

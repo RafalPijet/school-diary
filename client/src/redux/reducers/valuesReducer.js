@@ -6,7 +6,8 @@ import {
     SET_TUTOR_IS_USE,
     SET_MODAL_YES_NOT,
     SET_MAX_BIRTH_DATE,
-    SET_ALERT_SUCCESS
+    SET_ALERT_SUCCESS,
+    SET_AVAILABLE
 } from "../actions/valuesActions";
 
 const initialState = {
@@ -36,7 +37,8 @@ const initialState = {
             'technology', 'family life education', 'physical education', 'form period']
     },
     maxBirthDate: '2014-01-01',
-    alertSuccess: {isOpen: false, message: ''}
+    alertSuccess: {isOpen: false, message: ''},
+    available: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -57,6 +59,8 @@ const reducer = (state = initialState, action) => {
             return {...state, maxBirthDate: action.date};
         case SET_ALERT_SUCCESS:
             return {...state, alertSuccess: {isOpen: action.isOpen, message: action.message}};
+        case SET_AVAILABLE:
+            return {...state, available: action.available};
         default:
             return state;
     }

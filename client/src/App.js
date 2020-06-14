@@ -59,7 +59,9 @@ const App = props => {
                     <Route path='/classes' exact component={Classes}/>
                     <Route path='/teachers' exact component={Teachers}/>
                     <Route path='/students' exact component={Students}/>
-                    <Route path='/parents' exact component={Parents}/>
+                    <Route path='/parents'>
+                        <Parents/>
+                    </Route>
                     <Route path='/logout' exact component={Logout}/>
                     <Route component={PageNotFound}/>
                 </Switch>

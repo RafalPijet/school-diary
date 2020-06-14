@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useLocation} from "react-router";
 import {
     Paper,
     Grid,
@@ -37,35 +38,48 @@ const ParentsHandling = props => {
         clearStudents,
         clearParentsName,
         alertSuccess,
-        setAlertSuccess
+        setAlertSuccess,
+        available,
+        clearAvailable
     } = props;
     const [selectedItem, setSelectedItem] = useState(0);
     const [selectedParent, setSelectedParent] = useState(null);
     const [page, setPage] = useState(0);
     const [isReady, setReady] = useState(false);
     const [isSearch, setIsSearch] = useState(false);
+    const [isLocation, setIsLocation] = useState(false);
     const classes = useStyles();
+    let location = useLocation().pathname;
 
     useEffect(() => {
 
-        if (!parentsName.length && !allStudents.length) {
+        if (location === '/parents/available' && available.length && !isLocation) {
+            setIsLocation(true);
+            loadStudents();
+            available.forEach((item, i) => {
+
+                if (i < 7) loadParent(item, true);
+            });
+        }
+
+        if (!parentsName.length && !allStudents.length && !available.length) {
             loadStudents();
             loadParentName('parent');
         }
 
-        if (allStudents.length && !isReady) {
+        if (allStudents.length && !isReady && !available.length) {
             setReady(true);
             loadParents(page + 1, 7);
         }
 
         if (request.pending) setSelectedItem(0);
 
-        if (selectedParent === null && isSearch) {
+        if (selectedParent === null && isSearch && !available.length) {
             loadParents(page + 1, 7);
             setIsSearch(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allStudents.length, parents.length, page, request.pending, selectedParent]);
+    }, [allStudents.length, parents.length, page, request.pending, selectedParent, available.length]);
 
     useEffect(() => {
         return () => {
@@ -73,6 +87,7 @@ const ParentsHandling = props => {
             clearParents([]);
             clearStudents([]);
             clearParentsName([]);
+            clearAvailable([]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -94,7 +109,7 @@ const ParentsHandling = props => {
         setSelectedParent(value);
 
         if (value !== null) {
-            loadParent(value.id);
+            loadParent(value.id, false);
             setIsSearch(true);
             setPage(0);
         }
@@ -139,7 +154,7 @@ const ParentsHandling = props => {
             </Grid>
             <TableContainer className={classes.footer} component={Paper}>
                 <Autocomplete
-                    hidden={request.working}
+                    hidden={request.working || isLocation}
                     id='search-parent'
                     renderInput={params => <TextField {...params} label='Search parent'/>}
                     options={parentsName}
@@ -152,7 +167,7 @@ const ParentsHandling = props => {
                     <TableFooter>
                         <TableRow>
                             <MaterialPagination
-                                hidden={request.working || selectedParent !== null}
+                                hidden={request.working || selectedParent !== null || isLocation}
                                 rowsPerPageOptions={[7]}
                                 colSpan={3}
                                 count={parentsName.length}
@@ -193,7 +208,9 @@ ParentsHandling.propTypes = {
     clearStudents: PropTypes.func.isRequired,
     clearParentsName: PropTypes.func.isRequired,
     alertSuccess: PropTypes.object.isRequired,
-    setAlertSuccess: PropTypes.func.isRequired
+    setAlertSuccess: PropTypes.func.isRequired,
+    available: PropTypes.array.isRequired,
+    clearAvailable: PropTypes.func.isRequired
 };
 
 export default ParentsHandling;

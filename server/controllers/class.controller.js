@@ -26,7 +26,24 @@ exports.getClassById = async (req, res) => {
 
     try {
         let {id} = req.params;
-        res.status(200).json(await Class.findOne({id}));
+        let classItem = await Class.findOne({id});
+        let result = {
+            _id: classItem._id,
+            id: classItem.id,
+            name: classItem.name,
+            mainTeacher: {
+                id: classItem.mainTeacher.id,
+                lastName: classItem.mainTeacher.lastName,
+                firstName: classItem.mainTeacher.firstName,
+                email: classItem.mainTeacher.email
+            },
+            students: classItem.students.map(student => {
+                student.parents = [];
+                student.birthDate = null;
+                return student
+            })
+        };
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }
