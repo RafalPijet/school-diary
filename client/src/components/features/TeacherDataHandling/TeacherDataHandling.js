@@ -5,6 +5,7 @@ import {Paper, Tabs, Tab, AppBar} from "@material-ui/core";
 import ListIcon from '@material-ui/icons/List';
 import EditIcon from '@material-ui/icons/Edit';
 import {a11yProps} from "../../../utilities/functions";
+import EditUserData from "../EditUserData/EditUserDataContainer";
 import componentStyle from "./TeacherDataHandlingStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
@@ -22,9 +23,10 @@ const TeacherDataHandling = props => {
             <AppBar position='static' className={classes.tabs}>
                 <Tabs value={value} onChange={handleChange} textColor='primary' variant='fullWidth'>
                     <Tab label='students list' icon={<ListIcon/>} {...a11yProps(0)}/>
-                    <Tab label="edit teacher's data" icon={<EditIcon/>} {...a11yProps(1)}/>
+                    <Tab label="edit teachers data" icon={<EditIcon/>} {...a11yProps(1)}/>
                 </Tabs>
             </AppBar>
+            {value === 1 && <EditUserData/>}
         </Paper>
     )
 };

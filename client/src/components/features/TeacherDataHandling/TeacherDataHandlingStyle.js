@@ -6,7 +6,7 @@ const componentStyle = theme => ({
         justifyContent: 'space-between',
         flexDirection: 'column',
         padding: style.baseSize,
-        height: '600px'
+        height: style.contentHeight
     },
     tabs: {
         backgroundColor: theme.palette.action.tab,

@@ -35,6 +35,37 @@ exports.updateParentStudents = async (req, res) => {
     }
 };
 
+exports.updateUser = async (req, res) => {
+
+    try {
+        const {isPassword, isDataChange, userAfterChange} = req.body;
+        let user = await User.findOne({id: userAfterChange.id});
+        let result = '';
+
+        if (isPassword) {
+
+            if (user.password === userAfterChange.password) {
+                user.password = userAfterChange.newPassword;
+                result = 'The password has been changed. '
+            } else {
+                result = 'Wrong old password.'
+            }
+        }
+
+        if (isDataChange) {
+            user.firstName = userAfterChange.firstName;
+            user.lastName = userAfterChange.lastName;
+            user.email = userAfterChange.email;
+            user.telephone = userAfterChange.telephone;
+            result = result + `${userAfterChange.lastName} ${userAfterChange.firstName} data has been changed.`
+        }
+        // await user.save();
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.deleteUser = async (req, res) => {
 
     try {

@@ -2,37 +2,17 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
-import MaskedInput from "react-text-mask/dist/reactTextMask";
 import SelectRegister from "../../common/SelectRegister/SelectRegister";
 import {TextField} from "@material-ui/core";
 import {Redirect} from "react-router";
 import DoneIcon from '@material-ui/icons/Done';
 import Fab from '@material-ui/core/Fab';
+import TextMaskCustom from "../../common/TaskMaskCustom/TaskMaskCustom";
 import Spinner from '../../common/Spinner/Spinner';
 import Alert from "../../common/Alert/Alert";
 import componentStyle from "./UserFormStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
-
-const TextMaskCustom = props => {
-    const {inputRef, ...other} = props;
-
-    return (
-        <MaskedInput
-            {...other}
-            ref={(ref) => {
-                inputRef(ref ? ref.inputElement : null);
-            }}
-            mask={['(', '0', '0', /[0-9]/, /[0-9]/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]}
-            placeholderChar={'\u2000'}
-            showMask
-        />
-    );
-};
-
-TextMaskCustom.propTypes = {
-    inputRef: PropTypes.func.isRequired,
-};
 
 const UserForm = props => {
     const {isLogin, subjects, resetRequest, loadUser, addUser, registerAfter, setRegisterAfter} = props;
@@ -181,7 +161,8 @@ const UserForm = props => {
                 <div className={classes.textRow}>
                     <TextField error={isError.email} helperText={isError.email ? 'Incorrect entry' : ''}
                                label='email' name='email' value={isLogin ? login.email : register.email}
-                               onBlur={event => setIsError({...isError, email: !event.target.value.includes('@')})}
+                               onBlur={event => setIsError({...isError,
+                                   email: !event.target.value.includes('@') || !event.target.value.includes('.')})}
                                onChange={handleTextField} className={classes.margin}/>
                     <TextField label='password' name='password' value={isLogin ? login.password : register.password}
                                type='password' onChange={handleTextField} className={classes.margin}/>

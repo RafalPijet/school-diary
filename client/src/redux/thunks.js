@@ -695,6 +695,21 @@ export const addStudentRequest = student => {
     }
 };
 
+export const updateUserRequest = (isPassword, isDataChange, userAfterChange) => {
+    return async dispatch => {
+        dispatch(startUpdatingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.put(`${API_URL}/users`, {isPassword, isDataChange, userAfterChange});
+            console.log(res.data);
+            dispatch(stopUpdatingRequest())
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
 export const updateStudentRequest = (id, parent, isAdd) => {
     return async dispatch => {
         dispatch(startAddingRequest());

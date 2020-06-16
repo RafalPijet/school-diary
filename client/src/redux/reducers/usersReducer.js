@@ -26,7 +26,7 @@ const initialState = {
         subject : "math",
         firstName : "David",
         lastName : "Gahan",
-        telephone : "508 567 899",
+        telephone : "(0048) 508-567-899",
         email: "david@gmail.com",
         password: "qqq",
     }
