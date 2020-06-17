@@ -5,17 +5,28 @@ import {Paper, Tabs, Tab, AppBar} from "@material-ui/core";
 import ListIcon from '@material-ui/icons/List';
 import EditIcon from '@material-ui/icons/Edit';
 import {a11yProps} from "../../../utilities/functions";
+import Spinner from "../../common/Spinner/Spinner";
+import Alert from "../../common/Alert/Alert";
 import EditUserData from "../EditUserData/EditUserDataContainer";
+import TeacherDataStudents from "../TeacherDataStudents/TeachersDataStudentsContainer";
 import componentStyle from "./TeacherDataHandlingStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const TeacherDataHandling = props => {
+    const {request, resetRequest, alertSuccess, setAlertSuccess} = props;
     const [value, setValue] = useState(0);
     const classes = useStyles();
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    const alertHandling = () => {
+
+        if (request.error !== null) resetRequest();
+
+        if (alertSuccess.isOpen) setAlertSuccess(false, '');
     };
 
     return (
@@ -26,13 +37,23 @@ const TeacherDataHandling = props => {
                     <Tab label="edit teachers data" icon={<EditIcon/>} {...a11yProps(1)}/>
                 </Tabs>
             </AppBar>
+            {value === 0 && <TeacherDataStudents/>}
             {value === 1 && <EditUserData/>}
+            <Alert
+                isOpenAlert={request.error !== null || alertSuccess.isOpen}
+                variant={alertSuccess.isOpen ? 'success' : 'error'}
+                message={alertSuccess.isOpen ? alertSuccess.message : request.error}
+                handleCloseHandling={alertHandling}
+            />
         </Paper>
     )
 };
 
 TeacherDataHandling.propTypes = {
-
+    request: PropTypes.object.isRequired,
+    resetRequest: PropTypes.func.isRequired,
+    alertSuccess: PropTypes.object.isRequired,
+    setAlertSuccess: PropTypes.func.isRequired
 };
 
 export default TeacherDataHandling

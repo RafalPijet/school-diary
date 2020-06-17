@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {getUser} from "../../../redux/actions/usersActions";
 import {getRequest} from "../../../redux/actions/requestActions";
-import {updateUserRequest} from "../../../redux/thunks";
+import {updateUserDataRequest} from "../../../redux/thunks";
 import EditUserData from "./EditUserData";
 
 const mapStateToProps = state => ({
@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
    updateUser: (isPassword, isDataChange, userAfterChange) =>
-       dispatch(updateUserRequest((isPassword, isDataChange, userAfterChange)))
+       dispatch(updateUserDataRequest(isPassword, isDataChange, userAfterChange))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditUserData)

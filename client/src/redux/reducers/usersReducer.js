@@ -2,6 +2,7 @@ import {
     SET_LOGIN,
     SET_REGISTER,
     SET_USER,
+    UPDATE_USER_DATA,
     LOAD_TEACHERS,
     LOAD_PARENTS,
     UPDATE_PARENT,
@@ -27,8 +28,7 @@ const initialState = {
         firstName : "David",
         lastName : "Gahan",
         telephone : "(0048) 508-567-899",
-        email: "david@gmail.com",
-        password: "qqq",
+        email: "david@gmail.com"
     }
 };
 
@@ -40,6 +40,13 @@ const reducer = (state = initialState, action) => {
             return {...state, register: {email: action.login.email, password: action.login.password}};
         case SET_USER:
             return {...state, user: action.user};
+        case UPDATE_USER_DATA:
+            return {...state, user: {...state.user,
+                    firstName: action.data.firstName,
+                    lastName: action.data.lastName,
+                    email: action.data.email,
+                    telephone: action.data.telephone
+            }};
         case LOAD_TEACHERS:
             return {...state, teachers: action.teachers};
         case LOAD_PARENTS:

@@ -40,15 +40,14 @@ exports.updateUser = async (req, res) => {
     try {
         const {isPassword, isDataChange, userAfterChange} = req.body;
         let user = await User.findOne({id: userAfterChange.id});
-        let result = '';
+        let resultData = '';
+        let resultPassword = null;
 
         if (isPassword) {
 
             if (user.password === userAfterChange.password) {
                 user.password = userAfterChange.newPassword;
-                result = 'The password has been changed. '
-            } else {
-                result = 'Wrong old password.'
+                resultPassword = 'The password has been changed. '
             }
         }
 
@@ -57,10 +56,10 @@ exports.updateUser = async (req, res) => {
             user.lastName = userAfterChange.lastName;
             user.email = userAfterChange.email;
             user.telephone = userAfterChange.telephone;
-            result = result + `${userAfterChange.lastName} ${userAfterChange.firstName} data has been changed.`
+            resultData = `${userAfterChange.lastName} ${userAfterChange.firstName} data has been changed.`
         }
-        // await user.save();
-        res.status(200).json(result);
+        await user.save();
+        res.status(200).json({resultData, resultPassword});
     } catch (err) {
         res.status(500).json(err);
     }

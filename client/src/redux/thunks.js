@@ -3,6 +3,7 @@ import {API_URL} from "../config";
 import {
     setUser,
     setLogin,
+    updateUserData,
     loadTeachers,
     loadParents,
     updateParent,
@@ -63,8 +64,10 @@ export const loadUserByLogin = login => {
             if (res.data !== null) {
 
                 if (res.data.password === login.password) {
+                    let user = res.data;
+                    user.password = '';
                     await dispatch(stopRequest());
-                    await dispatch(setUser(res.data));
+                    await dispatch(setUser(user));
                     await dispatch(setLogin(true));
                 } else {
                     dispatch(errorRequest("Wrong password!"));
@@ -695,14 +698,35 @@ export const addStudentRequest = student => {
     }
 };
 
-export const updateUserRequest = (isPassword, isDataChange, userAfterChange) => {
+export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange) => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.put(`${API_URL}/users`, {isPassword, isDataChange, userAfterChange});
-            console.log(res.data);
+            let res = await axios.put(`${API_URL}/userss`, {isPassword, isDataChange, userAfterChange});
+
+            if (isDataChange) {
+                dispatch(updateUserData(userAfterChange));
+
+                if (isPassword && res.data.resultPassword !== null) {
+                    dispatch(setAlertSuccess(true, `${res.data.resultData}. ${res.data.resultPassword}`))
+                }
+
+                if (isPassword && res.data.resultPassword === null) {
+                    dispatch(setAlertSuccess(true, res.data.resultData));
+                    setTimeout(() =>
+                        dispatch(errorRequest("Incorrect old password !!! Password has not been changed.")), 6000);
+                }
+
+                if (!isPassword) dispatch(setAlertSuccess(true, res.data.resultData))
+
+            }
+
+            if (isPassword && !isDataChange) {
+                res.data.resultPassword !== null ? dispatch(setAlertSuccess(true, res.data.resultPassword)) :
+                    dispatch(errorRequest("Incorrect old password !!! Password has not been changed."))
+            }
             dispatch(stopUpdatingRequest())
         } catch (err) {
             dispatch(errorRequest(err.message));
