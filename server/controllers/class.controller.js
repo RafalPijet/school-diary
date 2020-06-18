@@ -228,3 +228,25 @@ exports.deleteClassById = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.getTeacherStudentsName = async (req, res) => {
+
+    try {
+        const {classesId} = req.query;
+        let result = [];
+        let teacherClasses = await Class.find({id: classesId});
+        teacherClasses.forEach(classItem => {
+            classItem.students.forEach(student => {
+                let item = {
+                    id: student.id,
+                    name: `${student.lastName} ${student.firstName}`,
+                    className: classItem.name
+                };
+                result = [...result, item]
+            })
+        });
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types'
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper, Tabs, Tab, AppBar} from "@material-ui/core";
@@ -14,9 +14,23 @@ import componentStyle from "./TeacherDataHandlingStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const TeacherDataHandling = props => {
-    const {request, resetRequest, alertSuccess, setAlertSuccess} = props;
+    const {
+        request,
+        resetRequest,
+        alertSuccess,
+        setAlertSuccess,
+        teacherAllClass,
+        loadAllClasses,
+        userId
+    } = props;
     const [value, setValue] = useState(0);
     const classes = useStyles();
+
+    useEffect(() => {
+
+        if (!teacherAllClass.length) loadAllClasses(userId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [teacherAllClass.length]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -31,14 +45,19 @@ const TeacherDataHandling = props => {
 
     return (
         <Paper variant='outlined' className={classes.root}>
-            <AppBar position='static' className={classes.tabs}>
-                <Tabs value={value} onChange={handleChange} textColor='primary' variant='fullWidth'>
-                    <Tab label='students list' icon={<ListIcon/>} {...a11yProps(0)}/>
-                    <Tab label="edit teachers data" icon={<EditIcon/>} {...a11yProps(1)}/>
-                </Tabs>
-            </AppBar>
-            {value === 0 && <TeacherDataStudents/>}
-            {value === 1 && <EditUserData/>}
+            {request.pending ? <Spinner/> :
+                <>
+                    <AppBar position='static' className={classes.tabs}>
+                        <Tabs value={value} onChange={handleChange} textColor='primary' variant='fullWidth'>
+                            <Tab label='students list' icon={<ListIcon/>} {...a11yProps(0)}/>
+                            <Tab label="edit teachers data" icon={<EditIcon/>} {...a11yProps(1)}/>
+                        </Tabs>
+                    </AppBar>
+                    {value === 0 && <TeacherDataStudents/>}
+                    {value === 1 && <EditUserData/>}
+                </>
+
+            }
             <Alert
                 isOpenAlert={request.error !== null || alertSuccess.isOpen}
                 variant={alertSuccess.isOpen ? 'success' : 'error'}
@@ -53,7 +72,10 @@ TeacherDataHandling.propTypes = {
     request: PropTypes.object.isRequired,
     resetRequest: PropTypes.func.isRequired,
     alertSuccess: PropTypes.object.isRequired,
-    setAlertSuccess: PropTypes.func.isRequired
+    setAlertSuccess: PropTypes.func.isRequired,
+    teacherAllClass: PropTypes.array.isRequired,
+    loadAllClasses: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired
 };
 
 export default TeacherDataHandling

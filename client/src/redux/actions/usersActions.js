@@ -35,6 +35,7 @@ export const addParent = parent => ({parent, type: ADD_PARENT});
 export const getLogin = store => store.user.isLogin;
 export const getRegister = store => store.user.register;
 export const getUser = store => store.user.user;
+export const getUserId = store => store.user.user.id;
 export const getTeachers = store => store.user.teachers;
 export const getParents = store => store.user.parents;
 export const getUsersName = store => store.user.usersName;

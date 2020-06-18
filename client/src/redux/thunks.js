@@ -704,7 +704,7 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.put(`${API_URL}/userss`, {isPassword, isDataChange, userAfterChange});
+            let res = await axios.put(`${API_URL}/users`, {isPassword, isDataChange, userAfterChange});
 
             if (isDataChange) {
                 dispatch(updateUserData(userAfterChange));
@@ -815,6 +815,21 @@ export const addSubjectRating = (student, subject) => {
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
+        }
+    }
+};
+
+export const getTeacherStudentsNameRequest = classesId => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/classes/teacher/students`, {params: {classesId}});
+            dispatch(loadAllStudents(res.data));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
         }
     }
 };

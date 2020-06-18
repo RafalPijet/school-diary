@@ -29,7 +29,6 @@ const componentStyle = theme => ({
     },
     classes: {
         display: 'flex',
-        // justifyContent: 'center',
         backgroundColor: 'inherit',
         alignItems: 'center',
         flexDirection: 'column',

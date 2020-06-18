@@ -2,8 +2,9 @@ import {style} from "../../../styles/global";
 
 const componentStyle = theme => ({
     root: {
+        display: 'flex',
         backgroundColor: theme.palette.secondary.light,
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         flexDirection: 'column',
         padding: style.baseSize,
         height: style.contentHeight

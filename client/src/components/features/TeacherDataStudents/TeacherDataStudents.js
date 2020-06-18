@@ -1,24 +1,130 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
-import {Paper} from "@material-ui/core";
+import {
+    Paper,
+    Grid,
+    Typography,
+    TableContainer,
+    Table,
+    TableFooter,
+    TableRow,
+    TextField,
+    TablePagination as MaterialPagination
+} from "@material-ui/core";
+import {Autocomplete} from "@material-ui/lab";
+import Spinner from "../../common/Spinner/Spinner";
+import TablePagination from "../../common/TablePagination/TablePagination";
 import componentStyle from "./TeacherDataStydentsStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const TeacherDataStudents = props => {
-    const {request} = props;
+    const {
+        request,
+        teacherAllClass,
+        loadTeacherStudentsName,
+        allStudents
+    } = props;
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(7);
+    const [selectedStudent, setSelectedStudent] = useState(null);
     const classes = useStyles();
+
+    useEffect(() => {
+
+        if (teacherAllClass.length) {
+            let classesId = teacherAllClass.map(classItem => classItem.id);
+            loadTeacherStudentsName(classesId);
+        }
+    }, [teacherAllClass]);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+        let studentsIdByRange = allStudents.slice(newPage * rowsPerPage,
+            newPage * rowsPerPage + rowsPerPage).map(student => student.id);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleSearch = value => {
+        setSelectedStudent(value);
+
+
+    };
 
     return (
         <Paper elevation={3} className={classes.root}>
+            {request.geting ? <Spinner/> :
+                <Grid container style={{padding: '8px 14px'}}>
+                    <Grid item lg={4}>
+                        <Typography className={classes.title} variant='subtitle2' display='inline'>
+                            student name
+                        </Typography>
+                    </Grid>
+                    <Grid item lg={2} className={classes.item}>
+                        <Typography className={classes.title} variant='subtitle2' display='inline'>
+                            birth date
+                        </Typography>
+                    </Grid>
+                    <Grid item lg={2} className={classes.item}>
+                        <Typography className={classes.title} variant='subtitle2' display='inline'>
+                            class
+                        </Typography>
+                    </Grid>
+                    <Grid item lg={4} className={classes.item}>
+                        <Typography className={classes.title} variant='subtitle2' display='inline'>
+                            parents
+                        </Typography>
+                    </Grid>
+                    <div className={classes.table}>
 
+                    </div>
+                    <TableContainer className={classes.footer} component={Paper}>
+                        <Autocomplete
+                            id='search-student'
+                            options={allStudents}
+                            getOptionLabel={student => student.name}
+                            style={{width: 300, paddingLeft: '15px'}}
+                            size='small'
+                            onChange={(e, value) => handleSearch(value)}
+                            renderInput={params => <TextField {...params} label="Search student"/>}
+                        />
+                        <Table>
+                            <TableFooter>
+                                <TableRow>
+                                    <MaterialPagination
+                                        rowsPerPageOptions={[7, 15, 25]}
+                                        colSpan={3}
+                                        count={allStudents.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        SelectProps={{
+                                            inputProps: {'aria-label': 'rows per page'},
+                                            native: true,
+                                        }}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                        ActionsComponent={TablePagination}
+                                    />
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            }
         </Paper>
     )
 };
 
 TeacherDataStudents.propTypes = {
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    teacherAllClass: PropTypes.array.isRequired,
+    loadTeacherStudentsName: PropTypes.func.isRequired,
+    allStudents: PropTypes.array.isRequired
 };
 
 export default TeacherDataStudents;
