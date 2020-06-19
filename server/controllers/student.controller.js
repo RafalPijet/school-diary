@@ -104,6 +104,30 @@ exports.getStudentsWithRange = async (req, res) => {
     }
 };
 
+exports.getTeacherStudentsById = async (req, res) => {
+
+    try {
+        const {studentsId} = req.query;
+        let students = await Student.find({id: studentsId});
+        let result = students.map(student => {
+            return {
+                id: student.id,
+                birthDate: student.birthDate,
+                parents: student.parents.map(parent => {
+                    return {
+                        name: `${parent.lastName} ${parent.firstName}`,
+                        phone: parent.telephone,
+                        email: parent.email
+                    }
+                })
+            }
+        });
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 exports.addStudent = async (req, res) => {
 
     try {

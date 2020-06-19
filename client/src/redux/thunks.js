@@ -833,3 +833,37 @@ export const getTeacherStudentsNameRequest = classesId => {
         }
     }
 };
+
+export const getTeacherStudentsByIdRequest = students => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let studentsId = students.map(student => student.id);
+            let res = await axios.get(`${API_URL}//students/teacher`, {params: {studentsId}});
+            let result = [];
+
+            if (res.data.length) {
+                students.forEach(student => {
+                    res.data.forEach(item => {
+
+                        if (student.id === item.id) {
+                            result = [...result, {
+                                id: student.id,
+                                name: student.name,
+                                className: student.className,
+                                birthDate: item.birthDate,
+                                parents: item.parents
+                            }]
+                        }
+                    })
+                })
+            }
+            dispatch(setClassesStudents(result));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};

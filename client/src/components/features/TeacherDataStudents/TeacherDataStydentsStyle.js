@@ -1,3 +1,5 @@
+import {style} from "../../../styles/global";
+
 const componentStyle = theme => ({
     root: {
         display: 'flex',
@@ -18,9 +20,8 @@ const componentStyle = theme => ({
         display: 'flex',
         width: '100%',
         flexDirection: 'column',
-        alignItems: 'center',
         height: '369px',
-        marginBottom: theme.spacing(1),
+        margin: `${style.baseSize} 0`,
         overflow: 'auto',
         backgroundColor: theme.palette.secondary.dark
     },
@@ -30,6 +31,9 @@ const componentStyle = theme => ({
         alignItems: 'center',
         height: '52px'
     },
+    center: {
+        justifyContent: 'center'
+    }
 });
 
 export default componentStyle;

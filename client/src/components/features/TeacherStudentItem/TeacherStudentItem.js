@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import clsx from "clsx";
 import {
     Paper,
     Grid,
@@ -23,18 +24,30 @@ const TeacherStudentItem = props => {
                         {student.name}
                     </Typography>
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item lg={2} className={clsx(classes.item, classes.center)}>
                     <Typography align='center'>
-                        {student.birthDate}
+                        {student.birthDate.substring(0, 10)}
                     </Typography>
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item lg={2} className={clsx(classes.item, classes.center)}>
                     <Typography align='center'>
                         {student.className}
                     </Typography>
                 </Grid>
-                <Grid item lg={4}>
-                    <Typography>Parents</Typography>
+                <Grid item lg={4} className={clsx(classes.item, classes.center)}>
+                    <div className={classes.parentsBox}>
+                        {student.parents.length ?
+                            student.parents.map((item, i) => {
+                                return (
+                                    <div key={i} className={classes.parents}>
+                                        <Link href={`mailto: ${item.email}`}>{`${item.name}; `}</Link>
+                                        <Typography variant='subtitle2'>{item.phone}</Typography>
+                                    </div>
+                                )
+                            }) :
+                            <Typography>none</Typography>
+                        }
+                    </div>
                 </Grid>
             </Grid>
         </Paper>
