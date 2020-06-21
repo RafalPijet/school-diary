@@ -4,7 +4,15 @@ const User = require('../models/user.model');
 exports.getUserByLogin = async (req, res) => {
 
     try {
-        res.status(200).json(await User.findOne({"email": req.query.email}));
+        let user = await User.findOne({"email": req.query.email});
+
+        if (user.status === 'parent') {
+            user.students = user.students.map(student => {
+                student.parents = [];
+                return student
+            })
+        }
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).json(err);
     }

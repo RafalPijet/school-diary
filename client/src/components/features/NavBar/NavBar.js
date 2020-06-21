@@ -16,7 +16,6 @@ import RegIcon from '@material-ui/icons/HowToReg';
 import DataIcon from '@material-ui/icons/Assignment';
 import RatingIcon from '@material-ui/icons/Dvr';
 import DiariesIcon from '@material-ui/icons/LibraryBooks';
-import TodayIcon from '@material-ui/icons/Today';
 
 const availableLinks = {
     loginLinks: [
@@ -26,8 +25,7 @@ const availableLinks = {
     studentLinks: [
         {path: "/", title: "Home", icon: <HomeIcon fontSize='large'/>},
         {path: "/ratings", title: "Ratings", icon: <RatingIcon fontSize='large'/>},
-        {path: "/attendance", title: "Attendance", icon: <TodayIcon fontSize='large'/>},
-        {path: "/data", title: "Student Data", icon: <DataIcon fontSize='large'/>},
+        {path: "/data", title: "Parent Data", icon: <DataIcon fontSize='large'/>},
         {path: "/teachers", title: "Teachers", icon: <TeachersIcon fontSize='large'/>},
         {path: "/logout", title: "LogOut", icon: <LogoutIcon fontSize='large'/>}
     ],

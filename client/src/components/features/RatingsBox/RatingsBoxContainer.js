@@ -1,9 +1,16 @@
 import {connect} from 'react-redux';
-import RatingBox from './RatingsBox';
 import {getUser} from "../../../redux/actions/usersActions";
+import {getClassNameForStudentByIdRequest} from "../../../redux/thunks";
+import {getRequest} from "../../../redux/actions/requestActions";
+import RatingBox from './RatingsBox';
 
 const mapStateToProps = state => ({
-   user: getUser(state)
+   user: getUser(state),
+   request: getRequest(state)
 });
 
-export default connect(mapStateToProps)(RatingBox)
+const mapDispatchToProps = dispatch => ({
+   getClassesName: studentsId => dispatch(getClassNameForStudentByIdRequest(studentsId))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RatingBox)

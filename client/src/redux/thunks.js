@@ -10,7 +10,8 @@ import {
     updateParentStudentClassName,
     loadUsersName,
     removeUserName,
-    addParent
+    addParent,
+    addClassnameToStudent
 } from "./actions/usersActions";
 import {
     loadClassByTeacher,
@@ -66,6 +67,13 @@ export const loadUserByLogin = login => {
                 if (res.data.password === login.password) {
                     let user = res.data;
                     user.password = '';
+
+                    if (user.status === 'parent' && user.students.length) {
+                        user.students.map(student => {
+                            student.className = 'none';
+                            return student;
+                        });
+                    }
                     await dispatch(stopRequest());
                     await dispatch(setUser(user));
                     await dispatch(setLogin(true));
@@ -861,6 +869,27 @@ export const getTeacherStudentsByIdRequest = students => {
                 })
             }
             dispatch(setClassesStudents(result));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};
+
+export const getClassNameForStudentByIdRequest = studentsId => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+            let names = res.data;
+
+            if (names.length) {
+                names.forEach(item => {
+                    dispatch(addClassnameToStudent(item.id, item.name))
+                })
+            }
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message));

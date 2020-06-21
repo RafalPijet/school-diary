@@ -9,13 +9,6 @@ const componentStyle = theme => ({
         width: '100%',
         padding: style.baseSize
     },
-    tabs: {
-        backgroundColor: theme.palette.action.tab,
-        fontWeight: 800
-    },
-    spinner: {
-        justifyContent: 'center'
-    }
 });
 
 export default componentStyle;

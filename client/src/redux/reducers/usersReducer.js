@@ -10,7 +10,8 @@ import {
     UPDATE_PARENT_STUDENT_CLASS_NAME,
     LOAD_USERS_NAME,
     REMOVE_USER_NAME,
-    ADD_PARENT
+    ADD_PARENT,
+    ADD_CLASSNAME_TO_STUDENT
 } from "../actions/usersActions";
 
 const initialState = {
@@ -20,15 +21,15 @@ const initialState = {
     parents: [],
     usersName: [],
     user: {
-        _id : "5e9fd27c00fe4800d6ccbc62",
-        students : [],
-        id : "9f588fad-c77b-4927-8cfc-03a8a0195be9",
-        status : "teacher",
-        subject : "math",
-        firstName : "David",
-        lastName : "Gahan",
-        telephone : "(0048) 508-567-899",
-        email: "david@gmail.com"
+        _id: "5e9fd27c00fe4800d6ccbc2e",
+        students: [],
+        id: "80ed8896-87ec-448a-904c-9696ae3b99b3",
+        status: "parent",
+        subject: "",
+        firstName: "John",
+        lastName: "Travolta",
+        telephone: "(0048) 601-234-657",
+        email: "travolta@gmail.com"
     }
 };
 
@@ -41,12 +42,15 @@ const reducer = (state = initialState, action) => {
         case SET_USER:
             return {...state, user: action.user};
         case UPDATE_USER_DATA:
-            return {...state, user: {...state.user,
+            return {
+                ...state, user: {
+                    ...state.user,
                     firstName: action.data.firstName,
                     lastName: action.data.lastName,
                     email: action.data.email,
                     telephone: action.data.telephone
-            }};
+                }
+            };
         case LOAD_TEACHERS:
             return {...state, teachers: action.teachers};
         case LOAD_PARENTS:
@@ -66,23 +70,37 @@ const reducer = (state = initialState, action) => {
         case DELETE_PARENT:
             return {...state, parents: state.parents.filter(parent => parent.id !== action.id)};
         case UPDATE_PARENT_STUDENT_CLASS_NAME:
-            return {...state, parents: state.parents.map(parent => {
+            return {
+                ...state, parents: state.parents.map(parent => {
 
-                if (parent.id === action.parentId) {
-                    parent.students.map(student => {
+                    if (parent.id === action.parentId) {
+                        parent.students.map(student => {
 
-                        if (student.id === action.studentId) {
-                            student.className = action.className;
-                        }
-                        return student;
-                    })
-                }
-                return parent;
-                })};
+                            if (student.id === action.studentId) {
+                                student.className = action.className;
+                            }
+                            return student;
+                        })
+                    }
+                    return parent;
+                })
+            };
         case LOAD_USERS_NAME:
             return {...state, usersName: action.users};
         case REMOVE_USER_NAME:
             return {...state, usersName: state.usersName.filter(user => user.id !== action.id)};
+        case ADD_CLASSNAME_TO_STUDENT:
+            return {
+                ...state, user: {
+                    ...state.user, students: state.user.students.map(student => {
+
+                        if (student.id === action.studentId) {
+                            student.className = action.className
+                        }
+                        return student;
+                    })
+                }
+            };
         default:
             return state
     }

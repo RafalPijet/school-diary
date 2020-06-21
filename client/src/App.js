@@ -10,7 +10,6 @@ import Registration from './components/pages/Registration/Reagistration';
 import PageNotFound from './components/pages/PageNotFound/PageNotFound';
 import StudentRatings from './components/pages/StudentRatings/StudentRatings';
 import StudentData from './components/pages/StudentData/StudentData';
-import StudentAttendance from './components/pages/StudentAttendance/StudentAttendance';
 import Teachers from './components/pages/Teachers/Teachers';
 import Home from './components/pages/Home/Home';
 import HomeTeacher from './components/pages/HomeTeacher/HomeTeacher';
@@ -31,7 +30,6 @@ const App = props => {
                 <Switch>
                     <Route path='/' exact component={Home}/>
                     <Route path='/ratings' exact component={StudentRatings}/>
-                    <Route path='/attendance' exact component={StudentAttendance}/>
                     <Route path='/data' exact component={StudentData}/>
                     <Route path='/teachers' exact component={Teachers}/>
                     <Route path='/logout' exact component={Logout}/>

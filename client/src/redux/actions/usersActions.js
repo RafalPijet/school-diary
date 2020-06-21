@@ -15,6 +15,7 @@ export const UPDATE_PARENT_STUDENT_CLASS_NAME = createActionName(reducerName, 'U
 export const LOAD_USERS_NAME = createActionName(reducerName, 'LOAD_USERS_NAME');
 export const REMOVE_USER_NAME = createActionName(reducerName, 'REMOVE_USER_NAME');
 export const ADD_PARENT = createActionName(reducerName, 'ADD_PARENT');
+export const ADD_CLASSNAME_TO_STUDENT = createActionName(reducerName, 'ADD_CLASSNAME_TO_STUDENT');
 
 //CREATORS OF ACTIONS
 export const setLogin = isLogin => ({isLogin, type: SET_LOGIN});
@@ -30,6 +31,7 @@ export const updateParentStudentClassName = (parentId, studentId, className) =>
 export const loadUsersName = users => ({users, type: LOAD_USERS_NAME});
 export const removeUserName = id => ({id, type: REMOVE_USER_NAME});
 export const addParent = parent => ({parent, type: ADD_PARENT});
+export const addClassnameToStudent = (studentId, className) => ({studentId, className, type: ADD_CLASSNAME_TO_STUDENT});
 
 //SELECTORS
 export const getLogin = store => store.user.isLogin;
