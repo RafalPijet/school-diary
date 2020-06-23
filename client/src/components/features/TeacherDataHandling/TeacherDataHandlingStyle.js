@@ -13,6 +13,12 @@ const componentStyle = theme => ({
         backgroundColor: theme.palette.action.tab,
         fontWeight: 800
     },
+    edit: {
+        display: 'flex',
+        width: '100%',
+        height: '490px',
+        marginTop: theme.spacing(1),
+    }
 });
 
 export default componentStyle;

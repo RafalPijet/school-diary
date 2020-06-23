@@ -7,7 +7,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import {a11yProps} from "../../../utilities/functions";
 import Spinner from "../../common/Spinner/Spinner";
 import Alert from "../../common/Alert/Alert";
-import EditUserData from "../EditUserData/EditUserDataContainer";
+import EditUserData from "../../common/EditUserData/EditUserDataContainer";
 import TeacherDataStudents from "../TeacherDataStudents/TeachersDataStudentsContainer";
 import componentStyle from "./TeacherDataHandlingStyle";
 
@@ -50,11 +50,15 @@ const TeacherDataHandling = props => {
                     <AppBar position='static' className={classes.tabs}>
                         <Tabs value={value} onChange={handleChange} textColor='primary' variant='fullWidth'>
                             <Tab label='students list' icon={<ListIcon/>} {...a11yProps(0)}/>
-                            <Tab label="edit teachers data" icon={<EditIcon/>} {...a11yProps(1)}/>
+                            <Tab label="edit teacher data" icon={<EditIcon/>} {...a11yProps(1)}/>
                         </Tabs>
                     </AppBar>
                     {value === 0 && <TeacherDataStudents/>}
-                    {value === 1 && <EditUserData/>}
+                    {value === 1 &&
+                    <div className={classes.edit}>
+                        <EditUserData/>
+                    </div>
+                    }
                 </>
 
             }

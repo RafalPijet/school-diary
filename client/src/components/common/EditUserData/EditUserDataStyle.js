@@ -2,8 +2,8 @@ import {style} from "../../../styles/global";
 
 const componentStyle = theme => ({
     root: {
-        height: '490px',
-        marginTop: theme.spacing(1),
+        width: '100%',
+        padding: `${style.bigSize} 0`,
         backgroundColor: theme.palette.secondary.dark
     },
     column: {

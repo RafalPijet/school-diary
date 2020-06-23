@@ -24,6 +24,7 @@ const RatingsBox = props => {
             getClassesName(studentsId);
             setIsReady(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, isReady]);
 
     const handleChange = (event, newValue) => {
