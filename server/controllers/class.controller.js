@@ -250,3 +250,34 @@ exports.getTeacherStudentsName = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.getTeachersByClassName = async (req, res) => {
+
+    try {
+        const {name} = req.query;
+        let classItem = await Class.findOne({name});
+        let result = {
+            id: classItem.id,
+            _id: classItem._id,
+            name: classItem.name,
+            tutor: {
+                name: `${classItem.mainTeacher.lastName} ${classItem.mainTeacher.firstName}`,
+                subject: classItem.mainTeacher.subject,
+                phone: classItem.mainTeacher.telephone,
+                email: classItem.mainTeacher.email
+            },
+            teachers: classItem.subjectTeachers.map(teacher => {
+                return {
+                    name: `${teacher.lastName} ${teacher.firstName}`,
+                    subject: teacher.subject,
+                    phone: teacher.telephone,
+                    email: teacher.email
+                }
+            }),
+            studentsAmount: classItem.students.length
+        };
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};

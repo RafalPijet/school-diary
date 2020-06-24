@@ -896,3 +896,18 @@ export const getClassNameForStudentByIdRequest = studentsId => {
         }
     }
 };
+
+export const getTeachersByClassNameRequest = name => {
+    return async dispatch => {
+        dispatch(startGetingRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.get(`${API_URL}/class/teachers`, {params: {name}});
+            dispatch(setSelectedClass(res.data));
+            dispatch(stopGetingRequest());
+        } catch (err) {
+            dispatch(errorRequest(err.message));
+        }
+    }
+};

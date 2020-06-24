@@ -19,6 +19,7 @@ import HomePrincipal from './components/pages/HomePrincipal/HomePrincipal';
 import Classes from './components/pages/Classes/Classes';
 import Students from './components/pages/Students/Students';
 import Parents from './components/pages/Parents/Parents';
+import StudentTeachers from "./components/pages/StudentTeachers/StudentTeachers";
 import Logout from './components/pages/Logout/Logout';
 
 const App = props => {
@@ -31,7 +32,7 @@ const App = props => {
                     <Route path='/' exact component={Home}/>
                     <Route path='/ratings' exact component={StudentRatings}/>
                     <Route path='/data' exact component={StudentData}/>
-                    <Route path='/teachers' exact component={Teachers}/>
+                    <Route path='/teachers' exact component={StudentTeachers}/>
                     <Route path='/logout' exact component={Logout}/>
                     <Route component={PageNotFound}/>
                 </Switch>

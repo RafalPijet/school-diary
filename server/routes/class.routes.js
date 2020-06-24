@@ -6,6 +6,7 @@ router.route('/classes/students').get(classController.getStudentsFromClasses);
 router.route('/classes/teacher/students').get(classController.getTeacherStudentsName);
 router.route('/classes/teachers/name').get(classController.getClassNameForTeachers);
 router.route('/classes/students/name').get(classController.getClassNameForStudents);
+router.route('/class/teachers').get(classController.getTeachersByClassName);
 router.route('/classes/:teacherId').get(classController.getClassByTeacherId);
 router.route('/class/:id').get(classController.getClassById);
 router.route('/class').get(classController.getAllClasses);

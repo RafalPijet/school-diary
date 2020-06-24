@@ -12,7 +12,6 @@ const componentStyle = theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        // justifyContent: 'center',
         width: '100%',
         height: '160px',
         padding: style.bigSize,
@@ -28,7 +27,7 @@ const componentStyle = theme => ({
     },
     item: {
         width: '100%',
-        backgroundColor: theme.palette.action.adding,
+        backgroundColor: theme.palette.secondary.dark,
         padding: style.baseSize,
         margin: `${style.smallSize} 0`
     },
