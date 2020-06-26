@@ -1,14 +1,10 @@
 import React from 'react';
-import clsx from "clsx";
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {
-    TableContainer,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell
+    Paper,
+    Grid,
+    Typography
 } from "@material-ui/core";
 import RatingSubject from '../../features/RatingSubject/RatingSubject';
 import componentStyle from './RatingSubjectListStyle';
@@ -20,21 +16,21 @@ const RatingSubjectList = props => {
     const classes = useStyles();
 
     return (
-        <TableContainer className={classes.root}>
-            <Table aria-label="sticky table">
-                <TableHead className={classes.header}>
-                    <TableRow>
-                        <TableCell className={clsx(classes.title, classes.subject)}>Subject</TableCell>
-                        <TableCell align='center' className={classes.title}>Ratings</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {student.ratings.map(item => {
-                        return <RatingSubject key={item.id} rating={item}/>
-                    })}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Paper variant='outlined' className={classes.root}>
+            <Grid container style={{paddingLeft: '10px'}}>
+                <Grid item lg={2}>
+                    <Typography variant='subtitle2' className={classes.title}>Subject</Typography>
+                </Grid>
+                <Grid item lg={10}>
+                    <Typography variant='subtitle2' className={classes.title} align='center'>Ratings</Typography>
+                </Grid>
+            </Grid>
+            <div className={classes.content}>
+                {student.ratings.map(item => {
+                    return <RatingSubject key={item.id} rating={item}/>
+                })}
+            </div>
+        </Paper>
     )
 };
 

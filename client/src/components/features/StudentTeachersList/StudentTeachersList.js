@@ -43,7 +43,15 @@ const StudentTeachersList = props => {
                 setIsReady(true);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, selectedClass, isReady]);
+
+    useEffect(() => {
+        return () => {
+            clearSelectedClass({});
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -62,6 +70,7 @@ const StudentTeachersList = props => {
                         >
                             {user.students.length && user.students.map((item, i) => {
                                 return <Tab
+                                    disabled={request.geting}
                                     className={classes.tabs}
                                     key={item.id}
                                     label={`${item.firstName} ${item.lastName}`}

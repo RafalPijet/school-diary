@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
-import {Paper, Typography, Grid} from "@material-ui/core";
+import {Paper, Typography, Grid, Link} from "@material-ui/core";
+import TeacherInfoItem from "../TeacherInfoItem/TeacherInfoItem";
 import componentStyle from "./StudentTeachersItemStyle";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
@@ -12,7 +13,7 @@ const StudentTeachersItem = props => {
 
     return (
         <Paper elevation={3} className={classes.root}>
-            <Typography variant='subtitle2'>Class info:</Typography>
+            <Typography className={classes.description}>Class info:</Typography>
             <Grid container justify='center' alignItems='center' style={{padding: '14px 0'}}>
                 <Grid item lg={2}>
                     <Typography className={classes.info} align='center'>
@@ -27,9 +28,19 @@ const StudentTeachersItem = props => {
                 </Grid>
                 <Grid item lg={8}>
                     <span className={classes.description}>tutor:</span>
+                    <div className={classes.tutor}>
+                        <Typography className={classes.info} display='inline'>{classItem.tutor.name}</Typography>
+                        <Typography display='inline'>{classItem.tutor.phone}</Typography>
+                        <Link className={classes.info} href={`mailto:${classItem.tutor.email}`}>{classItem.tutor.email}</Link>
+                    </div>
                 </Grid>
             </Grid>
-
+            <Typography className={classes.description}>Class teachers:</Typography>
+            <Paper variant='outlined' className={classes.teachers}>
+                {classItem.teachers.map((teacher, i) => {
+                    return <TeacherInfoItem key={i} teacher={teacher}/>
+                })}
+            </Paper>
         </Paper>
     )
 };

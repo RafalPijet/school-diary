@@ -1,4 +1,6 @@
 import { grey, red, green, orange, yellow, amber, blueGrey } from "@material-ui/core/colors";
+import backParentDark from '../images/backParentDark.jpg';
+import backParentLight from '../images/backParentLight.jpg';
 
 const AppTheme = {
     DARK: 'dark',
@@ -26,6 +28,7 @@ const appThemeOptions = {
                 warning: orange[700],
                 tab: blueGrey[100],
                 adding: blueGrey[300],
+                check: blueGrey[400],
                 header: grey[200],
                 item: grey[300]
             },
@@ -33,6 +36,9 @@ const appThemeOptions = {
                 first: amber[500],
                 second: orange[700],
                 third: red[700]
+            },
+            background: {
+                parent: `url(${backParentLight})`
             }
         },
         typography: {
@@ -61,6 +67,7 @@ const appThemeOptions = {
                 warning: orange[500],
                 tab: blueGrey[700],
                 adding: blueGrey[600],
+                check: blueGrey[400],
                 header: grey[700],
                 item: grey[600]
             },
@@ -68,6 +75,9 @@ const appThemeOptions = {
                 first: yellow[200],
                 second: orange[400],
                 third: red[300]
+            },
+            background: {
+                parent: `url(${backParentDark})`
             }
         },
         typography: {

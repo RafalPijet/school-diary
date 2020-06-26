@@ -15,6 +15,10 @@ const componentStyle = theme => ({
     },
     spinner: {
         justifyContent: 'center'
+    },
+    email: {
+        color: theme.palette.action.warning,
+        fontSize: style.middleSize
     }
 });
 
