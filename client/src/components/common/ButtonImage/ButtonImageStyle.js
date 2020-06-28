@@ -51,7 +51,8 @@ const componentStyle = theme => ({
     imageTitle: {
         position: 'relative',
         padding: `${theme.spacing(2)}px ${theme.spacing(4)}px ${theme.spacing(1) + 6}px`,
-        transition: '.5s'
+        transition: '.5s',
+        color: theme.palette.action.title
     }
 });
 

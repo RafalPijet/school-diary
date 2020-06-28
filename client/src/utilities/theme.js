@@ -30,7 +30,9 @@ const appThemeOptions = {
                 adding: blueGrey[300],
                 check: blueGrey[400],
                 header: grey[200],
-                item: grey[300]
+                item: grey[300],
+                title: yellow[400],
+                info: grey[800]
             },
             scales: {
                 first: amber[500],
@@ -69,7 +71,9 @@ const appThemeOptions = {
                 adding: blueGrey[600],
                 check: blueGrey[400],
                 header: grey[700],
-                item: grey[600]
+                item: grey[600],
+                title: grey[200],
+                info: grey[300]
             },
             scales: {
                 first: yellow[200],

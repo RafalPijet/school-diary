@@ -3,42 +3,48 @@ import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
 import componentStyle from "./ParentWelcomeStyle";
-import ratings from '../../../images/ratings.jpg';
-import parent from '../../../images/parent.png';
-import teachers from '../../../images/teachers.png';
 import ButtonImage from "../../common/ButtonImage/ButtonImage";
+import FooterInfo from "../../common/FooterInfo/FooterInfo";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ParentWelcome = props => {
+    const {buttons, description} = props;
     const classes = useStyles();
+
     return (
         <Paper variant='outlined' className={classes.root}>
-            <ButtonImage
-                image={ratings}
-                title='Ratings'
-                bottom={200}
-                width={400}
-                height={280}
-            />
-            <ButtonImage
-                image={parent}
-                title='Parent Data'
-                left={140}
-                top={20}
-                width={350}
-                height={230}
-            />
-            <ButtonImage
-                image={teachers}
-                title='Teachers'
-                right={180}
-                bottom={30}
-                width={320}
-                height={200}
-            />
+            {buttons.map((item, i) => {
+                return <ButtonImage
+                    key={i}
+                    image={item.image}
+                    title={item.title}
+                    top={item.top}
+                    bottom={item.bottom}
+                    left={item.left}
+                    right={item.right}
+                    width={item.width}
+                    height={item.height}
+                    path={item.path}
+                />
+            })}
+            <FooterInfo description={description} delay={1000} duration={5000}/>
         </Paper>
     )
+};
+
+ParentWelcome.propTypes = {
+    buttons: PropTypes.arrayOf(PropTypes.shape({
+        image: PropTypes.any.isRequired,
+        title: PropTypes.string.isRequired,
+        right: PropTypes.number,
+        left: PropTypes.number,
+        top: PropTypes.number,
+        bottom: PropTypes.number,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired
+    })),
+    description: PropTypes.array.isRequired
 };
 
 export default ParentWelcome;
