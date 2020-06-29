@@ -8,7 +8,7 @@ import componentStyle from "./ButtonImageStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const ButtonImage = props => {
-    const {title, path, top, bottom, right, left, image, width, height} = props;
+    const {title, path, top, bottom, right, left, image, width, height, setPath} = props;
     const [topTitle,] = useState(top || 0);
     const [bottomTitle,] = useState(bottom || 0);
     const [leftTitle,] = useState(left || 0);
@@ -17,7 +17,10 @@ const ButtonImage = props => {
     const classes = useStyles();
 
     const buttonHandling = () => {
-        setTimeout(() => setValue(path),300);
+        setTimeout(() => {
+            setValue(path);
+            setPath(path);
+        },300);
     };
 
     return (
@@ -67,7 +70,8 @@ ButtonImage.propStyles = {
     left: PropTypes.number,
     right: PropTypes.number,
     width: PropTypes.number,
-    height: PropTypes.number
+    height: PropTypes.number,
+    setPath: PropTypes.func.isRequired
 };
 
 export default ButtonImage;

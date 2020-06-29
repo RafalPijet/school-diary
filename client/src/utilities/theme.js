@@ -1,6 +1,10 @@
 import { grey, red, green, orange, yellow, amber, blueGrey } from "@material-ui/core/colors";
 import backParentDark from '../images/backParentDark.jpg';
 import backParentLight from '../images/backParentLight.jpg';
+import backTeacherDark from '../images/backTeacherDark.jpg';
+import backTeacherLight from '../images/backTeacherLight.jpg';
+import backPrincipalLight from '../images/backPrincipalLight.jpg';
+import backPrincipalDark from '../images/backPrincipalDark.jpg';
 
 const AppTheme = {
     DARK: 'dark',
@@ -40,7 +44,9 @@ const appThemeOptions = {
                 third: red[700]
             },
             background: {
-                parent: `url(${backParentLight})`
+                parent: `url(${backParentLight})`,
+                teacher: `url(${backTeacherLight})`,
+                principal: `url(${backPrincipalLight})`
             }
         },
         typography: {
@@ -81,7 +87,9 @@ const appThemeOptions = {
                 third: red[300]
             },
             background: {
-                parent: `url(${backParentDark})`
+                parent: `url(${backParentDark})`,
+                teacher: `url(${backTeacherDark})`,
+                principal: `url(${backPrincipalDark})`
             }
         },
         typography: {

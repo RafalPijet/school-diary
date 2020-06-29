@@ -15,22 +15,12 @@ import {
 } from "../actions/usersActions";
 
 const initialState = {
-    isLogin: true,
+    isLogin: false,
     register: {email: {}, password: {}},
     teachers: [],
     parents: [],
     usersName: [],
-    user: {
-        _id: "5e9fd27c00fe4800d6ccbc2e",
-        students: [],
-        id: "80ed8896-87ec-448a-904c-9696ae3b99b3",
-        status: "parent",
-        subject: "",
-        firstName: "John",
-        lastName: "Travolta",
-        telephone: "(0048) 601-234-657",
-        email: "travolta@gmail.com"
-    }
+    user: {}
 };
 
 const reducer = (state = initialState, action) => {

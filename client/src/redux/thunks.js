@@ -50,7 +50,8 @@ import {
 import {
     setAlertSuccess,
     setTutorIsUse,
-    setIsStudentMode
+    setIsStudentMode,
+    setPath
 } from "./actions/valuesActions";
 import store from './store';
 
@@ -77,6 +78,7 @@ export const loadUserByLogin = login => {
                     await dispatch(stopRequest());
                     await dispatch(setUser(user));
                     await dispatch(setLogin(true));
+                    dispatch(setPath('/'));
                 } else {
                     dispatch(errorRequest("Wrong password!"));
                 }

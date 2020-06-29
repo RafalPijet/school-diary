@@ -8,6 +8,7 @@ export const SET_IS_UPDATE_RATING = createActionName(reducerName, 'SET_IS_UPDATE
 export const SET_IS_NEW_RATING = createActionName(reducerName, 'SET_IS_NEW_RATING');
 export const SET_IS_STUDENT_MODE = createActionName(reducerName, 'SET_IS_STUDENT_MODE');
 export const SET_TUTOR_IS_USE = createActionName(reducerName, 'SET_TUTOR_IS_USE');
+export const SET_PATH = createActionName(reducerName, 'SET_PATH');
 export const SET_MODAL_YES_NOT = createActionName(reducerName, 'SET_MODAL_YES_NOT');
 export const SET_MAX_BIRTH_DATE = createActionName(reducerName, 'SET_MAX_BIRTH_DATE');
 export const SET_ALERT_SUCCESS = createActionName(reducerName, 'SET_ALERT_SUCCESS');
@@ -19,6 +20,7 @@ export const setIsUpdateRating = isUpdate => ({isUpdate, type: SET_IS_UPDATE_RAT
 export const setIsNewRating = isNewRating => ({isNewRating, type: SET_IS_NEW_RATING});
 export const setIsStudentMode = isStudentMode => ({isStudentMode, type: SET_IS_STUDENT_MODE});
 export const setTutorIsUse = isUse => ({isUse, type: SET_TUTOR_IS_USE});
+export const setPath = path => ({path, type: SET_PATH});
 export const setModalYesNot = (isOpen, content) => ({isOpen, content, type: SET_MODAL_YES_NOT});
 export const setMaxBirthDate = date => ({date, type: SET_MAX_BIRTH_DATE});
 export const setAlertSuccess = (isOpen, message) => ({isOpen, message, type: SET_ALERT_SUCCESS});
@@ -30,6 +32,7 @@ export const getIsUpdateRating = state => state.values.isUpdateRating;
 export const getIsNewRating = state => state.values.isNewRating;
 export const getIsStudentMode = state => state.values.isStudentMode;
 export const getTutorIsUse = state => state.values.tutorIsUse;
+export const getPath = state => state.values.path;
 export const getModalYesNot = state => state.values.modalYesNot;
 export const getRatingDescriptions = state => state.values.ratingDescriptions;
 export const getRatingScales = state => state.values.ratingScales;

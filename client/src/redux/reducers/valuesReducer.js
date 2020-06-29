@@ -4,6 +4,7 @@ import {
     SET_IS_NEW_RATING,
     SET_IS_STUDENT_MODE,
     SET_TUTOR_IS_USE,
+    SET_PATH,
     SET_MODAL_YES_NOT,
     SET_MAX_BIRTH_DATE,
     SET_ALERT_SUCCESS,
@@ -16,6 +17,7 @@ const initialState = {
     isNewRating: false,
     isStudentMode: true,
     tutorIsUse: true,
+    path: '/',
     modalYesNot: {isOpen: false, content: {description: '', data: {}}},
     ratingDescriptions: ['homework', 'teamwork', 'school test', 'response'],
     ratingScales: [1, 2, 3],
@@ -53,6 +55,8 @@ const reducer = (state = initialState, action) => {
             return {...state, isStudentMode: action.isStudentMode};
         case SET_TUTOR_IS_USE:
             return {...state, tutorIsUse: action.isUse};
+        case SET_PATH:
+            return {...state, path: action.path};
         case SET_MODAL_YES_NOT:
             return {...state, modalYesNot: {isOpen: action.isOpen, content: action.content}};
         case SET_MAX_BIRTH_DATE:

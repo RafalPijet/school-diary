@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import clsx from "clsx";
-import {useLocation} from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -14,10 +12,13 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: theme.palette.secondary.light
+        backgroundColor: theme.palette.secondary.light,
     },
     button: {
-        width: '100%'
+        width: '100%',
+        '&$selected': {
+            color: theme.palette.secondary.main
+        }
     },
     selected: {
         color: theme.palette.secondary.main
@@ -25,18 +26,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const MainMenu = props => {
-    const {links} = props;
+    const {links, setPath, path} = props;
     const classes = useStyles();
     const [value, setValue] = useState('/');
-    let path = useLocation().pathname;
 
     useEffect(() => {
 
-        console.log(path)
-    }, [value]);
+        if (path !== value) {
+            setValue(path);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [path]);
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setPath(newValue);
     };
 
     return (
@@ -54,7 +57,8 @@ const MainMenu = props => {
                             label={item.title}
                             value={item.path}
                             icon={item.icon}
-                            className={clsx(classes.button,classes.selected)}
+                            classes={{selected: classes.selected}}
+                            className={classes.button}
                         />
                     })
                 }
@@ -69,7 +73,9 @@ MainMenu.propTypes = {
         path: PropTypes.string,
         title: PropTypes.string,
         icon: PropTypes.node
-    }))
+    })),
+    path: PropTypes.string.isRequired,
+    setPath: PropTypes.func.isRequired
 };
 
 export default MainMenu;

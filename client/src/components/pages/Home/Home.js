@@ -1,6 +1,6 @@
 import React from 'react';
 import PageTitle from '../../common/PageTitle/PageTitle';
-import ParentWelcome from "../../features/ParentWelcome/ParentWelcome";
+import UserWelcome from "../../features/UserWelcome/UserWelcome";
 import ratings from '../../../images/ratings.jpg';
 import parent from '../../../images/parent.png';
 import teachers from '../../../images/teachers.png';
@@ -44,7 +44,13 @@ const description = [
 const Home = () => (
     <div>
         <PageTitle>Parent Zone</PageTitle>
-        <ParentWelcome buttons={buttonsData} description={description}/>
+        <UserWelcome
+            buttons={buttonsData}
+            description={description}
+            userType='parent'
+            delay={1}
+            duration={5}
+        />
     </div>
 );
 
