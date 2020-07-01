@@ -23,7 +23,7 @@ const initialState = {
     ratingScales: [1, 2, 3],
     availableSubjects: {
         all: ['english', 'polish', 'german', 'math', 'biology', 'history', 'geography', 'physics', 'chemistry',
-            'informatics', 'physical education', 'form period', 'social studies', 'career counseling', 'music',
+            'information', 'physical education', 'form period', 'social studies', 'career counseling', 'music',
             'art', 'family life education', 'technology', 'natural science', 'safety education'],
         class8: ['polish', 'math', 'english', 'german', 'history', 'geography', 'biology', 'chemistry', 'physics',
             'informatics', 'physical education', 'form period', 'social studies', 'safety education',
