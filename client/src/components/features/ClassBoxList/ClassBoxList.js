@@ -95,22 +95,26 @@ const ClassBoxList = props => {
                     <div className={classes.subjectInfo}>
                         <Typography variant='subtitle1'>{`subject: ${user.subject.toUpperCase()}`}</Typography>
                     </div>
-                    <AppBar position="static" className={classes.tabs}>
-                        <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            textColor="primary"
-                        >
-                            {availableClasses.map((item, i) => {
-                                return <Tab
-                                    disabled={!isChecked || !isOpenDiary}
-                                    className={classes.tabs}
-                                    key={item.id}
-                                    label={item.name}
-                                    {...a11yProps(i)}/>
-                            })}
-                        </Tabs>
-                    </AppBar>
+                    {availableClasses.length ?
+                        <AppBar position="static" className={classes.tabs}>
+                            <Tabs
+                                value={value}
+                                onChange={handleChange}
+                                textColor="primary"
+                            >
+                                {availableClasses.map((item, i) => {
+                                    return <Tab
+                                        disabled={!isChecked || !isOpenDiary}
+                                        className={classes.tabs}
+                                        key={item.id}
+                                        label={item.name}
+                                        {...a11yProps(i)}/>
+                                })}
+                            </Tabs>
+                        </AppBar> :
+                        <Typography style={{fontSize: 18}}>You are not assigned to any class!</Typography>
+                    }
+
                     <Paper className={clsx(classes.root, classes.image)}>
                         {request.geting && <Spinner style={{marginLeft: '92px', marginTop: '55px'}} />}
                         {isChecked &&

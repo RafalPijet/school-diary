@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import clsx from "clsx";
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -22,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     },
     selected: {
         color: theme.palette.secondary.main
+    },
+    disabled: {
+        color: theme.palette.secondary.dark
     }
 }));
 
@@ -53,12 +57,14 @@ const MainMenu = props => {
                 {
                     links.map((item, i) => {
                         return <BottomNavigationAction
+                            disabled={path === '/logout'}
                             key={i}
                             label={item.title}
                             value={item.path}
                             icon={item.icon}
                             classes={{selected: classes.selected}}
-                            className={classes.button}
+                            className={clsx(classes.button,
+                                path === '/logout' ? classes.disabled : '')}
                         />
                     })
                 }

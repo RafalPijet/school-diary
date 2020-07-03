@@ -103,10 +103,16 @@ const TeacherDataStudents = props => {
                     </Typography>
                 </Grid>
                 <div className={clsx(classes.table, (request.geting || !classesStudents.length) ? classes.center : '')}>
-                    {request.geting || !classesStudents.length ? <Spinner/> :
-                        classesStudents.map(student => {
-                            return <TeacherStudentItem key={student.id} student={student}/>
-                        })}
+                    {request.geting ? <Spinner/> :
+                        classesStudents.length ?
+                            classesStudents.map(student => {
+                                return <TeacherStudentItem key={student.id} student={student}/>
+                            }) :
+                            !allStudents.length ?
+                                <Typography align='center' style={{fontSize: 18}}>
+                                    You have no students assigned!
+                                </Typography> : <Spinner/>
+                    }
                 </div>
                 <TableContainer className={classes.footer} component={Paper}>
                     <Autocomplete

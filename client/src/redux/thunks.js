@@ -99,6 +99,7 @@ export const addUser = user => {
             await new Promise(resolve => setTimeout(resolve, 5000));
             await axios.post(`${API_URL}/users`, user);
             dispatch(stopRequest());
+            dispatch(setPath('/login'));
         } catch (err) {
             dispatch(errorRequest(
                 `${err.message.includes('code 500') ? 'Email address already exists' : err.message}`

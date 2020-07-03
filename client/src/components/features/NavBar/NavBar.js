@@ -19,6 +19,7 @@ import DiariesIcon from '@material-ui/icons/LibraryBooks';
 
 const availableLinks = {
     loginLinks: [
+        {path: "/", title: "Home", icon: <HomeIcon fontSize='large'/>},
         {path: "/login", title: "LogIn", icon: <LoginIcon fontSize='large'/>},
         {path: "/registration", title: "Registration", icon: <RegIcon fontSize='large'/>}
     ],

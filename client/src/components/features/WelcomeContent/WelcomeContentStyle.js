@@ -5,7 +5,9 @@ const componentStyle = theme => ({
         width: '100%',
         height: style.contentHeight,
         padding: style.baseSize,
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column-reverse'
     },
     first: {
         position: 'absolute',
@@ -32,7 +34,7 @@ const componentStyle = theme => ({
         width: 550,
         height: 360,
         top: 230,
-        left: 215,
+        left: 230,
         right: 0,
         bottom: 0,
         backgroundColor: theme.palette.secondary.light
@@ -40,6 +42,23 @@ const componentStyle = theme => ({
     description: {
         width: '100%',
         padding: `${style.smallSize} 0`
+    },
+    footer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    slider: {
+        width: 100
+    },
+    operation: {
+        width: 200,
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    author: {
+        color: theme.palette.primary.light
     }
 });
 

@@ -1,8 +1,17 @@
 import React, {useState, useEffect} from "react";
-import PropTypes from 'prop-types';
 import {makeStyles} from "@material-ui/core/styles";
-import {Paper, Typography} from "@material-ui/core";
+import {
+    Paper,
+    Typography,
+    Slider,
+    Tooltip,
+    IconButton,
+    Fade,
+    Link
+} from "@material-ui/core";
 import Grow from "@material-ui/core/Grow";
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
 import componentStyle from "./WelcomeContentStyle";
 import showImage1 from '../../../images/showImage1.png';
 import showImage2 from '../../../images/showImage2.png';
@@ -85,7 +94,9 @@ const WelcomeContent = props => {
     const between = 20;
     const bottom = 10;
     const [value, setValue] = useState(2);
+    const [step, setStep] = useState(5);
     const [counter, setCounter] = useState(0);
+    const [isReady, setIsReady] = useState(true);
     const [firstZindex, setFirstZindex] = useState(bottom);
     const [secondZindex, setSecondZindex] = useState(between);
     const [thirdZindex, setThirdZindex] = useState(top);
@@ -99,36 +110,57 @@ const WelcomeContent = props => {
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCounter(counter => counter + 1);
+
+            if (isReady) setCounter(counter => counter + 1);
         }, 1000);
 
         return () => {
             clearInterval(timer);
         }
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isReady]);
 
     useEffect(() => {
 
-        if (counter === 0) {
-            setIsShowFirst(true);
+        if (isReady) {
+
+            if (counter === 0) {
+                setIsShowFirst(true);
+            }
+
+            if (counter === step) {
+                setIsShowSecond(true);
+
+                if (isShowSecond) setIsShowSecond(false);
+            }
+
+            if (counter === (2 * step)) {
+                setIsShowThird(true);
+
+                if (isShowThird) setIsShowThird(false);
+            }
+
+            if (counter === (3 * step)) {
+                setIsShowFirst(false);
+            }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [counter, step, isReady]);
 
-        if (counter === 5) {
-            setIsShowSecond(true);
+    const handleSlider = (event, newValue) => {
+        setStep(newValue);
 
-            if (isShowSecond) setIsShowSecond(false);
+        if (firstZindex === bottom) {
+            setCounter(3 * step);
+        } else if (secondZindex === bottom) {
+            setCounter(step);
+        } else if (thirdZindex === bottom) {
+            setCounter(2 * step);
         }
-
-        if (counter === 10) {
-            setIsShowThird(true);
-
-            if (isShowThird) setIsShowThird(false);
-        }
-
-        if (counter === 15) {
-            setIsShowFirst(false);
-        }
-    }, [counter]);
+        setIsShowFirst(true);
+        setIsShowSecond(true);
+        setIsShowThird(true);
+    };
 
     return (
         <Paper elevation={9} className={classes.root}>
@@ -201,12 +233,56 @@ const WelcomeContent = props => {
                     <Typography align='center' className={classes.description}>{thirdValue.description}</Typography>
                 </Paper>
             </Grow>
+            <div className={classes.footer}>
+                <Typography
+                    className={classes.author}
+                    variant='subtitle2'>
+                    2020 © <Link className={classes.author} href='mailto:rafal.pijet@gmail.com'>Rafal Pijet</Link>
+                </Typography>
+                <div className={classes.operation}>
+                    <Tooltip
+                        title={isReady ? 'pause' : 'play'}
+                        placement='bottom'
+                        arrow
+                        TransitionComponent={Fade}
+                        enterDelay={2000}
+                    >
+                        <span>
+                            <IconButton
+                                size='small'
+                                onClick={() => setIsReady(!isReady)}
+                                >
+                                {isReady ? <PauseIcon fontSize='small'/> : <PlayArrowIcon fontSize='small'/> }
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                    <Tooltip
+                        title='change speed'
+                        placement='bottom'
+                        arrow
+                        TransitionComponent={Fade}
+                        enterDelay={2000}
+                    >
+                        <span>
+                            <Slider
+                                disabled={isReady}
+                                getAriaValueText={value => `${value}`}
+                                className={classes.slider}
+                                defaultValue={5}
+                                step={1}
+                                min={1}
+                                max={10}
+                                valueLabelDisplay="auto"
+                                color='secondary'
+                                value={step}
+                                onChange={handleSlider}
+                            />
+                        </span>
+                    </Tooltip>
+                </div>
+            </div>
         </Paper>
     )
-};
-
-WelcomeContent.propTypes = {
-
 };
 
 export default WelcomeContent;
