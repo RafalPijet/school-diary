@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
-import {Paper} from "@material-ui/core";
+import {Paper, Grid} from "@material-ui/core";
 import SelectRegister from "../../common/SelectRegister/SelectRegister";
 import {TextField} from "@material-ui/core";
 import {Redirect} from "react-router";
@@ -120,7 +121,7 @@ const UserForm = props => {
     };
 
     if (pending) {
-        return <Paper variant='outlined' className={classes.root}>
+        return <Paper elevation={9} className={clsx(classes.column, classes.root)}>
             <Spinner/>
         </Paper>
     }
@@ -128,63 +129,69 @@ const UserForm = props => {
         return !isLogin ? <Redirect to='/login'/> : <Redirect to='/'/>
     } else {
         return (
-            <Paper variant='outlined' className={classes.root}>
-                <div hidden={isLogin} className={classes.selectRow}>
-                    <SelectRegister
-                        className={classes.select}
-                        selectTitle='user type'
-                        options={['parent', 'teacher']}
-                        takeSelected={handleUserType}
-                    />
-                    <SelectRegister
-                        className={classes.select}
-                        selectTitle='subject'
-                        isDisabled={isSubjectsDisabled}
-                        options={subjects.all}
-                        takeSelected={handleSubjectType}
-                    />
-                </div>
-                <div hidden={isLogin} className={classes.textRow}>
-                    <TextField label='first name' name='firstName' value={register.firstName}
-                               onChange={handleTextField} className={classes.margin}/>
-                    <TextField label='last name' name='lastName' value={register.lastName}
-                               onChange={handleTextField} className={classes.margin}/>
-                    <TextField label='phone number' name='telephone' value={register.telephone}
-                               error={isError.phone} helperText={isError.phone ? 'Incorrect entry' : ''}
-                               InputProps={{inputComponent: TextMaskCustom}}
-                               onBlur={event => {
-                                   setRegister({...register, telephone: event.target.value.trim()});
-                                   setIsError({...isError, phone: event.target.value.trim().length !== 18});
-                               }}
-                               onChange={handleTextField} className={classes.margin}/>
-                </div>
-                <div className={classes.textRow}>
-                    <TextField error={isError.email} helperText={isError.email ? 'Incorrect entry' : ''}
-                               label='email' name='email' value={isLogin ? login.email : register.email}
-                               onBlur={event => setIsError({...isError,
-                                   email: !event.target.value.includes('@') || !event.target.value.includes('.')})}
-                               onChange={handleTextField} className={classes.margin}/>
-                    <TextField label='password' name='password' value={isLogin ? login.password : register.password}
-                               type='password' onChange={handleTextField} className={classes.margin}/>
-                </div>
-                <div hidden={isLogin} className={classes.textRow}>
-                    <TextField error={isError.confirm} helperText={isError.confirm ? 'other than password' : ''}
-                               label='confirm password' name='confirm' value={register.confirm}
-                               onBlur={event => setIsError({
-                                   ...isError,
-                                   confirm: event.target.value !== register.password
-                               })}
-                               type='password' onChange={handleTextField} className={classes.margin}/>
-                </div>
-                <Fab
-                    color='primary'
-                    className={classes.button}
-                    aria-label='add'
-                    onClick={sendData}
-                    disabled={!isAccept}
-                >
-                    <DoneIcon/>
-                </Fab>
+            <Paper elevation={9}>
+                <Grid container className={classes.root}>
+                    <Grid item lg={6} className={classes.column}>
+                        <div hidden={isLogin} className={classes.selectRow}>
+                            <SelectRegister
+                                className={classes.select}
+                                selectTitle='user type'
+                                options={['parent', 'teacher']}
+                                takeSelected={handleUserType}
+                            />
+                            <SelectRegister
+                                className={classes.select}
+                                selectTitle='subject'
+                                isDisabled={isSubjectsDisabled}
+                                options={subjects.all}
+                                takeSelected={handleSubjectType}
+                            />
+                        </div>
+                        <div hidden={isLogin} className={classes.textRow}>
+                            <TextField label='first name' name='firstName' value={register.firstName}
+                                       onChange={handleTextField} className={classes.margin}/>
+                            <TextField label='last name' name='lastName' value={register.lastName}
+                                       onChange={handleTextField} className={classes.margin}/>
+                            <TextField label='phone number' name='telephone' value={register.telephone}
+                                       error={isError.phone} helperText={isError.phone ? 'Incorrect entry' : ''}
+                                       InputProps={{inputComponent: TextMaskCustom}}
+                                       onBlur={event => {
+                                           setRegister({...register, telephone: event.target.value.trim()});
+                                           setIsError({...isError, phone: event.target.value.trim().length !== 18});
+                                       }}
+                                       onChange={handleTextField} className={classes.margin}/>
+                        </div>
+                        <div className={classes.textRow}>
+                            <TextField error={isError.email} helperText={isError.email ? 'Incorrect entry' : ''}
+                                       label='email' name='email' value={isLogin ? login.email : register.email}
+                                       onBlur={event => setIsError({...isError,
+                                           email: !event.target.value.includes('@') || !event.target.value.includes('.')})}
+                                       onChange={handleTextField} className={classes.margin}/>
+                            <TextField label='password' name='password' value={isLogin ? login.password : register.password}
+                                       type='password' onChange={handleTextField} className={classes.margin}/>
+                        </div>
+                        <div hidden={isLogin} className={classes.textRow}>
+                            <TextField error={isError.confirm} helperText={isError.confirm ? 'other than password' : ''}
+                                       label='confirm password' name='confirm' value={register.confirm}
+                                       onBlur={event => setIsError({
+                                           ...isError,
+                                           confirm: event.target.value !== register.password
+                                       })}
+                                       type='password' onChange={handleTextField} className={classes.margin}/>
+                        </div>
+                    </Grid>
+                    <Grid item lg={6} className={classes.column}>
+                        <Fab
+                            color='primary'
+                            className={classes.button}
+                            aria-label='add'
+                            onClick={sendData}
+                            disabled={!isAccept}
+                        >
+                            <DoneIcon/>
+                        </Fab>
+                    </Grid>
+                </Grid>
                 <Alert
                     message={`${error !== null ? error : 'The user has been registered'}`}
                     variant={`${error !== null ? 'error' : 'success'}`}

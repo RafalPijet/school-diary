@@ -41,3 +41,4 @@ export const getUserId = store => store.user.user.id;
 export const getTeachers = store => store.user.teachers;
 export const getParents = store => store.user.parents;
 export const getUsersName = store => store.user.usersName;
+export const getUserStatus = store => store.user.user.status;

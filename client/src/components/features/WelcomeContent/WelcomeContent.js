@@ -6,8 +6,7 @@ import {
     Slider,
     Tooltip,
     IconButton,
-    Fade,
-    Link
+    Fade
 } from "@material-ui/core";
 import Grow from "@material-ui/core/Grow";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -33,59 +32,59 @@ const useStyles = makeStyles(theme => componentStyle(theme));
 const collection = [
     {
         image: showImage1,
-        description: 'Description1'
+        description: "Parent or guardian's home page (dark mode)"
     },
     {
         image: showImage2,
-        description: 'Description2'
+        description: 'Teacher home page (light mode)'
     },
     {
         image: showImage3,
-        description: 'Description3'
+        description: 'Principal home page'
     },
     {
         image: showImage4,
-        description: 'Description4'
+        description: 'Parent data section'
     },
     {
         image: showImage5,
-        description: 'Description5'
+        description: 'Ratings section of the selected student for his parent'
     },
     {
         image: showImage6,
-        description: 'Description6'
+        description: 'Class and teacher data section for the parent'
     },
     {
         image: showImage7,
-        description: 'Description7'
+        description: 'Adding grade in teacher mode'
     },
     {
         image: showImage8,
-        description: 'Description8'
+        description: 'Editing rating parameters in teacher mode'
     },
     {
         image: showImage9,
-        description: 'Description9'
+        description: 'Students list in teacher mode'
     },
     {
         image: showImage10,
-        description: 'Description10'
+        description: 'Configuration panel of the selected class in principal mode'
     },
     {
         image: showImage11,
-        description: 'Description11'
+        description: 'Active teachers list editing mode in principal mode'
     },
     {
         image: showImage12,
-        description: 'Description12'
+        description: 'List of teachers in principal mode'
     },
     {
         image: showImage13,
-        description: 'Description13'
+        description: 'List of students in principal mode'
     },
     {
         image: showImage14,
-        description: 'Description14'
+        description: 'List of parents or guardians in principal mode'
     }
 ];
 
@@ -234,11 +233,6 @@ const WelcomeContent = props => {
                 </Paper>
             </Grow>
             <div className={classes.footer}>
-                <Typography
-                    className={classes.author}
-                    variant='subtitle2'>
-                    2020 © <Link className={classes.author} href='mailto:rafal.pijet@gmail.com'>Rafal Pijet</Link>
-                </Typography>
                 <div className={classes.operation}>
                     <Tooltip
                         title={isReady ? 'pause' : 'play'}

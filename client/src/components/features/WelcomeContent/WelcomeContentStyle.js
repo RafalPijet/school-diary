@@ -45,7 +45,7 @@ const componentStyle = theme => ({
     },
     footer: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center'
     },
     slider: {
@@ -54,11 +54,7 @@ const componentStyle = theme => ({
     operation: {
         width: 200,
         display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center'
-    },
-    author: {
-        color: theme.palette.primary.light
+        justifyContent: 'space-around'
     }
 });
 

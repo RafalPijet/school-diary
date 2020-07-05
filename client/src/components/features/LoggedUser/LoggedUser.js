@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Paper, Typography, Grid} from "@material-ui/core";
+import {Paper, Typography, Grid, Fade, Tooltip} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Switch from '@material-ui/core/Switch';
 import PersonIcon from '@material-ui/icons/PersonOutline';
@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     user: {
         padding: '3px 0 0 6px',
         fontSize: `${style.baseSize}`
+    },
+    icon: {
+        color: theme.palette.primary.light
     }
 }));
 
@@ -63,14 +66,24 @@ const LoggedUser = props => {
                 </Typography>
             </Grid>
             <Grid item lg={2} className={classes.switch}>
-                <LightDarkIcon/>
-                <Switch
-                    size='small'
-                    checked={isChecked}
-                    onChange={switchHandling}
-                    name='changeTheme'
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
+                <LightDarkIcon className={classes.icon}/>
+                <Tooltip
+                    title={isChecked ? 'set dark mode' : 'set light mode'}
+                    placement='bottom'
+                    arrow
+                    TransitionComponent={Fade}
+                    enterDelay={2000}
+                >
+                    <span>
+                        <Switch
+                            size='small'
+                            checked={isChecked}
+                            onChange={switchHandling}
+                            name='changeTheme'
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        />
+                    </span>
+                </Tooltip>
             </Grid>
         </Paper>
     )

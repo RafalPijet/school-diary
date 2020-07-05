@@ -1,16 +1,12 @@
 import {style} from "../../../styles/global";
 
 const componentStyle = theme => ({
-    root: {
-        width: '100%',
-        padding: style.baseSize,
-    },
     content: {
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-around',
-        height: 535,
+        height: style.contentHeight,
     },
     parent: {
         backgroundImage: theme.palette.background.parent

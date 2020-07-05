@@ -82,11 +82,9 @@ export const loadUserByLogin = login => {
                 } else {
                     dispatch(errorRequest("Wrong password!"));
                 }
-            } else {
-                dispatch(errorRequest("User don't exist!!!"));
             }
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest("User don't exist!!!"));
         }
     }
 };

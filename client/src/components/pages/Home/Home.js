@@ -34,22 +34,12 @@ const buttonsData = [
     }
 ];
 
-const description = [
-    "Hello dear parent. Thank you for choosing our product",
-    'You can check the grades in all subjects',
-    "You have access to contact the teachers in the class and the tutor",
-    "You can edit your details and check student details"
-];
-
 const Home = () => (
     <div>
         <PageTitle>Parent Zone</PageTitle>
         <UserWelcome
             buttons={buttonsData}
-            description={description}
             userType='parent'
-            delay={1}
-            duration={5}
         />
     </div>
 );

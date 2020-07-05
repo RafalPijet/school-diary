@@ -2,11 +2,13 @@ import {style} from '../../../styles/global';
 
 const componentStyle = theme => ({
     root: {
+        height: style.contentHeight
+    },
+    column: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: style.contentHeight
+        justifyContent: 'center'
     },
     selectRow: {
         display: 'inherit',
@@ -24,7 +26,8 @@ const componentStyle = theme => ({
         minWidth: '150px'
     },
     margin: {
-        margin: '5px 0'
+        margin: '5px 0',
+        height: 70
     },
     button: {
         marginTop: '50px',

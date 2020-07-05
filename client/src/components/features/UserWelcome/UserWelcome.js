@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper} from "@material-ui/core";
 import componentStyle from "./UserWelcomeStyle";
 import ButtonImage from "../../common/ButtonImage/ButtonImageContainer";
-import FooterInfo from "../../common/FooterInfo/FooterInfo";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const UserWelcome = props => {
-    const {buttons, description, userType, delay, duration} = props;
+    const {buttons, userType} = props;
     const classes = useStyles();
 
     const setBackground = user => {
@@ -27,7 +25,7 @@ const UserWelcome = props => {
     };
 
     return (
-        <Paper variant='outlined' className={clsx(classes.root, setBackground(userType))}>
+        <Paper elevation={9} className={setBackground(userType)}>
             <div className={classes.content}>
                 {buttons.map((item, i) => {
                     return <ButtonImage
@@ -44,7 +42,6 @@ const UserWelcome = props => {
                     />
                 })}
             </div>
-            <FooterInfo description={description} delay={delay} duration={duration}/>
         </Paper>
     )
 };
@@ -60,10 +57,7 @@ UserWelcome.propTypes = {
         width: PropTypes.number.isRequired,
         height: PropTypes.number.isRequired
     })).isRequired,
-    description: PropTypes.array.isRequired,
     userType: PropTypes.string.isRequired,
-    delay: PropTypes.number.isRequired,
-    duration: PropTypes.number.isRequired
 };
 
 export default UserWelcome;
