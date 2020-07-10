@@ -113,7 +113,7 @@ const ClassesPanel = props => {
             <span className={classes.classGrade}>
                 <FormControl>
                 <InputLabel id='choose-class-grade'>
-                    sort by class grade
+                    sort by class level
                 </InputLabel>
                 <Select
                     className={classes.input}
@@ -134,7 +134,7 @@ const ClassesPanel = props => {
                         <span className={classes.classOptions}>
                     <Typography className={classes.className} variant='subtitle1'>Class</Typography>
                     <FormControl className={classes.possibleNames}>
-                        <InputLabel id='class-names'>possible names</InputLabel>
+                        <InputLabel id='class-names' style={{width: 150}}>available names</InputLabel>
                         <Select
                             labelId='class-names'
                             value={newClass.name}
@@ -148,7 +148,7 @@ const ClassesPanel = props => {
                 </span>
                         <FormControl>
                             <InputLabel id='choose-teacher'>
-                                choose teacher as tutor
+                                choose class teacher
                             </InputLabel>
                             <Select
                                 className={classes.input}

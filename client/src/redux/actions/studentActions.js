@@ -6,7 +6,6 @@ const reducerName = 'students';
 export const LOAD_ALL_STUDENTS = createActionName(reducerName, 'LOAD_ALL_STUDENTS');
 export const ADD_STUDENT = createActionName(reducerName, 'ADD_STUDENT');
 export const UPDATE_STUDENT = createActionName(reducerName, 'UPDATE_STUDENT');
-export const DELETE_STUDENT = createActionName(reducerName, 'DELETE_STUDENT');
 export const SET_FREE_STUDENTS = createActionName(reducerName, 'SET_FREE_STUDENTS');
 export const SET_CLASSES_STUDENTS = createActionName(reducerName, 'SET_CLASSES_STUDENTS');
 
@@ -14,7 +13,6 @@ export const SET_CLASSES_STUDENTS = createActionName(reducerName, 'SET_CLASSES_S
 export const loadAllStudents = students => ({students, type: LOAD_ALL_STUDENTS});
 export const addStudent = student => ({student, type: ADD_STUDENT});
 export const updateStudent = student => ({student, type: UPDATE_STUDENT});
-export const deleteStudent = id => ({id, type: DELETE_STUDENT});
 export const setFreeStudents = students => ({students, type: SET_FREE_STUDENTS});
 export const setClassesStudents = students => ({students, type: SET_CLASSES_STUDENTS});
 

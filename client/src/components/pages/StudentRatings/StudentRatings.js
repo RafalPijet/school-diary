@@ -4,7 +4,7 @@ import RatingsBox from '../../features/RatingsBox/RatingsBoxContainer';
 
 const StudentRatings = () => (
     <div>
-        <PageTitle>Student Ratings</PageTitle>
+        <PageTitle>Student Grades</PageTitle>
         <RatingsBox/>
     </div>
 );

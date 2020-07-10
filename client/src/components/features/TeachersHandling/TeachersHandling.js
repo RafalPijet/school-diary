@@ -119,19 +119,19 @@ const TeachersHandling = props => {
         <Paper variant='outlined' className={classes.root}>
             <Grid container className={classes.info}>
                 <Grid item lg={4}>
-                    <Typography variant='subtitle2' color='primary'>Names/Subject</Typography>
+                    <Typography className={classes.description} color='primary'>Names/Subject</Typography>
                 </Grid>
                 <Grid item lg={2} style={{paddingLeft: '20px'}}>
-                    <Typography variant='subtitle2' color='primary'>Phone</Typography>
+                    <Typography className={classes.description} color='primary'>Phone</Typography>
                 </Grid>
                 <Grid item lg={2}>
-                    <Typography variant='subtitle2' color='primary'>Email</Typography>
+                    <Typography className={classes.description} color='primary'>Email</Typography>
                 </Grid>
                 <Grid item lg={1}>
-                    <Typography variant='subtitle2' color='primary'>Tutor</Typography>
+                    <Typography className={classes.description} color='primary'>Class teacher</Typography>
                 </Grid>
                 <Grid item lg={2}>
-                    <Typography align='right' variant='subtitle2' color='primary'>Class/Students</Typography>
+                    <Typography align='right' className={classes.description} color='primary'>Class/Students</Typography>
                 </Grid>
                 <Grid item lg={1}> </Grid>
             </Grid>

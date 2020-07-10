@@ -44,7 +44,7 @@ const ClassContent = props => {
     const [leftList, setLeftList] = useState(classItem.students);
     const [rightList, setRightList] = useState(classItem.subjectTeachers);
     const [leftDesc, setLeftDesc] = useState('students');
-    const [rightDesc, setRightDesc] = useState('class teachers');
+    const [rightDesc, setRightDesc] = useState('teachers');
     const [isVisible, setIsVisible] = useState(false);
     const [isShowButtons, setIsShowButtons] = useState(false);
     const [isStudentMode, setIsStudentMode] = useState(false);
@@ -84,14 +84,14 @@ const ClassContent = props => {
             setIsTypeStudent(false);
             setIsTypeTeacher(false);
             setRightDesc('available teachers');
-            setLeftDesc('class teachers');
+            setLeftDesc('teachers');
             setIsTutor(false);
         } else {
             setRightList(classItem.subjectTeachers);
             setLeftList(classItem.students);
             setIsTypeTeacher(false);
             setIsTypeStudent(true);
-            setRightDesc('class teachers');
+            setRightDesc('teachers');
             setLeftDesc('students');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

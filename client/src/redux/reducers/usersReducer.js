@@ -6,7 +6,6 @@ import {
     LOAD_TEACHERS,
     LOAD_PARENTS,
     UPDATE_PARENT,
-    DELETE_PARENT,
     UPDATE_PARENT_STUDENT_CLASS_NAME,
     LOAD_USERS_NAME,
     REMOVE_USER_NAME,
@@ -57,8 +56,6 @@ const reducer = (state = initialState, action) => {
                     return parent;
                 })
             };
-        case DELETE_PARENT:
-            return {...state, parents: state.parents.filter(parent => parent.id !== action.id)};
         case UPDATE_PARENT_STUDENT_CLASS_NAME:
             return {
                 ...state, parents: state.parents.map(parent => {

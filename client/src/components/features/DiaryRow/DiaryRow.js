@@ -105,13 +105,16 @@ const DiaryRow = props => {
 
     return (
         <TableRow hover>
-            <TableCell className={clsx(classes.firstCell, classes.padding)} align='center'>{i + 1}</TableCell>
+            <TableCell style={{padding: 0}} className={clsx(classes.firstCell, classes.padding)} align='center'>
+                {i + 1}
+            </TableCell>
             <TableCell className={clsx(classes.padding, classes.secondCell)} align='left'>
                 <Typography className={classes.names}>{`${student.lastName} ${student.firstName}`}</Typography>
             </TableCell>
             <TableCell className={clsx(classes.padding, classes.thirdCell)} align='left'>
                 <div className={classes.previewRoot}>
-                    <div className={isOpenPreview ? classes.showUpdate : classes.hiddenUpdate}>
+                    <div className={clsx(classes.previewContent,
+                        isOpenPreview ? classes.showUpdate : classes.hiddenUpdate)}>
                         <animated.div
                             className={classes.flipped}
                             style={{opacity: opacity.interpolate(o => 1 - o), visibility: !visibility, transform}}>
@@ -144,7 +147,7 @@ const DiaryRow = props => {
                             <Fragment key={rating._id}>
                                 <span>
                                     <Tooltip
-                                        title={isNewRating ? '' : (isUpdateRating ? 'cancel update' : 'update rating')}
+                                        title={isNewRating ? '' : (isUpdateRating ? 'cancel update' : 'update grade')}
                                         arrow
                                         placement='bottom'
                                         TransitionComponent={Fade}
@@ -167,10 +170,12 @@ const DiaryRow = props => {
                         {(request.adding && isSpinner) && <CircularProgress size='20px' color='secondary'/>}
                     </div>
                 </span>
+            </TableCell>
+            <TableCell>
                 <div className={classes.buttonBox}>
                 <span>
                     <Tooltip
-                        title={(isNewRating && !isOpen) ? '' : (isOpen ? 'cancel adding' : 'add rating')}
+                        title={(isNewRating && !isOpen) ? '' : (isOpen ? 'cancel adding' : 'add grade')}
                         arrow
                         placement='bottom'
                         TransitionComponent={Fade}

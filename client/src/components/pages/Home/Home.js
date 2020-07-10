@@ -8,15 +8,15 @@ import teachers from '../../../images/teachers.png';
 const buttonsData = [
     {
         image: ratings,
-        title: 'Ratings',
+        title: 'Grades',
         bottom: 200,
         width: 400,
         height: 280,
-        path: '/ratings'
+        path: '/grades'
     },
     {
         image: parent,
-        title: 'Parent Data',
+        title: "Parent's Data",
         left: 140,
         top: 20,
         width: 350,
@@ -36,7 +36,7 @@ const buttonsData = [
 
 const Home = () => (
     <div>
-        <PageTitle>Parent Zone</PageTitle>
+        <PageTitle>Parent's Zone</PageTitle>
         <UserWelcome
             buttons={buttonsData}
             userType='parent'

@@ -10,7 +10,6 @@ export const UPDATE_USER_DATA = createActionName(reducerName, 'UPDATE_USER_DATA'
 export const LOAD_TEACHERS = createActionName(reducerName, 'LOAD_TEACHERS');
 export const LOAD_PARENTS = createActionName(reducerName, 'LOAD_PARENTS');
 export const UPDATE_PARENT = createActionName(reducerName, 'UPDATE_PARENT');
-export const DELETE_PARENT = createActionName(reducerName, 'DELETE_PARENT');
 export const UPDATE_PARENT_STUDENT_CLASS_NAME = createActionName(reducerName, 'UPDATE_PARENT_STUDENT_CLASS_NAME');
 export const LOAD_USERS_NAME = createActionName(reducerName, 'LOAD_USERS_NAME');
 export const REMOVE_USER_NAME = createActionName(reducerName, 'REMOVE_USER_NAME');
@@ -25,7 +24,6 @@ export const updateUserData = data => ({data, type: UPDATE_USER_DATA});
 export const loadTeachers = teachers => ({teachers, type: LOAD_TEACHERS});
 export const loadParents = parents => ({parents, type: LOAD_PARENTS});
 export const updateParent = (id, studentsList) => ({id, studentsList, type: UPDATE_PARENT});
-export const deleteParent = id => ({id, type: DELETE_PARENT});
 export const updateParentStudentClassName = (parentId, studentId, className) =>
     ({parentId, studentId, className, type: UPDATE_PARENT_STUDENT_CLASS_NAME});
 export const loadUsersName = users => ({users, type: LOAD_USERS_NAME});

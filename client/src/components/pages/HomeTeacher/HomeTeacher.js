@@ -16,18 +16,18 @@ const buttonsData = [
     },
     {
         image: teacherData,
-        title: 'Teacher data',
+        title: "Teacher's Data",
         width: 350,
         height: 300,
         bottom: 175,
-        left: 135,
+        left: 113,
         path: '/data'
     }
 ];
 
 const HomeTeacher = () => (
     <div>
-        <PageTitle>Teacher Zone</PageTitle>
+        <PageTitle>Teacher's Zone</PageTitle>
         <UserWelcome
             userType='teacher'
             buttons={buttonsData}

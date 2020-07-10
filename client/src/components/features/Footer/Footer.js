@@ -40,8 +40,8 @@ const Footer = props => {
                 }
             } else if (userStatus === 'parent') {
                 switch (path) {
-                    case '/ratings':
-                        setInfoContent(parentDescription.ratings);
+                    case '/grades':
+                        setInfoContent(parentDescription.grades);
                         break;
                     case '/data':
                         setInfoContent(parentDescription.data);
@@ -82,7 +82,7 @@ const Footer = props => {
                     setInfoContent(welcomeDescription.home);
             }
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogin, path]);
 
     const switchHandling = () => {

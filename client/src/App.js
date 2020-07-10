@@ -30,7 +30,7 @@ const App = props => {
             <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                 <Switch>
                     <Route path='/' exact component={Home}/>
-                    <Route path='/ratings' exact component={StudentRatings}/>
+                    <Route path='/grades' exact component={StudentRatings}/>
                     <Route path='/data' exact component={StudentData}/>
                     <Route path='/teachers' exact component={StudentTeachers}/>
                     <Route path='/logout' exact component={Logout}/>

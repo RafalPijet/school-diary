@@ -4,7 +4,7 @@ import WelcomeContent from "../../features/WelcomeContent/WelcomeContent";
 
 const Welcome = () => (
     <div>
-        <PageTitle>Welcome in School Diary</PageTitle>
+        <PageTitle>Welcome to School Diary</PageTitle>
         <WelcomeContent/>
     </div>
 );

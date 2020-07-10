@@ -60,20 +60,23 @@ const DiaryList = props => {
                                 <TableCell className={classes.classInfo}>
                                     <span className={classes.header}>
                                         <Typography className={classes.description}
-                                                    display='inline'>ratings</Typography>
+                                                    display='inline'>grades</Typography>
                                         <Typography className={classes.description} display='inline'>
                                             {'students: '}
                                             <span className={classes.tutorContent}>
                                                 {selectedClass.students.length}
                                             </span>
                                         </Typography>
-                                        <Typography className={classes.description} display='inline'>{'tutor: '}
+                                        <Typography className={classes.description} display='inline'>{'class teacher: '}
                                             <Link href={`mailto:${selectedClass.mainTeacher.email}`}
                                                 className={classes.tutorContent}>
                                                 {selectedClass.mainTeacher.firstName} {selectedClass.mainTeacher.lastName}
                                             </Link>
                                         </Typography>
                                     </span>
+                                </TableCell>
+                                <TableCell className={classes.classInfo}>
+                                    <Typography align='center' className={classes.description}>add+</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>

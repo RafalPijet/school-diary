@@ -101,7 +101,7 @@ const NavClassPanel = props => {
                 <Grid item lg={5}>
                     <div className={classes.descTutor}>
                         <Typography display='inline' component='p' color='textSecondary'>
-                            tutor:
+                            class teacher:
                         </Typography>
                         <Typography
                             display='inline'
@@ -118,7 +118,7 @@ const NavClassPanel = props => {
                             className={classes.selectInput}
                         >
                             <InputLabel id='replace-tutor'>
-                                replace tutor
+                                replace
                             </InputLabel>
                             <Select
                                 labelId='replace-tutor'
@@ -136,7 +136,7 @@ const NavClassPanel = props => {
                             </Select>
                         </FormControl>
                         <Tooltip
-                            title='Replace tutor'
+                            title='Replace class teacher'
                             classes={{tooltip: classes.tooltip}}
                             placement='top'
                             arrow

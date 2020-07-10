@@ -1,7 +1,6 @@
 import {
     LOAD_ALL_STUDENTS,
     UPDATE_STUDENT,
-    DELETE_STUDENT,
     ADD_STUDENT,
     SET_FREE_STUDENTS,
     SET_CLASSES_STUDENTS
@@ -27,8 +26,6 @@ const reducer = (state = initialState, action) => {
                     return student;
                 }
                 })};
-        case DELETE_STUDENT:
-            return {...state, allStudents: state.allStudents.filter(student => student.id !== action.id)};
         case SET_FREE_STUDENTS:
             return {...state, freeStudents: action.students};
         case SET_CLASSES_STUDENTS:

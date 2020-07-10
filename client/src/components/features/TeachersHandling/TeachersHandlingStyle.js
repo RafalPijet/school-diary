@@ -25,6 +25,10 @@ const componentStyle = theme => ({
     },
     center: {
         justifyContent: 'center !important'
+    },
+    description: {
+        fontSize: 12,
+        color: theme.palette.primary.light
     }
 });
 

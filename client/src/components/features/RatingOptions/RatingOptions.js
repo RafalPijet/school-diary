@@ -161,7 +161,7 @@ const RatingOptions = props => {
                 {isEditMode ? <div className={classes.deleteBox}>
                     <span>
                     <Tooltip
-                        title='delete rating'
+                        title='delete grade'
                         arrow
                         id='delete'
                         placement='top'

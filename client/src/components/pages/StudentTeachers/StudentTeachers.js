@@ -4,7 +4,7 @@ import StudentTeachersList from "../../features/StudentTeachersList/StudentTeach
 
 const StudentTeachers = () => (
     <div>
-        <PageTitle>Student Teachers</PageTitle>
+        <PageTitle>Student's Teachers</PageTitle>
         <StudentTeachersList/>
     </div>
 );

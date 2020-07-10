@@ -46,7 +46,7 @@ const buttonsData = [
 
 const HomePrincipal = () => (
     <div>
-        <PageTitle>Principal Zone</PageTitle>
+        <PageTitle>Principal's Zone</PageTitle>
         <UserWelcome
             userType='principal'
             buttons={buttonsData}

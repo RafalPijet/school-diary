@@ -27,7 +27,7 @@ const StudentTeachersItem = props => {
                     </Typography>
                 </Grid>
                 <Grid item lg={8}>
-                    <span className={classes.description}>tutor:</span>
+                    <span className={classes.description}>class teacher:</span>
                     <div className={classes.tutor}>
                         <Typography className={classes.info} display='inline'>{classItem.tutor.name}</Typography>
                         <Typography display='inline'>{classItem.tutor.phone}</Typography>
@@ -35,7 +35,7 @@ const StudentTeachersItem = props => {
                     </div>
                 </Grid>
             </Grid>
-            <Typography className={classes.description}>Class teachers:</Typography>
+            <Typography className={classes.description}>Teachers:</Typography>
             <Paper variant='outlined' className={classes.teachers}>
                 {classItem.teachers.map((teacher, i) => {
                     return <TeacherInfoItem key={i} teacher={teacher}/>

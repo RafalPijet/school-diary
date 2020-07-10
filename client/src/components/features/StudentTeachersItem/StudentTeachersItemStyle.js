@@ -17,7 +17,7 @@ const componentStyle = theme => ({
         fontWeight: 800
     },
     tutor: {
-        width: '90%',
+        width: '80%',
         display: 'inline-flex',
         justifyContent: 'space-between'
     },

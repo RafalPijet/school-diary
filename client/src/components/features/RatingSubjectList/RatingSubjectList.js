@@ -22,7 +22,7 @@ const RatingSubjectList = props => {
                     <Typography variant='subtitle2' className={classes.title}>Subject</Typography>
                 </Grid>
                 <Grid item lg={10}>
-                    <Typography variant='subtitle2' className={classes.title} align='center'>Ratings</Typography>
+                    <Typography variant='subtitle2' className={classes.title} align='center'>Grades</Typography>
                 </Grid>
             </Grid>
             <div className={classes.content}>

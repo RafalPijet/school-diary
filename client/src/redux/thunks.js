@@ -123,7 +123,7 @@ export const updateUserRequest = (id, studentsList, data) => {
         }
     }
 };
-/*todo*/
+
 export const deleteParentRequest = (id, page) => {
     return async dispatch => {
         dispatch(startRequest());
@@ -319,20 +319,6 @@ export const deleteRatingForStudent = (id, _id, classId, studentId) => {
     }
 };
 
-export const deleteRatingRequest = id => {
-    return async dispatch => {
-        dispatch(startWorkingRequest());
-
-        try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            await axios.delete(`${API_URL}/rating/${id}`);
-            dispatch(stopWorkingRequest());
-        } catch (err) {
-            dispatch(errorRequest(err.message));
-        }
-    }
-};
-
 export const loadTeachersRequest = () => {
     return async dispatch => {
         dispatch(startRequest());
@@ -415,7 +401,6 @@ export const loadTeacherByIdRequest = id => {
     }
 };
 
-/*todo*/
 export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startRequest());
@@ -600,7 +585,7 @@ export const getStudentByIdRequest = id => {
         }
     }
 };
-/*todo*/
+
 export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startGetingRequest());

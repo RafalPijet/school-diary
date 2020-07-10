@@ -41,15 +41,16 @@ const componentStyle = theme => ({
         overflowX: 'auto'
     },
     thirdCell: {
-        width: '720px',
+        width: '710px',
     },
     names: {
         whiteSpace: 'nowrap',
         width: '200px',
     },
     ratings: {
-        width: '666px',
-        display: 'inline-flex',
+        width: '656px',
+        display: 'flex',
+        alignItems: 'center',
         flexWrap: 'nowrap',
         overflowX: 'auto',
         height: '40px',
@@ -64,8 +65,8 @@ const componentStyle = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: style.smallSize,
-        left: '-220px',
-        top: '-15px',
+        left: '-230px',
+        top: '-40px',
         height: '80px',
         width: '200px',
         backgroundColor: 'rgba(84, 110, 122, .5)'
@@ -90,6 +91,10 @@ const componentStyle = theme => ({
     hiddenUpdate: {
         opacity: 0,
         transition: 'opacity .3s ease-in-out'
+    },
+    previewContent: {
+        position: 'absolute',
+        top: 18
     },
     disabled: {
         color: theme.palette.secondary.light

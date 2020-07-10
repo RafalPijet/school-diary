@@ -25,7 +25,7 @@ const availableLinks = {
     ],
     studentLinks: [
         {path: "/", title: "Home", icon: <HomeIcon fontSize='large'/>},
-        {path: "/ratings", title: "Ratings", icon: <RatingIcon fontSize='large'/>},
+        {path: "/grades", title: "Grades", icon: <RatingIcon fontSize='large'/>},
         {path: "/data", title: "Parent Data", icon: <DataIcon fontSize='large'/>},
         {path: "/teachers", title: "Teachers", icon: <TeachersIcon fontSize='large'/>},
         {path: "/logout", title: "LogOut", icon: <LogoutIcon fontSize='large'/>}
@@ -33,7 +33,7 @@ const availableLinks = {
     teacherLinks: [
         {path: "/", title: "Home", icon: <HomeIcon fontSize='large'/>},
         {path: "/diaries", title: "Class Diaries", icon: <DiariesIcon fontSize='large'/>},
-        {path: "/data", title: "Teacher data", icon: <DataIcon fontSize='large'/>},
+        {path: "/data", title: "Teacher's data", icon: <DataIcon fontSize='large'/>},
         {path: "/logout", title: "LogOut", icon: <LogoutIcon fontSize='large'/>}
     ],
     principalLinks: [

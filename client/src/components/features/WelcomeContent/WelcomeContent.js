@@ -36,55 +36,55 @@ const collection = [
     },
     {
         image: showImage2,
-        description: 'Teacher home page (light mode)'
+        description: "Teacher's home page (light mode)"
     },
     {
         image: showImage3,
-        description: 'Principal home page'
+        description: "Principal's home page"
     },
     {
         image: showImage4,
-        description: 'Parent data section'
+        description: "Parent's data section"
     },
     {
         image: showImage5,
-        description: 'Ratings section of the selected student for his parent'
+        description: "Selected student's grades viewed from their parent's account"
     },
     {
         image: showImage6,
-        description: 'Class and teacher data section for the parent'
+        description: "Teachers' contact data viewed by a parent"
     },
     {
         image: showImage7,
-        description: 'Adding grade in teacher mode'
+        description: "Adding a grade from a teacher's account"
     },
     {
         image: showImage8,
-        description: 'Editing rating parameters in teacher mode'
+        description: "Editing a grade from a teacher's account"
     },
     {
         image: showImage9,
-        description: 'Students list in teacher mode'
+        description: "Students' list in the teacher's mode"
     },
     {
         image: showImage10,
-        description: 'Configuration panel of the selected class in principal mode'
+        description: 'Configuration panel of the selected class in the principal mode'
     },
     {
         image: showImage11,
-        description: 'Active teachers list editing mode in principal mode'
+        description: "Editable list of teachers viewed from the principal's mode"
     },
     {
         image: showImage12,
-        description: 'List of teachers in principal mode'
+        description: 'List of teachers in the principal mode'
     },
     {
         image: showImage13,
-        description: 'List of students in principal mode'
+        description: 'List of students in the principal mode'
     },
     {
         image: showImage14,
-        description: 'List of parents or guardians in principal mode'
+        description: 'List of parents or guardians in the principal mode'
     }
 ];
 
