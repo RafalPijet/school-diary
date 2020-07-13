@@ -17,7 +17,7 @@ const buttonsData = [
     {
         image: parent,
         title: "Parent's Data",
-        left: 140,
+        left: 130,
         top: 20,
         width: 350,
         height: 230,

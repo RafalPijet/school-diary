@@ -22,6 +22,7 @@ const RatingItem = props => {
     } = props;
     const classes = useStyles();
     const [ratingItem, setRatingItem] = useState(rating);
+    const [ratingItemCopy, setRatingItemCopy] = useState(rating);
     const [ratingStyle, setRatingStyle] = useState(classes.ratingNumber);
     const [isFrozen, setIsFrozen] = useState(false);
 
@@ -37,7 +38,8 @@ const RatingItem = props => {
 
         if (!isUpdateRating && isFrozen) {
             !request.working && setIsFrozen(false);
-            setRatingStyle(clsx(classes.ratingNumber, classes[ratingItem.scales]))
+            setRatingStyle(clsx(classes.ratingNumber, classes[ratingItem.scales]));
+            setRatingItemCopy(ratingItem);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isUpdateRating, updatedRating, updatedRating._id, ratingItem, request.working]);
@@ -57,6 +59,7 @@ const RatingItem = props => {
     };
 
     const updateItemHandling = () => {
+
         if (!isNewRating) {
             updateHandling(ratingItem);
             setIsUpdateRating(true);
@@ -65,10 +68,15 @@ const RatingItem = props => {
     };
 
     const cancelUpdate = () => {
+
         if (!isNewRating) {
             setIsUpdateRating(false);
             setIsFrozen(false);
-            updateHandling(ratingItem);
+            updateHandling(ratingItemCopy);
+
+            if (ratingItemCopy.value !== ratingItem.value ||
+            ratingItemCopy.scrollable !== ratingItem.scales ||
+            ratingItemCopy.description !== ratingItem.description) setRatingItem(ratingItemCopy);
         }
     };
 

@@ -97,6 +97,7 @@ const DiaryRow = props => {
         setRatingToChange(rating);
         setIsUpdate(!isUpdate);
         setFlipped(!flipped);
+        setUpdatedRating(rating);
     };
 
     const changeRatingHandling = newRating => {

@@ -59,7 +59,7 @@ const RatingOptions = props => {
             setScales(ratingToChange.scales);
             Object.entries(labels).forEach(item => {
                 if (item[1] === ratingToChange.value) {
-                    setValue(parseInt(item[0]));
+                    setValue(parseFloat(item[0]));
                     setIsChanging(true);
                 }
             });
@@ -76,7 +76,6 @@ const RatingOptions = props => {
             });
             setDataIsChanging(false);
         }
-
     }, [value, changeRating, ratingToChange, isEditMode, isUpdate, isChanging, scales,
         description, dataIsChanging]);
 
@@ -114,7 +113,7 @@ const RatingOptions = props => {
 
     const deleteRatingHandling = () => {
         setModalYesNot(true, {
-            description: `Do you want to delete the rating: ${labels[value]} ?`,
+            description: `Do you want to delete the grade: ${labels[value]} ?`,
             data: {
                 id: ratingsId,
                 _id: ratingToChange._id,
@@ -152,10 +151,36 @@ const RatingOptions = props => {
                     precision={0.5}
                     onChange={(event, newValue) => {
                         setValue(newValue);
+
                         if (isEditMode) setDataIsChanging(true);
                     }}
                     onChangeActive={(event, newHover) => {
-                        setHover(newHover);
+
+                        if (isEditMode) {
+
+                            if (newHover !== -1) {
+                                setHover(newHover);
+
+                                changeRating({
+                                    _id: ratingToChange._id,
+                                    value: labels[newHover],
+                                    scales,
+                                    description,
+                                    date: ratingToChange.date,
+                                    teacher: ratingToChange.teacher
+                                });
+                            } else {
+                                changeRating({
+                                    _id: ratingToChange._id,
+                                    value: labels[value],
+                                    scales,
+                                    description,date: ratingToChange.date,
+                                    teacher: ratingToChange.teacher
+                                })
+                            }
+                        } else {
+                            setHover(newHover);
+                        }
                     }}
                 />
                 {isEditMode ? <div className={classes.deleteBox}>
