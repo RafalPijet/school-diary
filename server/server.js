@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 const loadTestData = require('./dataTest');
 const userRouter = require('./routes/user.routes');
 const classRouter = require('./routes/class.routes');
 const ratingRouter = require('./routes/rating.routes');
 const studentRouter = require('./routes/student.routes');
+const config = require('./config');
 
 const app = express();
 
@@ -16,8 +18,9 @@ app.use('/api', userRouter);
 app.use('/api', classRouter);
 app.use('/api', ratingRouter);
 app.use('/api', studentRouter);
+app.use(express.static(path.join(__dirname, '/../client/build')));
 
-mongoose.connect('mongodb://localhost:27017/school-diary', {
+mongoose.connect(config.DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -27,4 +30,8 @@ db.once('open', () => {
     loadTestData();
 });
 
-app.listen(8000, () => console.log('Server is running on port: 8000'));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../client/build/index.html'))
+});
+
+app.listen(config.PORT, () => console.log(`Server is running on port: ${config.PORT}`));

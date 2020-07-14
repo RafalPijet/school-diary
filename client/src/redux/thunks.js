@@ -60,7 +60,6 @@ export const loadUserByLogin = login => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/users/login`, {params: {email: login.email}});
 
             if (res.data !== null) {
@@ -94,7 +93,6 @@ export const addUser = user => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 5000));
             await axios.post(`${API_URL}/users`, user);
             dispatch(stopRequest());
             dispatch(setPath('/login'));
@@ -111,7 +109,6 @@ export const updateUserRequest = (id, studentsList, data) => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/users/parent/${id}`, {studentsList});
             dispatch(updateParent(res.data.id, studentsList));
             dispatch(setAlertSuccess(true,
@@ -129,7 +126,6 @@ export const deleteParentRequest = (id, page) => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/users/${id}`);
             dispatch(removeUserName(id));
             await dispatch(loadParentsRequestWithRange(page + 1, 7));
@@ -146,7 +142,6 @@ export const deleteTeacherRequest = (id, page, rowsPerPage) => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/users/${id}`);
             dispatch(removeUserName(id));
             await dispatch(loadTeachersRequestWithRange(page + 1, rowsPerPage));
@@ -163,7 +158,6 @@ export const loadAllClassesRequest = () => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class`);
             dispatch(loadAllClasses(res.data));
             dispatch(stopRequest());
@@ -178,7 +172,6 @@ export const loadStudentsIdFromClasses = () => {
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/classes/students`);
             dispatch(setClassesStudents(res.data));
             dispatch(stopUpdatingRequest());
@@ -193,7 +186,6 @@ export const loadAllClassByTeacherId = teacherId => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/classes/${teacherId}`);
             dispatch(loadClassByTeacher(res.data));
             dispatch(stopRequest());
@@ -208,7 +200,6 @@ export const loadClassById = id => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class/${id}`);
             dispatch(setSelectedClass(res.data));
             dispatch(stopGetingRequest());
@@ -223,7 +214,6 @@ export const loadDataForClassByIdRequest = id => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class/principal/${id}`);
             dispatch(updateDataInSelectedClass(res.data));
             dispatch(stopGetingRequest());
@@ -238,7 +228,6 @@ export const updateTutorClassRequest = classItem => {
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/class/tutor`, classItem);
             dispatch(setAlertSuccess(true,
                 `${res.data.name} tutor has been changed to ${res.data.mainTeacher.lastName}
@@ -258,7 +247,6 @@ export const updateClassRequest = classItem => {
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/class`, classItem);
             dispatch(setAlertSuccess(true,
                 `${classItem.isStudents ?
@@ -279,7 +267,6 @@ export const addRatingForStudent = (classId, dataPackage) => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
             dispatch(addRatingToStudent(classId, res.data));
             dispatch(stopAddingRequest());
@@ -294,7 +281,6 @@ export const updateRatingForStudent = dataPackage => {
         dispatch(startWorkingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
             dispatch(updateRatingToStudent(dataPackage.classId, dataPackage.studentId, res.data));
             dispatch(stopWorkingRequest());
@@ -309,7 +295,6 @@ export const deleteRatingForStudent = (id, _id, classId, studentId) => {
         dispatch(startWorkingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/ratings/${id}/${_id}`);
             dispatch(updateRatingToStudent(classId, studentId, res.data));
             dispatch(stopWorkingRequest());
@@ -339,7 +324,6 @@ export const loadParentByIdRequest = (id, isAdd) => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/users/parent/${id}`);
             let studentsId = res.data.students.map(student => student.id);
             let parent = res.data;
@@ -371,7 +355,6 @@ export const loadTeacherByIdRequest = id => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/users/teacher/${id}`);
             let teacher = res.data;
             let resNext = await axios.get(`${API_URL}/classes/teachers/name`,
@@ -406,7 +389,6 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
             let teachers = await axios.get(`${API_URL}/users/teacher/${start}/${limit}`);
@@ -448,7 +430,6 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let studentsInClassesId = [];
             let classNames = [];
             let start = Math.ceil((page - 1) * itemsPerPage);
@@ -499,7 +480,6 @@ export const addClassRequest = payload => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/class`, payload);
             let newClass = res.data;
             newClass.mainTeacher = payload.mainTeacher;
@@ -518,7 +498,6 @@ export const deleteClassByIdRequest = id => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/class/${id}`);
             dispatch(setAlertSuccess(true, `${res.data.name} has been removed.`));
             await dispatch(deleteClassInAllClasses(id));
@@ -537,7 +516,6 @@ export const getAllStudentsRequest = () => {
         dispatch(startWorkingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students`);
             dispatch(loadAllStudents(res.data));
             dispatch(stopWorkingRequest());
@@ -552,7 +530,6 @@ export const getUsersNameRequest = status => {
         dispatch(startWorkingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/users/name/${status}`);
             dispatch(loadUsersName(res.data));
             dispatch(stopWorkingRequest());
@@ -567,7 +544,6 @@ export const getStudentByIdRequest = id => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/student/${id}`);
             let studentsId = [id];
             let student = res.data;
@@ -594,7 +570,6 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
             let result = [];
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/${start}/${limit}`);
             let studentsId = res.data.map(item => item.id);
             let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
@@ -635,7 +610,6 @@ export const getStudentsNamesRequest = () => {
         dispatch(startWorkingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/names`);
             dispatch(setFreeStudents(res.data));
             dispatch(stopWorkingRequest());
@@ -650,7 +624,6 @@ export const getStudentsIdRequest = () => {
         dispatch(startRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/onlyid`);
             dispatch(loadAllStudents(res.data));
             dispatch(stopRequest());
@@ -665,7 +638,6 @@ export const getStudentsByIdRequest = studentsId => {
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/students/select`, {params: {studentsId}});
             dispatch(setFreeStudents(res.data));
             dispatch(stopUpdatingRequest());
@@ -680,7 +652,6 @@ export const addStudentRequest = student => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/student`, student);
             dispatch(setAlertSuccess(true,
                 `Student ${res.data.firstName} ${res.data.lastName} has be added.`));
@@ -697,7 +668,6 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/users`, {isPassword, isDataChange, userAfterChange});
 
             if (isDataChange) {
@@ -733,7 +703,6 @@ export const updateStudentRequest = (id, parent, isAdd) => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/student/parents/${id}`, {parent: parent, isAdd});
 
             if (isAdd) {
@@ -758,7 +727,6 @@ export const updateStudentBasicDataRequest = student => {
         dispatch(startAddingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.put(`${API_URL}/student/basic`,
                 {
                     id: student.id, firstName: student.firstName,
@@ -778,7 +746,6 @@ export const deleteStudentRequest = studentId => {
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.delete(`${API_URL}/student/${studentId}`);
 
             if (res.data.ratings.length) {
@@ -800,7 +767,6 @@ export const addSubjectRating = (student, subject) => {
         dispatch(startUpdatingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/rating`, {studentId: student.id, subject});
             await axios.post(`${API_URL}/student/subject`, {id: student.id, rating: res.data});
             let studentAfterChange = student;
@@ -818,7 +784,6 @@ export const getTeacherStudentsNameRequest = classesId => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/classes/teacher/students`, {params: {classesId}});
             dispatch(loadAllStudents(res.data));
             dispatch(stopGetingRequest());
@@ -833,7 +798,6 @@ export const getTeacherStudentsByIdRequest = students => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let studentsId = students.map(student => student.id);
             let res = await axios.get(`${API_URL}//students/teacher`, {params: {studentsId}});
             let result = [];
@@ -867,7 +831,6 @@ export const getClassNameForStudentByIdRequest = studentsId => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
             let names = res.data;
 
@@ -888,7 +851,6 @@ export const getTeachersByClassNameRequest = name => {
         dispatch(startGetingRequest());
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.get(`${API_URL}/class/teachers`, {params: {name}});
             dispatch(setSelectedClass(res.data));
             dispatch(stopGetingRequest());
