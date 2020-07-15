@@ -220,6 +220,10 @@ const WelcomeContent = () => {
         }
     };
 
+    const setSlide = slideNumber => new Promise(resolve => resolve(
+        changeSlide(slideNumber)
+    ));
+
     return (
         <Paper elevation={9} className={classes.root}>
             <Grow
@@ -227,8 +231,8 @@ const WelcomeContent = () => {
                 timeout={1000}
                 onEntered={() => setFirstIsClosed(false)}
                 onExited={() => {
-                    changeSlide(1);
-                    setFirstIsClosed(true);
+                    setSlide(1)
+                        .then(() => setFirstIsClosed(true));
                     // setTimeout(() => setCounter(0), 500);
                 }}
             >
@@ -242,8 +246,8 @@ const WelcomeContent = () => {
                 timeout={1000}
                 onEntered={() => setSecondIsClosed(false)}
                 onExited={() => {
-                    changeSlide(2);
-                    setSecondIsClosed(true);
+                    setSlide(2)
+                        .then(() => setSecondIsClosed(true));
                     // setTimeout(() => setIsShowSecond(true), 500);
                 }}
             >
@@ -257,8 +261,8 @@ const WelcomeContent = () => {
                 timeout={1000}
                 onEntered={() => setThirdIsClosed(false)}
                 onExited={() => {
-                    changeSlide(3);
-                    setThirdIsClosed(true);
+                    setSlide(3)
+                        .then(() => setThirdIsClosed(true));
                     // setTimeout(() => setIsShowThird(true), 500);
                 }}
             >
