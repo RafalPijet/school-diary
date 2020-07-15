@@ -150,12 +150,17 @@ const WelcomeContent = () => {
     }, [counter, step, isReady]);
 
     useEffect(() => {
+        let timer = 0;
 
-        if (firstIsClosed) setCounter(0);
+        if (firstIsClosed) timer = setTimeout(() => setCounter(0), 500);
 
-        if (secondIsClosed) setIsShowSecond(true);
+        if (secondIsClosed) timer = setTimeout(() => setIsShowSecond(true), 500);
 
-        if (thirdIsClosed) setIsShowThird(true);
+        if (thirdIsClosed) timer = setTimeout(() => setIsShowThird(true), 500);
+
+        return () => {
+            clearTimeout(timer);
+        }
 
     }, [firstIsClosed, secondIsClosed, thirdIsClosed]);
 
@@ -233,7 +238,6 @@ const WelcomeContent = () => {
                 onExited={() => {
                     setSlide(1)
                         .then(() => setFirstIsClosed(true));
-                    // setTimeout(() => setCounter(0), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.first} style={{zIndex: `${firstZindex}`}}>
@@ -248,7 +252,6 @@ const WelcomeContent = () => {
                 onExited={() => {
                     setSlide(2)
                         .then(() => setSecondIsClosed(true));
-                    // setTimeout(() => setIsShowSecond(true), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.second} style={{zIndex: `${secondZindex}`}}>
@@ -263,7 +266,6 @@ const WelcomeContent = () => {
                 onExited={() => {
                     setSlide(3)
                         .then(() => setThirdIsClosed(true));
-                    // setTimeout(() => setIsShowThird(true), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.third} style={{zIndex: `${thirdZindex}`}}>
