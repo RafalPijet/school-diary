@@ -161,16 +161,16 @@ const WelcomeContent = () => {
         setIsShowThird(true);
     };
 
-    const changeSlide = async slideNumber => {
+    const changeSlide = slideNumber => {
 
         if (slideNumber === 1) {
 
             if (value !== (collection.length - 1)) {
-                await setFirstValue(collection[value + 1]);
+                setFirstValue(collection[value + 1]);
                 setValue(value => value + 1);
 
             } else {
-                await setFirstValue(collection[0]);
+                setFirstValue(collection[0]);
                 setValue(0);
 
             }
@@ -180,11 +180,11 @@ const WelcomeContent = () => {
         } else if (slideNumber === 2) {
 
             if (value !== (collection.length - 1)) {
-                await setSecondValue(collection[value + 1]);
+                setSecondValue(collection[value + 1]);
                 setValue(value => value + 1);
 
             } else {
-                await setSecondValue(collection[0]);
+                setSecondValue(collection[0]);
                 setValue(0);
 
             }
@@ -194,11 +194,11 @@ const WelcomeContent = () => {
         } else {
 
             if (value !== (collection.length - 1)) {
-                await setThirdValue(collection[value + 1]);
+                setThirdValue(collection[value + 1]);
                 setValue(value => value + 1);
 
             } else {
-               await setThirdValue(collection[0]);
+                setThirdValue(collection[0]);
                 setValue(0);
             }
             setThirdZindex(top);
@@ -207,18 +207,14 @@ const WelcomeContent = () => {
         }
     };
 
-    const setSlide = slideNumber => new Promise(resolve => resolve(
-        changeSlide(slideNumber),
-    ));
-
     return (
         <Paper elevation={9} className={classes.root}>
             <Grow
                 in={isShowFirst}
-                timeout={1500}
+                timeout={1000}
                 onExited={() => {
-                    setSlide(1)
-                        .then(() => setCounter(0));
+                    changeSlide(1);
+                    setTimeout(() => setCounter(0), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.first} style={{zIndex: `${firstZindex}`}}>
@@ -228,10 +224,10 @@ const WelcomeContent = () => {
             </Grow>
             <Grow
                 in={isShowSecond}
-                timeout={1500}
+                timeout={1000}
                 onExited={() => {
-                    setSlide(2)
-                        .then(() => setIsShowSecond(true));
+                    changeSlide(2);
+                    setTimeout(() => setIsShowSecond(true), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.second} style={{zIndex: `${secondZindex}`}}>
@@ -241,10 +237,10 @@ const WelcomeContent = () => {
             </Grow>
             <Grow
                 in={isShowThird}
-                timeout={1500}
+                timeout={1000}
                 onExited={() => {
-                    setSlide(3)
-                        .then(() => setIsShowThird(true));
+                    changeSlide(3);
+                    setTimeout(() => setIsShowThird(true), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.third} style={{zIndex: `${thirdZindex}`}}>
