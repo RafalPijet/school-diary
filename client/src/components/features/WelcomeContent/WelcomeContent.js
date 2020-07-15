@@ -105,6 +105,9 @@ const WelcomeContent = () => {
     const [firstValue, setFirstValue] = useState(collection[0]);
     const [secondValue, setSecondValue] = useState(collection[1]);
     const [thirdValue, setThirdValue] = useState(collection[2]);
+    const [firstIsClosed, setFirstIsClosed] = useState(false);
+    const [secondIsClosed, setSecondIsClosed] = useState(false);
+    const [thirdIsClosed, setThirdIsClosed] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -145,6 +148,16 @@ const WelcomeContent = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [counter, step, isReady]);
+
+    useEffect(() => {
+
+        if (firstIsClosed) setCounter(0);
+
+        if (secondIsClosed) setIsShowSecond(true);
+
+        if (thirdIsClosed) setIsShowThird(true);
+
+    }, [firstIsClosed, secondIsClosed, thirdIsClosed]);
 
     const handleSlider = (event, newValue) => {
         setStep(newValue);
@@ -212,9 +225,11 @@ const WelcomeContent = () => {
             <Grow
                 in={isShowFirst}
                 timeout={1000}
+                onEntered={() => setFirstIsClosed(false)}
                 onExited={() => {
                     changeSlide(1);
-                    setTimeout(() => setCounter(0), 500);
+                    setFirstIsClosed(true);
+                    // setTimeout(() => setCounter(0), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.first} style={{zIndex: `${firstZindex}`}}>
@@ -225,9 +240,11 @@ const WelcomeContent = () => {
             <Grow
                 in={isShowSecond}
                 timeout={1000}
+                onEntered={() => setSecondIsClosed(false)}
                 onExited={() => {
                     changeSlide(2);
-                    setTimeout(() => setIsShowSecond(true), 500);
+                    setSecondIsClosed(true);
+                    // setTimeout(() => setIsShowSecond(true), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.second} style={{zIndex: `${secondZindex}`}}>
@@ -238,9 +255,11 @@ const WelcomeContent = () => {
             <Grow
                 in={isShowThird}
                 timeout={1000}
+                onEntered={() => setThirdIsClosed(false)}
                 onExited={() => {
                     changeSlide(3);
-                    setTimeout(() => setIsShowThird(true), 500);
+                    setThirdIsClosed(true);
+                    // setTimeout(() => setIsShowThird(true), 500);
                 }}
             >
                 <Paper elevation={9} className={classes.third} style={{zIndex: `${thirdZindex}`}}>
@@ -280,7 +299,7 @@ const WelcomeContent = () => {
                                 className={classes.slider}
                                 defaultValue={5}
                                 step={1}
-                                min={1}
+                                min={2}
                                 max={10}
                                 valueLabelDisplay="auto"
                                 color='secondary'
