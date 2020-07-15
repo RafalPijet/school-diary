@@ -161,16 +161,16 @@ const WelcomeContent = () => {
         setIsShowThird(true);
     };
 
-    const changeSlide = slideNumber => {
+    const changeSlide = async slideNumber => {
 
         if (slideNumber === 1) {
 
             if (value !== (collection.length - 1)) {
-                setFirstValue(collection[value + 1]);
+                await setFirstValue(collection[value + 1]);
                 setValue(value => value + 1);
 
             } else {
-                setFirstValue(collection[0]);
+                await setFirstValue(collection[0]);
                 setValue(0);
 
             }
@@ -180,11 +180,11 @@ const WelcomeContent = () => {
         } else if (slideNumber === 2) {
 
             if (value !== (collection.length - 1)) {
-                setSecondValue(collection[value + 1]);
+                await setSecondValue(collection[value + 1]);
                 setValue(value => value + 1);
 
             } else {
-                setSecondValue(collection[0]);
+                await setSecondValue(collection[0]);
                 setValue(0);
 
             }
@@ -194,11 +194,11 @@ const WelcomeContent = () => {
         } else {
 
             if (value !== (collection.length - 1)) {
-                setThirdValue(collection[value + 1]);
+                await setThirdValue(collection[value + 1]);
                 setValue(value => value + 1);
 
             } else {
-                setThirdValue(collection[0]);
+               await setThirdValue(collection[0]);
                 setValue(0);
             }
             setThirdZindex(top);
@@ -215,7 +215,7 @@ const WelcomeContent = () => {
         <Paper elevation={9} className={classes.root}>
             <Grow
                 in={isShowFirst}
-                timeout={1000}
+                timeout={1500}
                 onExited={() => {
                     setSlide(1)
                         .then(() => setCounter(0));
@@ -228,7 +228,7 @@ const WelcomeContent = () => {
             </Grow>
             <Grow
                 in={isShowSecond}
-                timeout={1000}
+                timeout={1500}
                 onExited={() => {
                     setSlide(2)
                         .then(() => setIsShowSecond(true));
@@ -241,7 +241,7 @@ const WelcomeContent = () => {
             </Grow>
             <Grow
                 in={isShowThird}
-                timeout={1000}
+                timeout={1500}
                 onExited={() => {
                     setSlide(3)
                         .then(() => setIsShowThird(true));
