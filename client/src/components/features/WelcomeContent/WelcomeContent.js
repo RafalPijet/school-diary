@@ -166,13 +166,13 @@ const WelcomeContent = props => {
             <Grow
                 in={isShowFirst}
                 timeout={1000}
-                onExited={() => {
+                onExited={async () => {
 
                     if (value !== (collection.length - 1)) {
-                        setFirstValue(collection[value + 1]);
+                        await setFirstValue(collection[value + 1]);
                         setValue(value => value + 1);
                     } else {
-                        setFirstValue(collection[0]);
+                        await setFirstValue(collection[0]);
                         setValue(0);
                     }
                     setFirstZindex(top);
@@ -189,13 +189,13 @@ const WelcomeContent = props => {
             <Grow
                 in={isShowSecond}
                 timeout={1000}
-                onExited={() => {
+                onExited={async () => {
 
                     if (value !== (collection.length - 1)) {
-                        setSecondValue(collection[value + 1]);
+                        await setSecondValue(collection[value + 1]);
                         setValue(value => value + 1);
                     } else {
-                        setSecondValue(collection[0]);
+                        await setSecondValue(collection[0]);
                         setValue(0);
                     }
                     setIsShowSecond(true);
@@ -212,13 +212,13 @@ const WelcomeContent = props => {
             <Grow
                 in={isShowThird}
                 timeout={1000}
-                onExited={() => {
+                onExited={async () => {
 
                     if (value !== (collection.length - 1)) {
-                        setThirdValue(collection[value + 1]);
+                        await setThirdValue(collection[value + 1]);
                         setValue(value => value + 1);
                     } else {
-                        setThirdValue(collection[0]);
+                        await setThirdValue(collection[0]);
                         setValue(0);
                     }
                     setIsShowThird(true);
@@ -245,8 +245,8 @@ const WelcomeContent = props => {
                             <IconButton
                                 size='small'
                                 onClick={() => setIsReady(!isReady)}
-                                >
-                                {isReady ? <PauseIcon fontSize='small'/> : <PlayArrowIcon fontSize='small'/> }
+                            >
+                                {isReady ? <PauseIcon fontSize='small'/> : <PlayArrowIcon fontSize='small'/>}
                             </IconButton>
                         </span>
                     </Tooltip>
