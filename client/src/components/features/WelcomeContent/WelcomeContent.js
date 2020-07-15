@@ -88,7 +88,7 @@ const collection = [
     }
 ];
 
-const WelcomeContent = props => {
+const WelcomeContent = () => {
     const top = 30;
     const between = 20;
     const bottom = 10;
@@ -161,24 +161,64 @@ const WelcomeContent = props => {
         setIsShowThird(true);
     };
 
+    const changeSlide = slideNumber => {
+
+        if (slideNumber === 1) {
+
+            if (value !== (collection.length - 1)) {
+                setFirstValue(collection[value + 1]);
+                setValue(value => value + 1);
+
+            } else {
+                setFirstValue(collection[0]);
+                setValue(0);
+
+            }
+            setFirstZindex(top);
+            setThirdZindex(between);
+            setSecondZindex(bottom);
+        } else if (slideNumber === 2) {
+
+            if (value !== (collection.length - 1)) {
+                setSecondValue(collection[value + 1]);
+                setValue(value => value + 1);
+
+            } else {
+                setSecondValue(collection[0]);
+                setValue(0);
+
+            }
+            setSecondZindex(top);
+            setFirstZindex(between);
+            setThirdZindex(bottom);
+        } else {
+
+            if (value !== (collection.length - 1)) {
+                setThirdValue(collection[value + 1]);
+                setValue(value => value + 1);
+
+            } else {
+                setThirdValue(collection[0]);
+                setValue(0);
+            }
+            setThirdZindex(top);
+            setSecondZindex(between);
+            setFirstZindex(bottom);
+        }
+    };
+
+    const setSlide = slideNumber => new Promise(resolve => resolve(
+        changeSlide(slideNumber),
+    ));
+
     return (
         <Paper elevation={9} className={classes.root}>
             <Grow
                 in={isShowFirst}
                 timeout={1000}
-                onExited={async () => {
-
-                    if (value !== (collection.length - 1)) {
-                        await setFirstValue(collection[value + 1]);
-                        setValue(value => value + 1);
-                    } else {
-                        await setFirstValue(collection[0]);
-                        setValue(0);
-                    }
-                    setFirstZindex(top);
-                    setThirdZindex(between);
-                    setSecondZindex(bottom);
-                    setCounter(0);
+                onExited={() => {
+                    setSlide(1)
+                        .then(() => setCounter(0));
                 }}
             >
                 <Paper elevation={9} className={classes.first} style={{zIndex: `${firstZindex}`}}>
@@ -189,19 +229,9 @@ const WelcomeContent = props => {
             <Grow
                 in={isShowSecond}
                 timeout={1000}
-                onExited={async () => {
-
-                    if (value !== (collection.length - 1)) {
-                        await setSecondValue(collection[value + 1]);
-                        setValue(value => value + 1);
-                    } else {
-                        await setSecondValue(collection[0]);
-                        setValue(0);
-                    }
-                    setIsShowSecond(true);
-                    setSecondZindex(top);
-                    setFirstZindex(between);
-                    setThirdZindex(bottom);
+                onExited={() => {
+                    setSlide(2)
+                        .then(() => setIsShowSecond(true));
                 }}
             >
                 <Paper elevation={9} className={classes.second} style={{zIndex: `${secondZindex}`}}>
@@ -212,19 +242,9 @@ const WelcomeContent = props => {
             <Grow
                 in={isShowThird}
                 timeout={1000}
-                onExited={async () => {
-
-                    if (value !== (collection.length - 1)) {
-                        await setThirdValue(collection[value + 1]);
-                        setValue(value => value + 1);
-                    } else {
-                        await setThirdValue(collection[0]);
-                        setValue(0);
-                    }
-                    setIsShowThird(true);
-                    setThirdZindex(top);
-                    setSecondZindex(between);
-                    setFirstZindex(bottom);
+                onExited={() => {
+                    setSlide(3)
+                        .then(() => setIsShowThird(true));
                 }}
             >
                 <Paper elevation={9} className={classes.third} style={{zIndex: `${thirdZindex}`}}>
