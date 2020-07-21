@@ -1,1 +1,1 @@
-export const API_URL = "http://localhost:8000/api";
+export const API_URL = "https://school-diary-rp.herokuapp.com/api";
