@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {API_URL} from "../config";
+import CryptoJS from 'crypto-js';
 import {
     setUser,
     setLogin,
@@ -63,8 +64,9 @@ export const loadUserByLogin = login => {
             let res = await axios.get(`${API_URL}/users/login`, {params: {email: login.email}});
 
             if (res.data !== null) {
+                let decrypted = CryptoJS.AES.decrypt(res.data.password, 'secret key 220473').toString(CryptoJS.enc.Utf8);
 
-                if (res.data.password === login.password) {
+                if (decrypted === login.password) {
                     let user = res.data;
                     user.password = '';
 
@@ -91,6 +93,7 @@ export const loadUserByLogin = login => {
 export const addUser = user => {
     return async dispatch => {
         dispatch(startRequest());
+        user.password = CryptoJS.AES.encrypt(user.password, 'secret key 220473').toString();
 
         try {
             await axios.post(`${API_URL}/users`, user);

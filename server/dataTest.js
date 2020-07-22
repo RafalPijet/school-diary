@@ -19,7 +19,7 @@ const loadTestData = async () => {
                 lastName: 'Travolta',
                 telephone: '601 234 657',
                 email: 'travolta@gmail.com',
-                password: 'qqq'
+                password: 'U2FsdGVkX1+Nqon1iHUu2YrZtHqLjGwKAAsSIbI0e0U='
             });
             const user4 = new User({
                 id: uuid.v4(),
@@ -29,7 +29,7 @@ const loadTestData = async () => {
                 lastName: 'Nicolson',
                 telephone: '501 567 345',
                 email: 'nicolson@gmail.com',
-                password: 'qqq'
+                password: 'U2FsdGVkX1+Nqon1iHUu2YrZtHqLjGwKAAsSIbI0e0U='
             });
             const user5 = new User({
                 id: uuid.v4(),
@@ -39,7 +39,7 @@ const loadTestData = async () => {
                 lastName: 'De Niro',
                 telephone: '602 123 456',
                 email: 'deniro@gmail.com',
-                password: 'qqq'
+                password: 'U2FsdGVkX1+Nqon1iHUu2YrZtHqLjGwKAAsSIbI0e0U='
             });
             const principal = new User({
                 id: uuid.v4(),
@@ -49,7 +49,7 @@ const loadTestData = async () => {
                 lastName: 'Pijet',
                 telephone: '600 391 395',
                 email: 'principal@gmail.com',
-                password: 'qqq'
+                password: 'U2FsdGVkX1+Nqon1iHUu2YrZtHqLjGwKAAsSIbI0e0U='
             });
             const student1 = new Student({
                 id: uuid.v4(),
@@ -190,7 +190,7 @@ const loadTestData = async () => {
                 lastName: 'Gahan',
                 telephone: '508 567 899',
                 email: 'david@gmail.com',
-                password: 'qqq',
+                password: 'U2FsdGVkX1+Nqon1iHUu2YrZtHqLjGwKAAsSIbI0e0U=',
                 students: []
             });
             const user3 = new User({
@@ -201,7 +201,7 @@ const loadTestData = async () => {
                 lastName: 'L.Gore',
                 telephone: '608 454 267',
                 email: 'martin@gmail.com',
-                password: 'qqq',
+                password: 'U2FsdGVkX1+Nqon1iHUu2YrZtHqLjGwKAAsSIbI0e0U=',
                 students: []
             });
             const class1 = new Class({
