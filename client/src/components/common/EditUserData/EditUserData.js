@@ -72,9 +72,15 @@ const EditUserData = props => {
     };
 
     const handleUpdate = () => {
-        let userAfterChange = data;
-        userAfterChange.id = user.id;
-        userAfterChange._id = user._id;
+        let userAfterChange = {
+            id: user.id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            telephone: data.telephone,
+            email: data.email,
+            password: data.password,
+            newPassword: data.newPassword
+        };
         updateUser(isPasswordChange, isAccept, userAfterChange);
     };
 

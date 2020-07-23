@@ -90,7 +90,7 @@ const StudentTeachersList = props => {
                         {`The parent ${user.lastName} ${user.firstName} has no any student assigned.`}
                     </Typography>
                     <Typography>Contact the principal:</Typography>
-                    <Link className={classes.email} href={'mailto:principal@gmail.com'}>principal@gmail.com</Link>
+                    <Link className={classes.email} href={'mailto:rafal.pijet@gmail.com'}>principal@gmail.com</Link>
                 </>
             }
         </Paper>

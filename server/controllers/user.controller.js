@@ -1,4 +1,5 @@
 const uuid = require('uuid');
+const cryptoJS = require('crypto-js');
 const User = require('../models/user.model');
 
 exports.getUserByLogin = async (req, res) => {
@@ -52,8 +53,10 @@ exports.updateUser = async (req, res) => {
         let resultPassword = null;
 
         if (isPassword) {
+            let dbUserPassword = cryptoJS.AES.decrypt(user.password, 'secret key 220473').toString(cryptoJS.enc.Utf8);
+            let changeUserPassword = cryptoJS.AES.decrypt(userAfterChange.password, 'secret key 220473').toString(cryptoJS.enc.Utf8);
 
-            if (user.password === userAfterChange.password) {
+            if (dbUserPassword === changeUserPassword) {
                 user.password = userAfterChange.newPassword;
                 resultPassword = 'The password has been changed. '
             }

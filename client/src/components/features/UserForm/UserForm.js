@@ -193,10 +193,11 @@ const UserForm = props => {
                     </Grid>
                 </Grid>
                 <Alert
-                    message={`${error !== null ? error : 'The user has been registered'}`}
-                    variant={`${error !== null ? 'error' : 'success'}`}
+                    message={error !== null ? error : 'The user has been registered'}
+                    variant={error !== null ? 'error' : 'success'}
                     isOpenAlert={isAlert}
                     handleCloseHandling={handleCloseHandling}
+                    duration={error !== null ? 5000 : 2000}
                 />
             </Paper>
         )

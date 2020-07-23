@@ -48,7 +48,7 @@ const MessageContent = props => {
 };
 
 const Alert = props => {
-    const {message, isOpenAlert, variant, handleCloseHandling} = props;
+    const {message, isOpenAlert, variant, handleCloseHandling, duration} = props;
     const [isOpen, setIsOpen] = useState(false);
     const classes = useStyles();
 
@@ -62,7 +62,7 @@ const Alert = props => {
                 open={isOpen}
                 anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                 TransitionComponent={SlideTransition}
-                autoHideDuration={5000}
+                autoHideDuration={duration || 5000}
                 onClose={() => setIsOpen(false)}
                 onExited={handleCloseHandling}
             >
@@ -82,7 +82,8 @@ Alert.propTypes = {
     message: PropTypes.string,
     isOpenAlert: PropTypes.bool.isRequired,
     variant: PropTypes.string.isRequired,
-    handleCloseHandling: PropTypes.func
+    handleCloseHandling: PropTypes.func,
+    duration: PropTypes.number
 };
 
 export default Alert;

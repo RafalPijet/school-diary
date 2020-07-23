@@ -657,7 +657,7 @@ export const addStudentRequest = student => {
         try {
             let res = await axios.post(`${API_URL}/student`, student);
             dispatch(setAlertSuccess(true,
-                `Student ${res.data.firstName} ${res.data.lastName} has be added.`));
+                `Student ${res.data.firstName} ${res.data.lastName} has been added.`));
             dispatch(addStudent(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
@@ -669,6 +669,13 @@ export const addStudentRequest = student => {
 export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange) => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+
+        if (isPassword) {
+            userAfterChange.password = await CryptoJS.AES.encrypt(userAfterChange.password,
+                'secret key 220473').toString();
+            userAfterChange.newPassword = await CryptoJS.AES.encrypt(userAfterChange.newPassword,
+                'secret key 220473').toString();
+        }
 
         try {
             let res = await axios.put(`${API_URL}/users`, {isPassword, isDataChange, userAfterChange});
