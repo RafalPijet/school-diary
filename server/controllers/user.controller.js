@@ -2,20 +2,30 @@ const uuid = require('uuid');
 const cryptoJS = require('crypto-js');
 const User = require('../models/user.model');
 
-exports.getUserByLogin = async (req, res) => {
+exports.getUserByLogin = async (req, res, next) => {
 
     try {
         let user = await User.findOne({"email": req.query.email});
 
+        if (!user) {
+            const error = new Error('A user with this email could not be found.');
+            error.statusCode = 401;
+            throw error;
+        }
+
         if (user.status === 'parent') {
             user.students = user.students.map(student => {
                 student.parents = [];
-                return student
-            })
+                return student;
+            });
         }
         res.status(200).json(user);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -58,7 +68,7 @@ exports.updateUser = async (req, res) => {
 
             if (dbUserPassword === changeUserPassword) {
                 user.password = userAfterChange.newPassword;
-                resultPassword = 'The password has been changed. '
+                resultPassword = 'The password has been changed. ';
             }
         }
 
@@ -67,7 +77,7 @@ exports.updateUser = async (req, res) => {
             user.lastName = userAfterChange.lastName;
             user.email = userAfterChange.email;
             user.telephone = userAfterChange.telephone;
-            resultData = `${userAfterChange.lastName} ${userAfterChange.firstName} data has been changed.`
+            resultData = `${userAfterChange.lastName} ${userAfterChange.firstName} data has been changed.`;
         }
         await user.save();
         res.status(200).json({resultData, resultPassword});
@@ -128,8 +138,8 @@ exports.getUserById = async (req, res) => {
                     birthDate: student.birthDate,
                     firstName: student.firstName,
                     lastName: student.lastName
-                }
-            })
+                };
+            });
         } else {
             result.subject = user.subject;
         }
@@ -148,7 +158,7 @@ exports.getUsers = async (req, res) => {
         let users = await User.find({status});
         let result = [];
         for (let i = users.length - 1; i > -1; i--) {
-            result = [...result, users[i]]
+            result = [...result, users[i]];
         }
         let selectedUsers = result.slice(start, start + limit);
         selectedUsers = await selectedUsers.map(user => {
@@ -160,7 +170,7 @@ exports.getUsers = async (req, res) => {
                 email: user.email,
                 telephone: user.telephone,
                 [status === 'parent' ? 'students' : 'subject']: status === 'parent' ? user.students : user.subject,
-            }
+            };
         });
         res.status(200).json(selectedUsers);
     } catch (err) {
@@ -177,7 +187,7 @@ exports.getUsersName = async (req, res) => {
             return {
                 id: user.id,
                 name: `${user.lastName} ${user.firstName}`
-            }
+            };
         });
         res.status(200).json(users);
     } catch (err) {
