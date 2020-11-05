@@ -1,11 +1,15 @@
 const uuid = require('uuid');
 const cryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const User = require('../models/user.model');
 
-exports.getUserByLogin = async (req, res, next) => {
+exports.userByLogin = async (req, res, next) => {
+
+    const {email, password} = req.body;
 
     try {
-        let user = await User.findOne({"email": req.query.email});
+        let user = await User.findOne({"email": email});
 
         if (!user) {
             const error = new Error('A user with this email could not be found.');
@@ -13,13 +17,24 @@ exports.getUserByLogin = async (req, res, next) => {
             throw error;
         }
 
+        let decrypted = cryptoJS.AES.decrypt(user.password, process.env.SECRET_KEY).toString(cryptoJS.enc.Utf8);
+    
+        if (decrypted !== password) {
+            const error = new Error('Wrong password!');
+            error.statusCode = 401;
+            throw error;
+        }
         if (user.status === 'parent') {
             user.students = user.students.map(student => {
                 student.parents = [];
                 return student;
             });
         }
-        res.status(200).json(user);
+        const token = jwt.sign({
+            email: user.email,
+            userId: user._id.toString()
+        }, process.env.PRIVATE_KEY, {expiresIn: '1h'});
+        res.status(200).json({user, token});
     } catch (err) {
         
         if (!err.statusCode) {
@@ -30,9 +45,11 @@ exports.getUserByLogin = async (req, res, next) => {
 };
 
 exports.addUser = async (req, res) => {
-
+    let newUser = req.body;
+    
     try {
-        let user = await new User(req.body);
+        newUser.password = cryptoJS.AES.encrypt(newUser.password, process.env.SECRET_KEY).toString();
+        let user = await new User(newUser);
         user.id = uuid.v4();
         res.status(200).json(await user.save());
     } catch (err) {
@@ -54,20 +71,26 @@ exports.updateParentStudents = async (req, res) => {
     }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
 
     try {
         const {isPassword, isDataChange, userAfterChange} = req.body;
         let user = await User.findOne({id: userAfterChange.id});
+
+        if (!user) {
+            const error = new Error('User not found!!!');
+            error.statusCode = 401;
+            throw error;
+        }
         let resultData = '';
         let resultPassword = null;
 
         if (isPassword) {
-            let dbUserPassword = cryptoJS.AES.decrypt(user.password, 'secret key 220473').toString(cryptoJS.enc.Utf8);
-            let changeUserPassword = cryptoJS.AES.decrypt(userAfterChange.password, 'secret key 220473').toString(cryptoJS.enc.Utf8);
-
-            if (dbUserPassword === changeUserPassword) {
-                user.password = userAfterChange.newPassword;
+            let dbUserPassword = cryptoJS.AES.decrypt(user.password, process.env.SECRET_KEY).toString(cryptoJS.enc.Utf8);
+            let changeUserPassword = await cryptoJS.AES.encrypt(userAfterChange.newPassword, process.env.SECRET_KEY).toString();
+            
+            if (dbUserPassword === userAfterChange.password) {
+                user.password = changeUserPassword;
                 resultPassword = 'The password has been changed. ';
             }
         }
@@ -82,7 +105,10 @@ exports.updateUser = async (req, res) => {
         await user.save();
         res.status(200).json({resultData, resultPassword});
     } catch (err) {
-        res.status(500).json(err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 

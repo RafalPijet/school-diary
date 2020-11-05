@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {API_URL} from "../config";
-import CryptoJS from 'crypto-js';
+import { API_URL } from "../config";
 import {
     setUser,
     setLogin,
@@ -61,31 +60,29 @@ export const loadUserByLogin = login => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/users/login`, {params: {email: login.email}});
+            let res = await axios.post(`${API_URL}/users/login`, login);
+            const { user, token } = res.data;
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', user._id.toString());
+            const remainingMilliseconds = 60 * 60 * 1000;
+            const expiryDate = new Date(
+                new Date().getTime() + remainingMilliseconds
+            );
+            localStorage.setItem('expiryDate', expiryDate.toISOString());
+            user.password = '';
 
-            if (res.data !== null) {
-                let decrypted = CryptoJS.AES.decrypt(res.data.password, 'secret key 220473').toString(CryptoJS.enc.Utf8);
-
-                if (decrypted === login.password) {
-                    let user = res.data;
-                    user.password = '';
-
-                    if (user.status === 'parent' && user.students.length) {
-                        user.students.map(student => {
-                            student.className = 'none';
-                            return student;
-                        });
-                    }
-                    await dispatch(stopRequest());
-                    await dispatch(setUser(user));
-                    await dispatch(setLogin(true));
-                    dispatch(setPath('/'));
-                } else {
-                    dispatch(errorRequest("Wrong password!"));
-                }
+            if (user.status === 'parent' && user.students.length) {
+                user.students.map(student => {
+                    student.className = 'none';
+                    return student;
+                });
             }
+            await dispatch(stopRequest());
+            await dispatch(setUser(user));
+            await dispatch(setLogin(true));
+            dispatch(setPath('/'));
         } catch (err) {
-            dispatch(errorRequest("User don't exist!!!"));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -93,7 +90,6 @@ export const loadUserByLogin = login => {
 export const addUser = user => {
     return async dispatch => {
         dispatch(startRequest());
-        user.password = CryptoJS.AES.encrypt(user.password, 'secret key 220473').toString();
 
         try {
             await axios.post(`${API_URL}/users`, user);
@@ -101,7 +97,7 @@ export const addUser = user => {
             dispatch(setPath('/login'));
         } catch (err) {
             dispatch(errorRequest(
-                `${err.message.includes('code 500') ? 'Email address already exists' : err.message}`
+                `${err.response.data.code === 11000 ? 'Email address already exists' : 'Server error!!!'}`
             ))
         }
     }
@@ -112,7 +108,7 @@ export const updateUserRequest = (id, studentsList, data) => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/users/parent/${id}`, {studentsList});
+            let res = await axios.put(`${API_URL}/users/parent/${id}`, { studentsList });
             dispatch(updateParent(res.data.id, studentsList));
             dispatch(setAlertSuccess(true,
                 `Student ${data.studentName} ${data.isAdd ?
@@ -332,7 +328,7 @@ export const loadParentByIdRequest = (id, isAdd) => {
             let parent = res.data;
 
             if (studentsId.length) {
-                let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+                let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
                 let studentsIdInClasses = resNext.data.map(item => item.id);
                 parent.students = parent.students.map(student => {
 
@@ -361,7 +357,7 @@ export const loadTeacherByIdRequest = id => {
             let res = await axios.get(`${API_URL}/users/teacher/${id}`);
             let teacher = res.data;
             let resNext = await axios.get(`${API_URL}/classes/teachers/name`,
-                {params: {teachersId: [teacher.id]}});
+                { params: { teachersId: [teacher.id] } });
 
             if (resNext.data.tutors.length) {
                 teacher.tutorClass = resNext.data.tutors[0].tutorClass
@@ -397,8 +393,8 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
             let teachers = await axios.get(`${API_URL}/users/teacher/${start}/${limit}`);
             let teachersId = teachers.data.map(teacher => teacher.id);
             let selectedTeachers = teachers.data;
-            let res = await axios.get(`${API_URL}/classes/teachers/name`, {params: {teachersId}});
-            const {teachersInClass, tutors} = res.data;
+            let res = await axios.get(`${API_URL}/classes/teachers/name`, { params: { teachersId } });
+            const { teachersInClass, tutors } = res.data;
             let tutorsId = tutors.map(tutor => tutor.tutorId);
             await selectedTeachers.forEach(teacher => {
                 let teacherClasses = [];
@@ -453,7 +449,7 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
             });
 
             if (studentsId.length) {
-                let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+                let res = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
                 classNames = res.data;
                 studentsInClassesId = classNames.map(item => item.id);
             }
@@ -550,7 +546,7 @@ export const getStudentByIdRequest = id => {
             let res = await axios.get(`${API_URL}/student/${id}`);
             let studentsId = [id];
             let student = res.data;
-            let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+            let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
 
             if (resNext.data.length) {
                 student.className = resNext.data[0].name;
@@ -575,7 +571,7 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
             let limit = itemsPerPage;
             let res = await axios.get(`${API_URL}/students/${start}/${limit}`);
             let studentsId = res.data.map(item => item.id);
-            let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+            let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
             await res.data.forEach(student => {
                 resNext.data.forEach(item => {
 
@@ -641,7 +637,7 @@ export const getStudentsByIdRequest = studentsId => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/students/select`, {params: {studentsId}});
+            let res = await axios.get(`${API_URL}/students/select`, { params: { studentsId } });
             dispatch(setFreeStudents(res.data));
             dispatch(stopUpdatingRequest());
         } catch (err) {
@@ -670,15 +666,8 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
     return async dispatch => {
         dispatch(startUpdatingRequest());
 
-        if (isPassword) {
-            userAfterChange.password = await CryptoJS.AES.encrypt(userAfterChange.password,
-                'secret key 220473').toString();
-            userAfterChange.newPassword = await CryptoJS.AES.encrypt(userAfterChange.newPassword,
-                'secret key 220473').toString();
-        }
-
         try {
-            let res = await axios.put(`${API_URL}/users`, {isPassword, isDataChange, userAfterChange});
+            let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange });
 
             if (isDataChange) {
                 dispatch(updateUserData(userAfterChange));
@@ -703,7 +692,7 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
             }
             dispatch(stopUpdatingRequest())
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response.data.message));
         }
     }
 };
@@ -713,11 +702,11 @@ export const updateStudentRequest = (id, parent, isAdd) => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/student/parents/${id}`, {parent: parent, isAdd});
+            let res = await axios.put(`${API_URL}/student/parents/${id}`, { parent: parent, isAdd });
 
             if (isAdd) {
                 let studentsId = [res.data.studentId];
-                let resNext = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+                let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
 
                 if (resNext.data.length) {
                     dispatch(updateParentStudentClassName(parent.id, res.data.studentId, resNext.data[0].name));
@@ -760,7 +749,7 @@ export const deleteStudentRequest = studentId => {
 
             if (res.data.ratings.length) {
                 await axios.delete(`${API_URL}/ratings`,
-                    {data: {ratingsId: res.data.ratings}})
+                    { data: { ratingsId: res.data.ratings } })
             }
             dispatch(getStudentsNamesRequest());
             dispatch(getStudentsWithRangeRequest(1, 5));
@@ -777,8 +766,8 @@ export const addSubjectRating = (student, subject) => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.post(`${API_URL}/rating`, {studentId: student.id, subject});
-            await axios.post(`${API_URL}/student/subject`, {id: student.id, rating: res.data});
+            let res = await axios.post(`${API_URL}/rating`, { studentId: student.id, subject });
+            await axios.post(`${API_URL}/student/subject`, { id: student.id, rating: res.data });
             let studentAfterChange = student;
             studentAfterChange.ratings = [...studentAfterChange.ratings, res.data];
             dispatch(updateStudentInTeacherClass(studentAfterChange));
@@ -794,7 +783,7 @@ export const getTeacherStudentsNameRequest = classesId => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/classes/teacher/students`, {params: {classesId}});
+            let res = await axios.get(`${API_URL}/classes/teacher/students`, { params: { classesId } });
             dispatch(loadAllStudents(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {
@@ -809,7 +798,7 @@ export const getTeacherStudentsByIdRequest = students => {
 
         try {
             let studentsId = students.map(student => student.id);
-            let res = await axios.get(`${API_URL}//students/teacher`, {params: {studentsId}});
+            let res = await axios.get(`${API_URL}//students/teacher`, { params: { studentsId } });
             let result = [];
 
             if (res.data.length) {
@@ -841,7 +830,7 @@ export const getClassNameForStudentByIdRequest = studentsId => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/classes/students/name`, {params: {studentsId}});
+            let res = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
             let names = res.data;
 
             if (names.length) {
@@ -861,7 +850,7 @@ export const getTeachersByClassNameRequest = name => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/class/teachers`, {params: {name}});
+            let res = await axios.get(`${API_URL}/class/teachers`, { params: { name } });
             dispatch(setSelectedClass(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
 
-router.get('/users/login', userController.getUserByLogin);
+router.post('/users/login', userController.userByLogin);
 router.post('/users', userController.addUser);
 router.put('/users', userController.updateUser);
 router.put('/users/parent/:id', userController.updateParentStudents);

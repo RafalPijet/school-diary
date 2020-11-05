@@ -63,6 +63,9 @@ const Logout = props => {
             setSelectedClass({});
             setPath('/');
             clearInterval(timer);
+            localStorage.removeItem('token');
+            localStorage.removeItem('expiryDate');
+            localStorage.removeItem('userId');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
