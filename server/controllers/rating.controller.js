@@ -26,29 +26,48 @@ exports.addNewRatingById = async (req, res) => {
     }
 };
 
-exports.updateRatingById = async (req, res) => {
+exports.updateRatingById = async (req, res, next) => {
 
     try {
         const {id} = req.params;
         let rating = await Rating.findOne({"id": id});
+
+        if (!rating) {
+            const error = new Error("Couldn't find a grades collection");
+            error.statusCode = 401;
+            throw error;
+        }
         rating.ratings = rating.ratings.map(item => {
             return (item._id.toString() === req.body._id) ? req.body : item;
         });
         res.status(200).json(await rating.save());
     } catch (err) {
-        res.status(500).json(err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.deleteRatingById = async (req, res) => {
+exports.deleteRatingById = async (req, res, next) => {
 
     try {
         const {id, _id} = req.params;
         let rating = await Rating.findOne({"id": id});
+
+        if (!rating) {
+            const error = new Error("Couldn't find a grades collection");
+            error.statusCode = 401;
+            throw error;
+        }
         rating.ratings = rating.ratings.filter(item => item._id.toString() !== _id);
         res.status(200).json(await rating.save());
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -56,7 +75,7 @@ exports.deleteRating = async (req, res) => {
 
     try {
         const {ratingsId} = req.body;
-        res.status(200).json(await Rating.remove({id: ratingsId}))
+        res.status(200).json(await Rating.remove({id: ratingsId}));
     } catch (err) {
         res.status(500).json(err);
     }

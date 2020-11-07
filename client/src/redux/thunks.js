@@ -108,14 +108,18 @@ export const updateUserRequest = (id, studentsList, data) => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/users/parent/${id}`, { studentsList });
+            let res = await axios.put(`${API_URL}/users/parent/${id}`, { studentsList }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(updateParent(res.data.id, studentsList));
             dispatch(setAlertSuccess(true,
                 `Student ${data.studentName} ${data.isAdd ?
                     'has been assigned' : 'is no longer assigned'} to a parent ${data.parentName}.`));
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -125,13 +129,17 @@ export const deleteParentRequest = (id, page) => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.delete(`${API_URL}/users/${id}`);
+            let res = await axios.delete(`${API_URL}/users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(removeUserName(id));
             await dispatch(loadParentsRequestWithRange(page + 1, 7));
             dispatch(setAlertSuccess(true, `Parent ${res.data.name} has been removed.`));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -141,13 +149,17 @@ export const deleteTeacherRequest = (id, page, rowsPerPage) => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.delete(`${API_URL}/users/${id}`);
+            let res = await axios.delete(`${API_URL}/users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(removeUserName(id));
             await dispatch(loadTeachersRequestWithRange(page + 1, rowsPerPage));
             dispatch(setAlertSuccess(true, `Teacher ${res.data.name} has been removed.`));
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -157,11 +169,15 @@ export const loadAllClassesRequest = () => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/class`);
+            let res = await axios.get(`${API_URL}/class`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(loadAllClasses(res.data));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -171,7 +187,11 @@ export const loadStudentsIdFromClasses = () => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/classes/students`);
+            let res = await axios.get(`${API_URL}/classes/students`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setClassesStudents(res.data));
             dispatch(stopUpdatingRequest());
         } catch (err) {
@@ -185,11 +205,16 @@ export const loadAllClassByTeacherId = teacherId => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/classes/${teacherId}`);
+            let res = await axios.get(`${API_URL}/classes/${teacherId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             dispatch(loadClassByTeacher(res.data));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message))
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
         }
     }
 };
@@ -199,11 +224,15 @@ export const loadClassById = id => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/class/${id}`);
+            let res = await axios.get(`${API_URL}/class/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setSelectedClass(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -213,11 +242,16 @@ export const loadDataForClassByIdRequest = id => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/class/principal/${id}`);
+            let res = await axios.get(`${API_URL}/class/principal/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             dispatch(updateDataInSelectedClass(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -227,7 +261,11 @@ export const updateTutorClassRequest = classItem => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/class/tutor`, classItem);
+            let res = await axios.put(`${API_URL}/class/tutor`, classItem, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setAlertSuccess(true,
                 `${res.data.name} tutor has been changed to ${res.data.mainTeacher.lastName}
                  ${res.data.mainTeacher.firstName}`));
@@ -236,7 +274,7 @@ export const updateTutorClassRequest = classItem => {
             dispatch(setTutorIsUse(true));
             dispatch(stopUpdatingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -246,7 +284,11 @@ export const updateClassRequest = classItem => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/class`, classItem);
+            let res = await axios.put(`${API_URL}/class`, classItem, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setAlertSuccess(true,
                 `${classItem.isStudents ?
                     'Students' : 'Teachers'} list of ${res.data} has been changed.`));
@@ -256,7 +298,7 @@ export const updateClassRequest = classItem => {
                 classItem.isStudents ? classItem.students : classItem.subjectTeachers));
             dispatch(stopUpdatingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -266,11 +308,15 @@ export const addRatingForStudent = (classId, dataPackage) => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
+            let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(addRatingToStudent(classId, res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message))
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
         }
     }
 };
@@ -280,11 +326,15 @@ export const updateRatingForStudent = dataPackage => {
         dispatch(startWorkingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating);
+            let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(updateRatingToStudent(dataPackage.classId, dataPackage.studentId, res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -294,11 +344,15 @@ export const deleteRatingForStudent = (id, _id, classId, studentId) => {
         dispatch(startWorkingRequest());
 
         try {
-            let res = await axios.delete(`${API_URL}/ratings/${id}/${_id}`);
+            let res = await axios.delete(`${API_URL}/ratings/${id}/${_id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(updateRatingToStudent(classId, studentId, res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -309,11 +363,15 @@ export const loadTeachersRequest = () => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            let res = await axios.get(`${API_URL}/users/teachers`);
+            let res = await axios.get(`${API_URL}/users/teachers`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(loadTeachers(res.data));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -323,12 +381,22 @@ export const loadParentByIdRequest = (id, isAdd) => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/users/parent/${id}`);
+            let res = await axios.get(`${API_URL}/users/parent/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             let studentsId = res.data.students.map(student => student.id);
             let parent = res.data;
 
             if (studentsId.length) {
-                let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
+                let resNext = await axios.get(`${API_URL}/classes/students/name`,
+                    {
+                        params: { studentsId },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
                 let studentsIdInClasses = resNext.data.map(item => item.id);
                 parent.students = parent.students.map(student => {
 
@@ -344,7 +412,7 @@ export const loadParentByIdRequest = (id, isAdd) => {
             isAdd ? dispatch(addParent(parent)) : dispatch(loadParents([parent]));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -354,10 +422,19 @@ export const loadTeacherByIdRequest = id => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/users/teacher/${id}`);
+            let res = await axios.get(`${API_URL}/users/teacher/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             let teacher = res.data;
             let resNext = await axios.get(`${API_URL}/classes/teachers/name`,
-                { params: { teachersId: [teacher.id] } });
+                {
+                    params: { teachersId: [teacher.id] },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
 
             if (resNext.data.tutors.length) {
                 teacher.tutorClass = resNext.data.tutors[0].tutorClass
@@ -378,7 +455,7 @@ export const loadTeacherByIdRequest = id => {
             dispatch(loadTeachers([teacher]));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -390,10 +467,20 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
         try {
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
-            let teachers = await axios.get(`${API_URL}/users/teacher/${start}/${limit}`);
+            let teachers = await axios.get(`${API_URL}/users/teacher/${start}/${limit}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             let teachersId = teachers.data.map(teacher => teacher.id);
             let selectedTeachers = teachers.data;
-            let res = await axios.get(`${API_URL}/classes/teachers/name`, { params: { teachersId } });
+            let res = await axios.get(`${API_URL}/classes/teachers/name`,
+                {
+                    params: { teachersId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             const { teachersInClass, tutors } = res.data;
             let tutorsId = tutors.map(tutor => tutor.tutorId);
             await selectedTeachers.forEach(teacher => {
@@ -419,7 +506,7 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
             dispatch(loadTeachers(selectedTeachers));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -433,7 +520,11 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
             let classNames = [];
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
-            let parents = await axios.get(`${API_URL}/users/parent/${start}/${limit}`);
+            let parents = await axios.get(`${API_URL}/users/parent/${start}/${limit}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             const allStudents = store.getState().students.allStudents;
             let studentsId = [];
             await parents.data.forEach(parent => {
@@ -449,7 +540,13 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
             });
 
             if (studentsId.length) {
-                let res = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
+                let res = await axios.get(`${API_URL}/classes/students/name`,
+                    {
+                        params: { studentsId },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
                 classNames = res.data;
                 studentsInClassesId = classNames.map(item => item.id);
             }
@@ -469,7 +566,7 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
             dispatch(loadParents(allParents));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -479,7 +576,11 @@ export const addClassRequest = payload => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.post(`${API_URL}/class`, payload);
+            let res = await axios.post(`${API_URL}/class`, payload, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             let newClass = res.data;
             newClass.mainTeacher = payload.mainTeacher;
             dispatch(addNewClass(newClass));
@@ -487,7 +588,7 @@ export const addClassRequest = payload => {
             dispatch(setTutorIsUse(true));
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message))
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
         }
     }
 };
@@ -497,7 +598,11 @@ export const deleteClassByIdRequest = id => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.delete(`${API_URL}/class/${id}`);
+            let res = await axios.delete(`${API_URL}/class/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setAlertSuccess(true, `${res.data.name} has been removed.`));
             await dispatch(deleteClassInAllClasses(id));
             await dispatch(loadStudentsIdFromClasses());
@@ -505,7 +610,7 @@ export const deleteClassByIdRequest = id => {
             dispatch(setIsStudentMode(true));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -515,11 +620,15 @@ export const getAllStudentsRequest = () => {
         dispatch(startWorkingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/students`);
+            let res = await axios.get(`${API_URL}/students`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(loadAllStudents(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -529,11 +638,15 @@ export const getUsersNameRequest = status => {
         dispatch(startWorkingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/users/name/${status}`);
+            let res = await axios.get(`${API_URL}/users/name/${status}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(loadUsersName(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -543,10 +656,20 @@ export const getStudentByIdRequest = id => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/student/${id}`);
+            let res = await axios.get(`${API_URL}/student/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             let studentsId = [id];
             let student = res.data;
-            let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
+            let resNext = await axios.get(`${API_URL}/classes/students/name`,
+                {
+                    params: { studentsId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
 
             if (resNext.data.length) {
                 student.className = resNext.data[0].name;
@@ -556,7 +679,7 @@ export const getStudentByIdRequest = id => {
             dispatch(loadAllStudents([student]));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -569,9 +692,20 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
             let result = [];
             let start = Math.ceil((page - 1) * itemsPerPage);
             let limit = itemsPerPage;
-            let res = await axios.get(`${API_URL}/students/${start}/${limit}`);
+            let res = await axios.get(`${API_URL}/students/${start}/${limit}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             let studentsId = res.data.map(item => item.id);
-            let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
+            let resNext = await axios.get(`${API_URL}/classes/students/name`,
+                {
+                    params: { studentsId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             await res.data.forEach(student => {
                 resNext.data.forEach(item => {
 
@@ -599,7 +733,7 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
             dispatch(loadAllStudents(result));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -609,11 +743,15 @@ export const getStudentsNamesRequest = () => {
         dispatch(startWorkingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/students/names`);
+            let res = await axios.get(`${API_URL}/students/names`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setFreeStudents(res.data));
             dispatch(stopWorkingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -623,11 +761,15 @@ export const getStudentsIdRequest = () => {
         dispatch(startRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/students/onlyid`);
+            let res = await axios.get(`${API_URL}/students/onlyid`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(loadAllStudents(res.data));
             dispatch(stopRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -637,11 +779,17 @@ export const getStudentsByIdRequest = studentsId => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/students/select`, { params: { studentsId } });
+            let res = await axios.get(`${API_URL}/students/select`,
+                {
+                    params: { studentsId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             dispatch(setFreeStudents(res.data));
             dispatch(stopUpdatingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -651,13 +799,17 @@ export const addStudentRequest = student => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.post(`${API_URL}/student`, student);
+            let res = await axios.post(`${API_URL}/student`, student, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(setAlertSuccess(true,
                 `Student ${res.data.firstName} ${res.data.lastName} has been added.`));
             dispatch(addStudent(res.data));
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -667,7 +819,12 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange });
+            let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange }, 
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
 
             if (isDataChange) {
                 dispatch(updateUserData(userAfterChange));
@@ -692,7 +849,7 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
             }
             dispatch(stopUpdatingRequest())
         } catch (err) {
-            dispatch(errorRequest(err.response.data.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -702,11 +859,22 @@ export const updateStudentRequest = (id, parent, isAdd) => {
         dispatch(startAddingRequest());
 
         try {
-            let res = await axios.put(`${API_URL}/student/parents/${id}`, { parent: parent, isAdd });
+            let res = await axios.put(`${API_URL}/student/parents/${id}`, { parent: parent, isAdd },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
 
             if (isAdd) {
                 let studentsId = [res.data.studentId];
-                let resNext = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
+                let resNext = await axios.get(`${API_URL}/classes/students/name`,
+                    {
+                        params: { studentsId },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
 
                 if (resNext.data.length) {
                     dispatch(updateParentStudentClassName(parent.id, res.data.studentId, resNext.data[0].name));
@@ -716,7 +884,7 @@ export const updateStudentRequest = (id, parent, isAdd) => {
             }
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -730,12 +898,17 @@ export const updateStudentBasicDataRequest = student => {
                 {
                     id: student.id, firstName: student.firstName,
                     lastName: student.lastName, birthDate: student.birthDate
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
                 });
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} data has been changed.`));
             dispatch(updateStudent(student));
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -745,18 +918,27 @@ export const deleteStudentRequest = studentId => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.delete(`${API_URL}/student/${studentId}`);
+            let res = await axios.delete(`${API_URL}/student/${studentId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
 
             if (res.data.ratings.length) {
                 await axios.delete(`${API_URL}/ratings`,
-                    { data: { ratingsId: res.data.ratings } })
+                    {
+                        data: { ratingsId: res.data.ratings },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
             }
             dispatch(getStudentsNamesRequest());
             dispatch(getStudentsWithRangeRequest(1, 5));
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} has been removed.`));
             dispatch(stopUpdatingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -766,14 +948,23 @@ export const addSubjectRating = (student, subject) => {
         dispatch(startUpdatingRequest());
 
         try {
-            let res = await axios.post(`${API_URL}/rating`, { studentId: student.id, subject });
-            await axios.post(`${API_URL}/student/subject`, { id: student.id, rating: res.data });
+            let res = await axios.post(`${API_URL}/rating`, { studentId: student.id, subject }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            await axios.post(`${API_URL}/student/subject`, { id: student.id, rating: res.data },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             let studentAfterChange = student;
             studentAfterChange.ratings = [...studentAfterChange.ratings, res.data];
             dispatch(updateStudentInTeacherClass(studentAfterChange));
             dispatch(stopUpdatingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message))
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
         }
     }
 };
@@ -783,11 +974,16 @@ export const getTeacherStudentsNameRequest = classesId => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/classes/teacher/students`, { params: { classesId } });
+            let res = await axios.get(`${API_URL}/classes/teacher/students`, {
+                params: { classesId },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             dispatch(loadAllStudents(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -798,7 +994,13 @@ export const getTeacherStudentsByIdRequest = students => {
 
         try {
             let studentsId = students.map(student => student.id);
-            let res = await axios.get(`${API_URL}//students/teacher`, { params: { studentsId } });
+            let res = await axios.get(`${API_URL}/students/teacher`,
+                {
+                    params: { studentsId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             let result = [];
 
             if (res.data.length) {
@@ -820,7 +1022,7 @@ export const getTeacherStudentsByIdRequest = students => {
             dispatch(setClassesStudents(result));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -830,7 +1032,13 @@ export const getClassNameForStudentByIdRequest = studentsId => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/classes/students/name`, { params: { studentsId } });
+            let res = await axios.get(`${API_URL}/classes/students/name`,
+                {
+                    params: { studentsId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             let names = res.data;
 
             if (names.length) {
@@ -840,7 +1048,7 @@ export const getClassNameForStudentByIdRequest = studentsId => {
             }
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };
@@ -850,11 +1058,17 @@ export const getTeachersByClassNameRequest = name => {
         dispatch(startGetingRequest());
 
         try {
-            let res = await axios.get(`${API_URL}/class/teachers`, { params: { name } });
+            let res = await axios.get(`${API_URL}/class/teachers`,
+                {
+                    params: { name },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
             dispatch(setSelectedClass(res.data));
             dispatch(stopGetingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.message));
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
     }
 };

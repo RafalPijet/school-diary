@@ -57,17 +57,27 @@ exports.addUser = async (req, res) => {
     }
 };
 
-exports.updateParentStudents = async (req, res) => {
+exports.updateParentStudents = async (req, res, next) => {
 
     try {
         const {id} = req.params;
         const {studentsList} = req.body;
         let user = await User.findOne({id});
+
+        if (!user) {
+            const error = new Error("Couldn't find some parent");
+            error.statusCode = 401;
+            throw error;
+        }
         user.students = studentsList;
         await user.save();
         res.status(200).json({id: user.id});
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -105,6 +115,7 @@ exports.updateUser = async (req, res, next) => {
         await user.save();
         res.status(200).json({resultData, resultPassword});
     } catch (err) {
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -112,21 +123,37 @@ exports.updateUser = async (req, res, next) => {
     }
 };
 
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
 
     try {
         let user = await User.findOne({id: req.params.id});
+
+        if (!user) {
+            const error = new Error('User not found!!!');
+            error.statusCode = 401;
+            throw error;
+        }
         user.remove();
         res.status(200).json({name: `${user.lastName} ${user.firstName}`});
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.getTeachers = async (req, res) => {
+exports.getTeachers = async (req, res, next) => {
 
     try {
         let teachers = await User.find({status: 'teacher'});
+
+        if (!teachers.length) {
+            const error = new Error("Couldn't find any teachers");
+            error.statusCode = 401;
+            throw error;
+        }
         teachers = teachers.map(teacher => {
             return {
                 _id: teacher._id,
@@ -138,15 +165,25 @@ exports.getTeachers = async (req, res) => {
         });
         res.status(200).json(teachers);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res, next) => {
 
     try {
         const {id, status} = req.params;
         let user = await User.findOne({id});
+
+        if (!user) {
+            const error = new Error(`Couldn't find some ${status}.`);
+            error.statusCode = 401;
+            throw error;
+        }
         let result = {
             id: user.id,
             _id: user._id,
@@ -171,17 +208,27 @@ exports.getUserById = async (req, res) => {
         }
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (req, res, next) => {
 
     try {
         let {start, limit, status} = req.params;
         start = parseInt(start);
         limit = parseInt(limit);
         let users = await User.find({status});
+
+        if (!users.length) {
+            const error = new Error(`Couldn't find some ${status}`);
+            error.statusCode = 401;
+            throw error;
+        }
         let result = [];
         for (let i = users.length - 1; i > -1; i--) {
             result = [...result, users[i]];
@@ -200,15 +247,25 @@ exports.getUsers = async (req, res) => {
         });
         res.status(200).json(selectedUsers);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.getUsersName = async (req, res) => {
+exports.getUsersName = async (req, res, next) => {
 
     try {
         const {status} = req.params;
         let users = await User.find({status});
+
+        if (!users.length) {
+            const error = new Error(`Couldn't find any ${status}s`);
+            error.statusCode = 401;
+            throw error;
+        }
         users = users.map(user => {
             return {
                 id: user.id,
@@ -217,6 +274,10 @@ exports.getUsersName = async (req, res) => {
         });
         res.status(200).json(users);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };

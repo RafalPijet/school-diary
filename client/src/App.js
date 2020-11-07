@@ -1,8 +1,8 @@
-import React from 'react';
-import {Switch, Route} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {getLogin, getUser} from "./redux/actions/usersActions";
-import {getIsDark} from "./redux/actions/valuesActions";
+import React, { useEffect } from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getLogin, getUser } from "./redux/actions/usersActions";
+import { getIsDark } from "./redux/actions/valuesActions";
 import MainLayout from './components/layouts/MainLayout/MainLayout';
 import Welcome from './components/pages/Welcome/Welcome';
 import Login from './components/pages/Login/Login';
@@ -23,18 +23,32 @@ import StudentTeachers from "./components/pages/StudentTeachers/StudentTeachers"
 import Logout from './components/pages/Logout/Logout';
 
 const App = props => {
-    const {isLogin, loggedUser, isDark} = props;
+    const { isLogin, loggedUser, isDark } = props;
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const expiryDate = localStorage.getItem('expiryDate');
+        console.log(token);
+        console.log(expiryDate);
+        
+        if (!token || !expiryDate) {
+            return;
+          }
+        console.log(isLogin);
+        console.log(loggedUser);
+        console.log(isDark);
+    }, [isDark, isLogin, loggedUser]);
 
     if (isLogin && loggedUser.status === 'parent') {
         return (
             <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                 <Switch>
-                    <Route path='/' exact component={Home}/>
-                    <Route path='/grades' exact component={StudentRatings}/>
-                    <Route path='/data' exact component={StudentData}/>
-                    <Route path='/teachers' exact component={StudentTeachers}/>
-                    <Route path='/logout' exact component={Logout}/>
-                    <Route component={PageNotFound}/>
+                    <Route path='/' exact component={Home} />
+                    <Route path='/grades' exact component={StudentRatings} />
+                    <Route path='/data' exact component={StudentData} />
+                    <Route path='/teachers' exact component={StudentTeachers} />
+                    <Route path='/logout' exact component={Logout} />
+                    <Route component={PageNotFound} />
                 </Switch>
             </MainLayout>
         )
@@ -42,11 +56,11 @@ const App = props => {
         return (
             <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                 <Switch>
-                    <Route path='/' exact component={HomeTeacher}/>
-                    <Route path='/diaries' exact component={ClassDiaries}/>
-                    <Route path='/data' exact component={TeacherData}/>
-                    <Route path='/logout' exact component={Logout}/>
-                    <Route component={PageNotFound}/>
+                    <Route path='/' exact component={HomeTeacher} />
+                    <Route path='/diaries' exact component={ClassDiaries} />
+                    <Route path='/data' exact component={TeacherData} />
+                    <Route path='/logout' exact component={Logout} />
+                    <Route component={PageNotFound} />
                 </Switch>
             </MainLayout>
         )
@@ -54,15 +68,15 @@ const App = props => {
         return (
             <MainLayout isLogin={isLogin} loggedUser={loggedUser} isDark={isDark}>
                 <Switch>
-                    <Route path='/' exact component={HomePrincipal}/>
-                    <Route path='/classes' exact component={Classes}/>
-                    <Route path='/teachers' exact component={Teachers}/>
-                    <Route path='/students' exact component={Students}/>
+                    <Route path='/' exact component={HomePrincipal} />
+                    <Route path='/classes' exact component={Classes} />
+                    <Route path='/teachers' exact component={Teachers} />
+                    <Route path='/students' exact component={Students} />
                     <Route path='/parents'>
-                        <Parents/>
+                        <Parents />
                     </Route>
-                    <Route path='/logout' exact component={Logout}/>
-                    <Route component={PageNotFound}/>
+                    <Route path='/logout' exact component={Logout} />
+                    <Route component={PageNotFound} />
                 </Switch>
             </MainLayout>
         )
@@ -70,10 +84,10 @@ const App = props => {
         return (
             <MainLayout isLogin={isLogin} isDark={isDark}>
                 <Switch>
-                    <Route path='/' exact component={Welcome}/>
-                    <Route path='/login' exact component={Login}/>
-                    <Route path='/registration' exact component={Registration}/>
-                    <Route component={PageNotFound}/>
+                    <Route path='/' exact component={Welcome} />
+                    <Route path='/login' exact component={Login} />
+                    <Route path='/registration' exact component={Registration} />
+                    <Route component={PageNotFound} />
                 </Switch>
             </MainLayout>
         );

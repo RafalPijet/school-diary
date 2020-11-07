@@ -1,11 +1,17 @@
 const Student = require('../models/student.model');
 const uuid = require('uuid');
 
-exports.getStudentById = async (req, res) => {
+exports.getStudentById = async (req, res, next) => {
 
     try {
         const {id} = req.params;
         let student = await Student.findOne({id});
+
+        if (!student) {
+            const error = new Error("Couldn't find some student");
+            error.statusCode = 401;
+            throw error;
+        }
         let selectedStudent = {
             id: student.id,
             firstName: student.firstName,
@@ -15,15 +21,25 @@ exports.getStudentById = async (req, res) => {
         };
         res.status(200).json(selectedStudent);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.getStudentsById = async (req, res) => {
+exports.getStudentsById = async (req, res, next) => {
 
     try {
         const {studentsId} = req.query;
         let result = await Student.find({id: studentsId});
+
+        if (!result.length) {
+            const error = new Error("Couldn't find any students");
+            error.statusCode = 401;
+            throw error;
+        }
         result = result.map(student => {
             student.ratings = [];
             student.parents = [];
@@ -31,7 +47,11 @@ exports.getStudentsById = async (req, res) => {
         });
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -69,7 +89,7 @@ exports.getStudentsNames = async (req, res) => {
             return {
                 id: item.id,
                 name: `${item.lastName} ${item.firstName}`
-            }
+            };
         });
         res.status(200).json(result);
     } catch (err) {
@@ -86,7 +106,7 @@ exports.getStudentsWithRange = async (req, res) => {
         let students = await Student.find();
         let result = [];
         for (let i = students.length - 1; i > -1; i--) {
-            result = [...result, students[i]]
+            result = [...result, students[i]];
         }
         let selectedStudents = result.slice(start, start + limit);
         selectedStudents = selectedStudents.map(student => {
@@ -96,7 +116,7 @@ exports.getStudentsWithRange = async (req, res) => {
                 lastName: student.lastName,
                 birthDate: student.birthDate,
                 parents: student.parents.map(parent => parent.id)
-            }
+            };
         });
         res.status(200).json(selectedStudents);
     } catch (err) {
@@ -104,11 +124,17 @@ exports.getStudentsWithRange = async (req, res) => {
     }
 };
 
-exports.getTeacherStudentsById = async (req, res) => {
-
+exports.getTeacherStudentsById = async (req, res, next) => {
+    
     try {
         const {studentsId} = req.query;
         let students = await Student.find({id: studentsId});
+
+        if (!students.length) {
+            const error = new Error("Couldn't find any students");
+            error.statusCode = 401;
+            throw error;
+        }
         let result = students.map(student => {
             return {
                 id: student.id,
@@ -118,13 +144,17 @@ exports.getTeacherStudentsById = async (req, res) => {
                         name: `${parent.lastName} ${parent.firstName}`,
                         phone: parent.telephone,
                         email: parent.email
-                    }
+                    };
                 })
-            }
+            };
         });
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -139,12 +169,18 @@ exports.addStudent = async (req, res) => {
     }
 };
 
-exports.updateStudentParents = async (req, res) => {
+exports.updateStudentParents = async (req, res, next) => {
 
     try {
         const {id} = req.params;
         const {parent, isAdd} = req.body;
         let student = await Student.findOne({id});
+
+        if (!student) {
+            const error = new Error("Couldn't find some student");
+            error.statusCode = 401;
+            throw error;
+        }
 
         if (isAdd) {
             student.parents = [...student.parents, parent];
@@ -154,47 +190,81 @@ exports.updateStudentParents = async (req, res) => {
         await student.save();
         res.status(200).json({studentId: student.id});
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.updateStudentBasicData = async (req, res) => {
+exports.updateStudentBasicData = async (req, res, next) => {
 
     try {
         const {id, firstName, lastName, birthDate} = req.body;
         let student = await Student.findOne({id});
+
+        if (!student) {
+            const error = new Error("Couldn't find some student");
+            error.statusCode = 401;
+            throw error;
+        }
         student.firstName = firstName;
         student.lastName = lastName;
         student.birthDate = birthDate;
         await student.save();
         res.status(200).json({studentName: `${student.firstName} ${student.lastName}`});
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.addSubjectToStudent = async (req, res) => {
+exports.addSubjectToStudent = async (req, res, next) => {
 
     try {
         const {id, rating} = req.body;
         let student = await Student.findOne({id});
+
+        if (!student) {
+            const error = new Error("Couldn't find some student");
+            error.statusCode = 401;
+            throw error;
+        }
         student.ratings = [...student.ratings, rating];
         res.status(200).json(await student.save());
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
-exports.deleteStudent = async (req, res) => {
+exports.deleteStudent = async (req, res, next) => {
 
     try {
         let student = await Student.findOne({id: req.params.id});
+
+        if (!student) {
+            const error = new Error("Couldn't find student to remove");
+            error.statusCode = 401;
+            throw error;
+        }
         await student.remove();
         res.status(200).json({
             studentName: `${student.lastName} ${student.firstName}`,
             ratings: student.ratings.map(rating => rating.id)
         });
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };

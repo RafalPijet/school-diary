@@ -25,14 +25,16 @@ const buttonsData = [
     }
 ];
 
-const HomeTeacher = () => (
-    <div>
-        <PageTitle>Teacher's Zone</PageTitle>
-        <UserWelcome
-            userType='teacher'
-            buttons={buttonsData}
-        />
-    </div>
-);
+const HomeTeacher = () => {
+    return (
+        <div>
+            <PageTitle>Teacher's Zone</PageTitle>
+            <UserWelcome
+                userType='teacher'
+                buttons={buttonsData}
+            />
+        </div>
+    )
+};
 
 export default HomeTeacher;
