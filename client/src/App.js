@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getLogin, getUser } from "./redux/actions/usersActions";
+import { Redirect } from "react-router";
+import { getLogin, getUser, setLogin } from "./redux/actions/usersActions";
 import { getIsDark } from "./redux/actions/valuesActions";
 import MainLayout from './components/layouts/MainLayout/MainLayout';
 import Welcome from './components/pages/Welcome/Welcome';
@@ -21,23 +22,33 @@ import Students from './components/pages/Students/Students';
 import Parents from './components/pages/Parents/Parents';
 import StudentTeachers from "./components/pages/StudentTeachers/StudentTeachers";
 import Logout from './components/pages/Logout/Logout';
+import { loadUserById } from './redux/thunks';
 
 const App = props => {
-    const { isLogin, loggedUser, isDark } = props;
+    const { isLogin, loggedUser, isDark, setLogin, loadUserById } = props;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         const expiryDate = localStorage.getItem('expiryDate');
-        console.log(token);
-        console.log(expiryDate);
-        
+        const userId = localStorage.getItem('userId');
+
         if (!token || !expiryDate) {
             return;
-          }
-        console.log(isLogin);
-        console.log(loggedUser);
-        console.log(isDark);
-    }, [isDark, isLogin, loggedUser]);
+        }
+
+        if (new Date(expiryDate) <= new Date()) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('expiryDate');
+            setLogin(false);
+            return;
+        }
+
+        if (!isLogin && userId) {
+            loadUserById(userId);
+        }
+        
+    }, [isLogin]);
 
     if (isLogin && loggedUser.status === 'parent') {
         return (
@@ -83,6 +94,7 @@ const App = props => {
     } else {
         return (
             <MainLayout isLogin={isLogin} isDark={isDark}>
+                <Redirect to='/' />
                 <Switch>
                     <Route path='/' exact component={Welcome} />
                     <Route path='/login' exact component={Login} />
@@ -99,4 +111,8 @@ const mapStateToProps = state => ({
     loggedUser: getUser(state),
     isDark: getIsDark(state)
 });
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+    setLogin: isLogin => dispatch(setLogin(isLogin)),
+    loadUserById: userId => dispatch(loadUserById(userId))
+});
+export default connect(mapStateToProps, mapDispatchToProps)(App);

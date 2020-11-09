@@ -4,13 +4,42 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const User = require('../models/user.model');
 
-exports.userByLogin = async (req, res, next) => {
-
-    const {email, password} = req.body;
+exports.userById = async (req, res, next) => {
+    const { userId } = req.params;
 
     try {
-        let user = await User.findOne({"email": email});
+        let user = await User.findById(userId);
 
+        if (!user) {
+            const error = new Error("Couldn't find some user.");
+            error.statusCode = 401;
+            throw error;
+        }
+
+        if (user.status === 'parent') {
+            user.students = user.students.map(student => {
+                student.parents = [];
+                return student;
+            });
+        }
+        res.status(200).json({ user });
+    } catch (err) {
+
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+
+};
+
+exports.userByLogin = async (req, res, next) => {
+
+    const { email, password } = req.body;
+
+    try {
+        let user = await User.findOne({ "email": email });
+        
         if (!user) {
             const error = new Error('A user with this email could not be found.');
             error.statusCode = 401;
@@ -18,7 +47,7 @@ exports.userByLogin = async (req, res, next) => {
         }
 
         let decrypted = cryptoJS.AES.decrypt(user.password, process.env.SECRET_KEY).toString(cryptoJS.enc.Utf8);
-    
+
         if (decrypted !== password) {
             const error = new Error('Wrong password!');
             error.statusCode = 401;
@@ -33,10 +62,10 @@ exports.userByLogin = async (req, res, next) => {
         const token = jwt.sign({
             email: user.email,
             userId: user._id.toString()
-        }, process.env.PRIVATE_KEY, {expiresIn: '1h'});
-        res.status(200).json({user, token});
+        }, process.env.PRIVATE_KEY, { expiresIn: '1h' });
+        res.status(200).json({ user, token });
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -46,7 +75,7 @@ exports.userByLogin = async (req, res, next) => {
 
 exports.addUser = async (req, res) => {
     let newUser = req.body;
-    
+
     try {
         newUser.password = cryptoJS.AES.encrypt(newUser.password, process.env.SECRET_KEY).toString();
         let user = await new User(newUser);
@@ -60,9 +89,9 @@ exports.addUser = async (req, res) => {
 exports.updateParentStudents = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
-        const {studentsList} = req.body;
-        let user = await User.findOne({id});
+        const { id } = req.params;
+        const { studentsList } = req.body;
+        let user = await User.findOne({ id });
 
         if (!user) {
             const error = new Error("Couldn't find some parent");
@@ -71,9 +100,9 @@ exports.updateParentStudents = async (req, res, next) => {
         }
         user.students = studentsList;
         await user.save();
-        res.status(200).json({id: user.id});
+        res.status(200).json({ id: user.id });
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -84,8 +113,8 @@ exports.updateParentStudents = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
 
     try {
-        const {isPassword, isDataChange, userAfterChange} = req.body;
-        let user = await User.findOne({id: userAfterChange.id});
+        const { isPassword, isDataChange, userAfterChange } = req.body;
+        let user = await User.findOne({ id: userAfterChange.id });
 
         if (!user) {
             const error = new Error('User not found!!!');
@@ -98,7 +127,7 @@ exports.updateUser = async (req, res, next) => {
         if (isPassword) {
             let dbUserPassword = cryptoJS.AES.decrypt(user.password, process.env.SECRET_KEY).toString(cryptoJS.enc.Utf8);
             let changeUserPassword = await cryptoJS.AES.encrypt(userAfterChange.newPassword, process.env.SECRET_KEY).toString();
-            
+
             if (dbUserPassword === userAfterChange.password) {
                 user.password = changeUserPassword;
                 resultPassword = 'The password has been changed. ';
@@ -113,7 +142,7 @@ exports.updateUser = async (req, res, next) => {
             resultData = `${userAfterChange.lastName} ${userAfterChange.firstName} data has been changed.`;
         }
         await user.save();
-        res.status(200).json({resultData, resultPassword});
+        res.status(200).json({ resultData, resultPassword });
     } catch (err) {
 
         if (!err.statusCode) {
@@ -126,7 +155,7 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
 
     try {
-        let user = await User.findOne({id: req.params.id});
+        let user = await User.findOne({ id: req.params.id });
 
         if (!user) {
             const error = new Error('User not found!!!');
@@ -134,9 +163,9 @@ exports.deleteUser = async (req, res, next) => {
             throw error;
         }
         user.remove();
-        res.status(200).json({name: `${user.lastName} ${user.firstName}`});
+        res.status(200).json({ name: `${user.lastName} ${user.firstName}` });
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -147,7 +176,7 @@ exports.deleteUser = async (req, res, next) => {
 exports.getTeachers = async (req, res, next) => {
 
     try {
-        let teachers = await User.find({status: 'teacher'});
+        let teachers = await User.find({ status: 'teacher' });
 
         if (!teachers.length) {
             const error = new Error("Couldn't find any teachers");
@@ -165,7 +194,7 @@ exports.getTeachers = async (req, res, next) => {
         });
         res.status(200).json(teachers);
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -176,8 +205,8 @@ exports.getTeachers = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
 
     try {
-        const {id, status} = req.params;
-        let user = await User.findOne({id});
+        const { id, status } = req.params;
+        let user = await User.findOne({ id });
 
         if (!user) {
             const error = new Error(`Couldn't find some ${status}.`);
@@ -208,7 +237,7 @@ exports.getUserById = async (req, res, next) => {
         }
         res.status(200).json(result);
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -219,10 +248,10 @@ exports.getUserById = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
 
     try {
-        let {start, limit, status} = req.params;
+        let { start, limit, status } = req.params;
         start = parseInt(start);
         limit = parseInt(limit);
-        let users = await User.find({status});
+        let users = await User.find({ status });
 
         if (!users.length) {
             const error = new Error(`Couldn't find some ${status}`);
@@ -247,7 +276,7 @@ exports.getUsers = async (req, res, next) => {
         });
         res.status(200).json(selectedUsers);
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -258,8 +287,8 @@ exports.getUsers = async (req, res, next) => {
 exports.getUsersName = async (req, res, next) => {
 
     try {
-        const {status} = req.params;
-        let users = await User.find({status});
+        const { status } = req.params;
+        let users = await User.find({ status });
 
         if (!users.length) {
             const error = new Error(`Couldn't find any ${status}s`);
@@ -274,7 +303,7 @@ exports.getUsersName = async (req, res, next) => {
         });
         res.status(200).json(users);
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from "../config";
+import { setExpiryDate } from '../utilities/functions';
 import {
     setUser,
     setLogin,
@@ -54,6 +55,41 @@ import {
     setPath
 } from "./actions/valuesActions";
 import store from './store';
+import { clearLocalStorage, countRemainingTime } from '../utilities/functions';
+let timer;
+
+export const loadUserById = userId => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            let res = await axios.get(`${API_URL}/user/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            let user = res.data.user;
+            user.password = "";
+
+            if (user.status === 'parent' && user.students.length) {
+                user.students.map(student => {
+                    student.className = 'none';
+                    return student;
+                });
+            }
+            await dispatch(setUser(user));
+            dispatch(stopRequest());
+            dispatch(setLogin(true));
+            dispatch(setPath('/'));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
+        } catch (err) {
+            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
+        }
+    }
+}
 
 export const loadUserByLogin = login => {
     return async dispatch => {
@@ -64,11 +100,7 @@ export const loadUserByLogin = login => {
             const { user, token } = res.data;
             localStorage.setItem('token', token);
             localStorage.setItem('userId', user._id.toString());
-            const remainingMilliseconds = 60 * 60 * 1000;
-            const expiryDate = new Date(
-                new Date().getTime() + remainingMilliseconds
-            );
-            localStorage.setItem('expiryDate', expiryDate.toISOString());
+            setExpiryDate(15);
             user.password = '';
 
             if (user.status === 'parent' && user.students.length) {
@@ -81,6 +113,10 @@ export const loadUserByLogin = login => {
             await dispatch(setUser(user));
             await dispatch(setLogin(true));
             dispatch(setPath('/'));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
@@ -106,6 +142,8 @@ export const addUser = user => {
 export const updateUserRequest = (id, studentsList, data) => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.put(`${API_URL}/users/parent/${id}`, { studentsList }, {
@@ -117,6 +155,10 @@ export const updateUserRequest = (id, studentsList, data) => {
             dispatch(setAlertSuccess(true,
                 `Student ${data.studentName} ${data.isAdd ?
                     'has been assigned' : 'is no longer assigned'} to a parent ${data.parentName}.`));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -127,6 +169,8 @@ export const updateUserRequest = (id, studentsList, data) => {
 export const deleteParentRequest = (id, page) => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.delete(`${API_URL}/users/${id}`, {
@@ -137,6 +181,10 @@ export const deleteParentRequest = (id, page) => {
             dispatch(removeUserName(id));
             await dispatch(loadParentsRequestWithRange(page + 1, 7));
             dispatch(setAlertSuccess(true, `Parent ${res.data.name} has been removed.`));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -147,6 +195,8 @@ export const deleteParentRequest = (id, page) => {
 export const deleteTeacherRequest = (id, page, rowsPerPage) => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.delete(`${API_URL}/users/${id}`, {
@@ -157,6 +207,10 @@ export const deleteTeacherRequest = (id, page, rowsPerPage) => {
             dispatch(removeUserName(id));
             await dispatch(loadTeachersRequestWithRange(page + 1, rowsPerPage));
             dispatch(setAlertSuccess(true, `Teacher ${res.data.name} has been removed.`));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -167,6 +221,8 @@ export const deleteTeacherRequest = (id, page, rowsPerPage) => {
 export const loadAllClassesRequest = () => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/class`, {
@@ -175,6 +231,10 @@ export const loadAllClassesRequest = () => {
                 }
             });
             dispatch(loadAllClasses(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -185,6 +245,8 @@ export const loadAllClassesRequest = () => {
 export const loadStudentsIdFromClasses = () => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/classes/students`, {
@@ -193,6 +255,11 @@ export const loadStudentsIdFromClasses = () => {
                 }
             });
             dispatch(setClassesStudents(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
+            dispatch(stopRequest());
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.message))
@@ -203,6 +270,8 @@ export const loadStudentsIdFromClasses = () => {
 export const loadAllClassByTeacherId = teacherId => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/classes/${teacherId}`,
@@ -212,6 +281,10 @@ export const loadAllClassByTeacherId = teacherId => {
                     }
                 });
             dispatch(loadClassByTeacher(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -222,6 +295,8 @@ export const loadAllClassByTeacherId = teacherId => {
 export const loadClassById = id => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/class/${id}`, {
@@ -230,6 +305,10 @@ export const loadClassById = id => {
                 }
             });
             dispatch(setSelectedClass(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -240,6 +319,8 @@ export const loadClassById = id => {
 export const loadDataForClassByIdRequest = id => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/class/principal/${id}`,
@@ -249,6 +330,10 @@ export const loadDataForClassByIdRequest = id => {
                     }
                 });
             dispatch(updateDataInSelectedClass(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -259,6 +344,8 @@ export const loadDataForClassByIdRequest = id => {
 export const updateTutorClassRequest = classItem => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.put(`${API_URL}/class/tutor`, classItem, {
@@ -272,6 +359,10 @@ export const updateTutorClassRequest = classItem => {
             await dispatch(updateTutorInSelectedClass(res.data.mainTeacher));
             await dispatch(updateTutorInAllClasses(classItem.id, res.data.mainTeacher.id));
             dispatch(setTutorIsUse(true));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -282,7 +373,8 @@ export const updateTutorClassRequest = classItem => {
 export const updateClassRequest = classItem => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
-
+        clearTimeout(timer);
+        setExpiryDate(2);
         try {
             let res = await axios.put(`${API_URL}/class`, classItem, {
                 headers: {
@@ -296,6 +388,10 @@ export const updateClassRequest = classItem => {
             if (classItem.isStudents) await dispatch(loadStudentsIdFromClasses());
             dispatch(updateListInSelectedClass(classItem.isStudents,
                 classItem.isStudents ? classItem.students : classItem.subjectTeachers));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -306,6 +402,8 @@ export const updateClassRequest = classItem => {
 export const addRatingForStudent = (classId, dataPackage) => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.post(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating, {
@@ -314,6 +412,10 @@ export const addRatingForStudent = (classId, dataPackage) => {
                 }
             });
             dispatch(addRatingToStudent(classId, res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -324,6 +426,8 @@ export const addRatingForStudent = (classId, dataPackage) => {
 export const updateRatingForStudent = dataPackage => {
     return async dispatch => {
         dispatch(startWorkingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.put(`${API_URL}/ratings/${dataPackage.ratingsId}`, dataPackage.rating, {
@@ -332,6 +436,10 @@ export const updateRatingForStudent = dataPackage => {
                 }
             });
             dispatch(updateRatingToStudent(dataPackage.classId, dataPackage.studentId, res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -342,6 +450,8 @@ export const updateRatingForStudent = dataPackage => {
 export const deleteRatingForStudent = (id, _id, classId, studentId) => {
     return async dispatch => {
         dispatch(startWorkingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.delete(`${API_URL}/ratings/${id}/${_id}`, {
@@ -350,6 +460,10 @@ export const deleteRatingForStudent = (id, _id, classId, studentId) => {
                 }
             });
             dispatch(updateRatingToStudent(classId, studentId, res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -360,6 +474,8 @@ export const deleteRatingForStudent = (id, _id, classId, studentId) => {
 export const loadTeachersRequest = () => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -369,6 +485,10 @@ export const loadTeachersRequest = () => {
                 }
             });
             dispatch(loadTeachers(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -379,6 +499,8 @@ export const loadTeachersRequest = () => {
 export const loadParentByIdRequest = (id, isAdd) => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/users/parent/${id}`, {
@@ -410,6 +532,10 @@ export const loadParentByIdRequest = (id, isAdd) => {
                 });
             }
             isAdd ? dispatch(addParent(parent)) : dispatch(loadParents([parent]));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -420,6 +546,8 @@ export const loadParentByIdRequest = (id, isAdd) => {
 export const loadTeacherByIdRequest = id => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/users/teacher/${id}`, {
@@ -453,6 +581,10 @@ export const loadTeacherByIdRequest = id => {
                 teacher.teacherClasses = []
             }
             dispatch(loadTeachers([teacher]));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -463,6 +595,8 @@ export const loadTeacherByIdRequest = id => {
 export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let start = Math.ceil((page - 1) * itemsPerPage);
@@ -504,6 +638,10 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
                 teacher.teacherClasses = teacherClasses;
             });
             dispatch(loadTeachers(selectedTeachers));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -514,6 +652,8 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
 export const loadParentsRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let studentsInClassesId = [];
@@ -564,6 +704,10 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                 })
             });
             dispatch(loadParents(allParents));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -574,6 +718,8 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
 export const addClassRequest = payload => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.post(`${API_URL}/class`, payload, {
@@ -586,6 +732,10 @@ export const addClassRequest = payload => {
             dispatch(addNewClass(newClass));
             dispatch(setAlertSuccess(true, `${payload.name} has been added.`));
             dispatch(setTutorIsUse(true));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -596,6 +746,8 @@ export const addClassRequest = payload => {
 export const deleteClassByIdRequest = id => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.delete(`${API_URL}/class/${id}`, {
@@ -608,6 +760,10 @@ export const deleteClassByIdRequest = id => {
             await dispatch(loadStudentsIdFromClasses());
             dispatch(setTutorIsUse(true));
             dispatch(setIsStudentMode(true));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -618,6 +774,8 @@ export const deleteClassByIdRequest = id => {
 export const getAllStudentsRequest = () => {
     return async dispatch => {
         dispatch(startWorkingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/students`, {
@@ -626,6 +784,10 @@ export const getAllStudentsRequest = () => {
                 }
             });
             dispatch(loadAllStudents(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -636,6 +798,8 @@ export const getAllStudentsRequest = () => {
 export const getUsersNameRequest = status => {
     return async dispatch => {
         dispatch(startWorkingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/users/name/${status}`, {
@@ -644,6 +808,10 @@ export const getUsersNameRequest = status => {
                 }
             });
             dispatch(loadUsersName(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -654,6 +822,8 @@ export const getUsersNameRequest = status => {
 export const getStudentByIdRequest = id => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/student/${id}`, {
@@ -677,6 +847,10 @@ export const getStudentByIdRequest = id => {
                 student.className = 'no assigned';
             }
             dispatch(loadAllStudents([student]));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -687,6 +861,8 @@ export const getStudentByIdRequest = id => {
 export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let result = [];
@@ -731,6 +907,10 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
             });
 
             dispatch(loadAllStudents(result));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -741,6 +921,8 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
 export const getStudentsNamesRequest = () => {
     return async dispatch => {
         dispatch(startWorkingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/students/names`, {
@@ -749,6 +931,10 @@ export const getStudentsNamesRequest = () => {
                 }
             });
             dispatch(setFreeStudents(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -759,6 +945,8 @@ export const getStudentsNamesRequest = () => {
 export const getStudentsIdRequest = () => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/students/onlyid`, {
@@ -767,6 +955,10 @@ export const getStudentsIdRequest = () => {
                 }
             });
             dispatch(loadAllStudents(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -777,6 +969,8 @@ export const getStudentsIdRequest = () => {
 export const getStudentsByIdRequest = studentsId => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/students/select`,
@@ -787,6 +981,10 @@ export const getStudentsByIdRequest = studentsId => {
                     }
                 });
             dispatch(setFreeStudents(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -797,6 +995,8 @@ export const getStudentsByIdRequest = studentsId => {
 export const addStudentRequest = student => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.post(`${API_URL}/student`, student, {
@@ -807,6 +1007,10 @@ export const addStudentRequest = student => {
             dispatch(setAlertSuccess(true,
                 `Student ${res.data.firstName} ${res.data.lastName} has been added.`));
             dispatch(addStudent(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -817,14 +1021,16 @@ export const addStudentRequest = student => {
 export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange) => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
-            let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange }, 
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            });
+            let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
 
             if (isDataChange) {
                 dispatch(updateUserData(userAfterChange));
@@ -847,6 +1053,10 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
                 res.data.resultPassword !== null ? dispatch(setAlertSuccess(true, res.data.resultPassword)) :
                     dispatch(errorRequest("Incorrect old password !!! Password has not been changed."))
             }
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopUpdatingRequest())
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -857,6 +1067,8 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
 export const updateStudentRequest = (id, parent, isAdd) => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.put(`${API_URL}/student/parents/${id}`, { parent: parent, isAdd },
@@ -882,6 +1094,10 @@ export const updateStudentRequest = (id, parent, isAdd) => {
                     dispatch(updateParentStudentClassName(parent.id, res.data.studentId, 'none class'));
                 }
             }
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -892,6 +1108,8 @@ export const updateStudentRequest = (id, parent, isAdd) => {
 export const updateStudentBasicDataRequest = student => {
     return async dispatch => {
         dispatch(startAddingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.put(`${API_URL}/student/basic`,
@@ -906,6 +1124,10 @@ export const updateStudentBasicDataRequest = student => {
                 });
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} data has been changed.`));
             dispatch(updateStudent(student));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -916,6 +1138,8 @@ export const updateStudentBasicDataRequest = student => {
 export const deleteStudentRequest = studentId => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.delete(`${API_URL}/student/${studentId}`, {
@@ -936,6 +1160,10 @@ export const deleteStudentRequest = studentId => {
             dispatch(getStudentsNamesRequest());
             dispatch(getStudentsWithRangeRequest(1, 5));
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} has been removed.`));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -946,6 +1174,8 @@ export const deleteStudentRequest = studentId => {
 export const addSubjectRating = (student, subject) => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.post(`${API_URL}/rating`, { studentId: student.id, subject }, {
@@ -962,6 +1192,10 @@ export const addSubjectRating = (student, subject) => {
             let studentAfterChange = student;
             studentAfterChange.ratings = [...studentAfterChange.ratings, res.data];
             dispatch(updateStudentInTeacherClass(studentAfterChange));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -972,6 +1206,8 @@ export const addSubjectRating = (student, subject) => {
 export const getTeacherStudentsNameRequest = classesId => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/classes/teacher/students`, {
@@ -981,6 +1217,10 @@ export const getTeacherStudentsNameRequest = classesId => {
                 }
             });
             dispatch(loadAllStudents(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -991,6 +1231,8 @@ export const getTeacherStudentsNameRequest = classesId => {
 export const getTeacherStudentsByIdRequest = students => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let studentsId = students.map(student => student.id);
@@ -1020,6 +1262,10 @@ export const getTeacherStudentsByIdRequest = students => {
                 })
             }
             dispatch(setClassesStudents(result));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1030,6 +1276,8 @@ export const getTeacherStudentsByIdRequest = students => {
 export const getClassNameForStudentByIdRequest = studentsId => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/classes/students/name`,
@@ -1046,6 +1294,10 @@ export const getClassNameForStudentByIdRequest = studentsId => {
                     dispatch(addClassnameToStudent(item.id, item.name))
                 })
             }
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1056,6 +1308,8 @@ export const getClassNameForStudentByIdRequest = studentsId => {
 export const getTeachersByClassNameRequest = name => {
     return async dispatch => {
         dispatch(startGetingRequest());
+        clearTimeout(timer);
+        setExpiryDate(15);
 
         try {
             let res = await axios.get(`${API_URL}/class/teachers`,
@@ -1066,6 +1320,10 @@ export const getTeachersByClassNameRequest = name => {
                     }
                 });
             dispatch(setSelectedClass(res.data));
+            timer = setTimeout(() => {
+                clearLocalStorage();
+                dispatch(setLogin(false));
+            }, countRemainingTime())
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));

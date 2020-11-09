@@ -170,3 +170,21 @@ export const welcomeDescription = {
     ]
 };
 
+export const setExpiryDate = minutes => {
+    const remainingMilliseconds = minutes * 60 * 1000;
+    const expiryDate = new Date(
+        new Date().getTime() + remainingMilliseconds
+    );
+    localStorage.setItem('expiryDate', expiryDate.toISOString());
+}
+
+export const clearLocalStorage = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('expiryDate');
+}
+
+export const countRemainingTime = () => {
+    const expiryDate = localStorage.getItem('expiryDate');
+    return new Date(expiryDate).getTime() - new Date().getTime();
+}
