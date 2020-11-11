@@ -2,6 +2,7 @@ const uuid = require('uuid');
 const cryptoJS = require('crypto-js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const validator = require('validator');
 const User = require('../models/user.model');
 
 exports.userById = async (req, res, next) => {
@@ -73,16 +74,60 @@ exports.userByLogin = async (req, res, next) => {
     }
 };
 
-exports.addUser = async (req, res) => {
+exports.addUser = async (req, res, next) => {
     let newUser = req.body;
+    const errors = [];
 
+    if (!validator.isEmail(newUser.email)) {
+        errors.push({message: 'E-mail is invalid'});
+    }
+
+    if (validator.isEmpty(newUser.password) || !validator.isLength(newUser.password, {min: 5})) {
+        errors.push({message: 'Password to short! You must enter min. 5 signs'});
+    }
+
+    if (validator.isEmpty(newUser.lastName)) {
+        errors.push({message: "Lastname field can't be empty!"});
+    }
+
+    if (validator.isEmpty(newUser.firstName)) {
+        errors.push({message: "Firstname field can't be empty!"});
+    }
+
+    if (validator.isEmpty(newUser.subject) && newUser.status === 'teacher') {
+        errors.push({message: "For teacher user must be subject choiced!"});
+    }
+
+    if (!validator.isLength(newUser.telephone, {min: 18, max: 18})) {
+        errors.push({message: 'Phone is invalid'});
+    }
+    
     try {
+
+        if (errors.length) {
+            const error = new Error('Validation failed: ');
+            error.data = errors;
+            error.statusCode = 422;
+            throw error;
+        }
+
+        const existingUser = await User.findOne({email: newUser.email});
+
+        if (existingUser) {
+            const error = new Error('Email address already exists');
+            error.statusCode = 409;
+            throw error;
+        }
         newUser.password = cryptoJS.AES.encrypt(newUser.password, process.env.SECRET_KEY).toString();
         let user = await new User(newUser);
         user.id = uuid.v4();
         res.status(200).json(await user.save());
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -111,14 +156,54 @@ exports.updateParentStudents = async (req, res, next) => {
 };
 
 exports.updateUser = async (req, res, next) => {
+    const { isPassword, isDataChange, userAfterChange } = req.body;
+    const errors = [];
+
+    if (!validator.isEmail(userAfterChange.email)) {
+        errors.push({message: 'E-mail is invalid'});
+    }
+
+    if (validator.isEmpty(userAfterChange.lastName)) {
+        errors.push({message: "Lastname field can't be empty!"});
+    }
+
+    if (validator.isEmpty(userAfterChange.firstName)) {
+        errors.push({message: "Firstname field can't be empty!"});
+    }
+
+    if (!validator.isLength(userAfterChange.telephone, {min: 18, max: 18})) {
+        errors.push({message: 'Phone is invalid'});
+    }
+
+    if (isPassword) {
+
+        if (validator.isEmpty(userAfterChange.newPassword) || !validator.isLength(userAfterChange.newPassword, {min: 5})) {
+            errors.push({message: 'Password to short! You must enter min. 5 signs'});
+        }
+    }
 
     try {
-        const { isPassword, isDataChange, userAfterChange } = req.body;
+
+        if (errors.length) {
+            const error = new Error('Validation failed: ');
+            error.data = errors;
+            error.statusCode = 422;
+            throw error;
+        }
+        
         let user = await User.findOne({ id: userAfterChange.id });
 
         if (!user) {
             const error = new Error('User not found!!!');
             error.statusCode = 401;
+            throw error;
+        }
+
+        let checkUser = await User.findOne({email: userAfterChange.email});
+
+        if (checkUser && user.email !== userAfterChange.email) {
+            const error = new Error('Email address already exists');
+            error.statusCode = 409;
             throw error;
         }
         let resultData = '';

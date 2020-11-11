@@ -58,6 +58,14 @@ import store from './store';
 import { clearLocalStorage, countRemainingTime } from '../utilities/functions';
 let timer;
 
+const setLogout = dispatch => {
+    timer = setTimeout(() => {
+        clearLocalStorage();
+        dispatch(setLogin(false));
+        dispatch(setPath('/'));
+    }, countRemainingTime())
+}
+
 export const loadUserById = userId => {
     return async dispatch => {
         dispatch(startRequest());
@@ -81,10 +89,7 @@ export const loadUserById = userId => {
             dispatch(stopRequest());
             dispatch(setLogin(true));
             dispatch(setPath('/'));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
@@ -113,10 +118,7 @@ export const loadUserByLogin = login => {
             await dispatch(setUser(user));
             await dispatch(setLogin(true));
             dispatch(setPath('/'));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
         }
@@ -132,9 +134,19 @@ export const addUser = user => {
             dispatch(stopRequest());
             dispatch(setPath('/login'));
         } catch (err) {
-            dispatch(errorRequest(
-                `${err.response.data.code === 11000 ? 'Email address already exists' : 'Server error!!!'}`
-            ))
+
+            if (err.response !== undefined) {
+                let errorInfo = err.response.data.message;
+
+                if (err.response.data.data !== undefined) {
+                    err.response.data.data.forEach(item => {
+                        errorInfo += `${item.message}, `
+                    })
+                }
+                dispatch(errorRequest(errorInfo));
+            } else {
+                dispatch(errorRequest(err.message));
+            }
         }
     }
 };
@@ -155,10 +167,7 @@ export const updateUserRequest = (id, studentsList, data) => {
             dispatch(setAlertSuccess(true,
                 `Student ${data.studentName} ${data.isAdd ?
                     'has been assigned' : 'is no longer assigned'} to a parent ${data.parentName}.`));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -181,10 +190,7 @@ export const deleteParentRequest = (id, page) => {
             dispatch(removeUserName(id));
             await dispatch(loadParentsRequestWithRange(page + 1, 7));
             dispatch(setAlertSuccess(true, `Parent ${res.data.name} has been removed.`));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -207,10 +213,7 @@ export const deleteTeacherRequest = (id, page, rowsPerPage) => {
             dispatch(removeUserName(id));
             await dispatch(loadTeachersRequestWithRange(page + 1, rowsPerPage));
             dispatch(setAlertSuccess(true, `Teacher ${res.data.name} has been removed.`));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -231,10 +234,7 @@ export const loadAllClassesRequest = () => {
                 }
             });
             dispatch(loadAllClasses(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -255,10 +255,7 @@ export const loadStudentsIdFromClasses = () => {
                 }
             });
             dispatch(setClassesStudents(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
             dispatch(stopUpdatingRequest());
         } catch (err) {
@@ -281,10 +278,7 @@ export const loadAllClassByTeacherId = teacherId => {
                     }
                 });
             dispatch(loadClassByTeacher(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -305,10 +299,7 @@ export const loadClassById = id => {
                 }
             });
             dispatch(setSelectedClass(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -330,10 +321,7 @@ export const loadDataForClassByIdRequest = id => {
                     }
                 });
             dispatch(updateDataInSelectedClass(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -359,10 +347,7 @@ export const updateTutorClassRequest = classItem => {
             await dispatch(updateTutorInSelectedClass(res.data.mainTeacher));
             await dispatch(updateTutorInAllClasses(classItem.id, res.data.mainTeacher.id));
             dispatch(setTutorIsUse(true));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -374,7 +359,7 @@ export const updateClassRequest = classItem => {
     return async dispatch => {
         dispatch(startUpdatingRequest());
         clearTimeout(timer);
-        setExpiryDate(2);
+        setExpiryDate(15);
         try {
             let res = await axios.put(`${API_URL}/class`, classItem, {
                 headers: {
@@ -388,10 +373,7 @@ export const updateClassRequest = classItem => {
             if (classItem.isStudents) await dispatch(loadStudentsIdFromClasses());
             dispatch(updateListInSelectedClass(classItem.isStudents,
                 classItem.isStudents ? classItem.students : classItem.subjectTeachers));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -412,10 +394,7 @@ export const addRatingForStudent = (classId, dataPackage) => {
                 }
             });
             dispatch(addRatingToStudent(classId, res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -436,10 +415,7 @@ export const updateRatingForStudent = dataPackage => {
                 }
             });
             dispatch(updateRatingToStudent(dataPackage.classId, dataPackage.studentId, res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -460,10 +436,7 @@ export const deleteRatingForStudent = (id, _id, classId, studentId) => {
                 }
             });
             dispatch(updateRatingToStudent(classId, studentId, res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -485,10 +458,7 @@ export const loadTeachersRequest = () => {
                 }
             });
             dispatch(loadTeachers(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -532,10 +502,7 @@ export const loadParentByIdRequest = (id, isAdd) => {
                 });
             }
             isAdd ? dispatch(addParent(parent)) : dispatch(loadParents([parent]));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -581,10 +548,7 @@ export const loadTeacherByIdRequest = id => {
                 teacher.teacherClasses = []
             }
             dispatch(loadTeachers([teacher]));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -638,10 +602,7 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
                 teacher.teacherClasses = teacherClasses;
             });
             dispatch(loadTeachers(selectedTeachers));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -704,10 +665,7 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                 })
             });
             dispatch(loadParents(allParents));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -732,10 +690,7 @@ export const addClassRequest = payload => {
             dispatch(addNewClass(newClass));
             dispatch(setAlertSuccess(true, `${payload.name} has been added.`));
             dispatch(setTutorIsUse(true));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -760,10 +715,7 @@ export const deleteClassByIdRequest = id => {
             await dispatch(loadStudentsIdFromClasses());
             dispatch(setTutorIsUse(true));
             dispatch(setIsStudentMode(true));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -784,10 +736,7 @@ export const getAllStudentsRequest = () => {
                 }
             });
             dispatch(loadAllStudents(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -808,10 +757,7 @@ export const getUsersNameRequest = status => {
                 }
             });
             dispatch(loadUsersName(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -847,10 +793,7 @@ export const getStudentByIdRequest = id => {
                 student.className = 'no assigned';
             }
             dispatch(loadAllStudents([student]));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -907,10 +850,7 @@ export const getStudentsWithRangeRequest = (page, itemsPerPage) => {
             });
 
             dispatch(loadAllStudents(result));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -931,10 +871,7 @@ export const getStudentsNamesRequest = () => {
                 }
             });
             dispatch(setFreeStudents(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopWorkingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -955,10 +892,7 @@ export const getStudentsIdRequest = () => {
                 }
             });
             dispatch(loadAllStudents(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -981,10 +915,7 @@ export const getStudentsByIdRequest = studentsId => {
                     }
                 });
             dispatch(setFreeStudents(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -997,7 +928,7 @@ export const addStudentRequest = student => {
         dispatch(startAddingRequest());
         clearTimeout(timer);
         setExpiryDate(15);
-
+        
         try {
             let res = await axios.post(`${API_URL}/student`, student, {
                 headers: {
@@ -1007,13 +938,22 @@ export const addStudentRequest = student => {
             dispatch(setAlertSuccess(true,
                 `Student ${res.data.firstName} ${res.data.lastName} has been added.`));
             dispatch(addStudent(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
+            
+            if (err.response !== undefined) {
+                let errorInfo = err.response.data.message;
+
+                if (err.response.data.data !== undefined) {
+                    err.response.data.data.forEach(item => {
+                        errorInfo += `${item.message}, `
+                    })
+                }
+                dispatch(errorRequest(errorInfo));
+            } else {
+                dispatch(errorRequest(err.message));
+            }
         }
     }
 };
@@ -1023,7 +963,7 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
         dispatch(startUpdatingRequest());
         clearTimeout(timer);
         setExpiryDate(15);
-
+        
         try {
             let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange },
                 {
@@ -1053,13 +993,22 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
                 res.data.resultPassword !== null ? dispatch(setAlertSuccess(true, res.data.resultPassword)) :
                     dispatch(errorRequest("Incorrect old password !!! Password has not been changed."))
             }
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopUpdatingRequest())
         } catch (err) {
-            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
+
+            if (err.response !== undefined) {
+                let errorInfo = err.response.data.message;
+
+                if (err.response.data.data !== undefined) {
+                    err.response.data.data.forEach(item => {
+                        errorInfo += `${item.message}, `
+                    })
+                }
+                dispatch(errorRequest(errorInfo));
+            } else {
+                dispatch(errorRequest(err.message));
+            }
         }
     }
 };
@@ -1094,10 +1043,7 @@ export const updateStudentRequest = (id, parent, isAdd) => {
                     dispatch(updateParentStudentClassName(parent.id, res.data.studentId, 'none class'));
                 }
             }
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1124,13 +1070,22 @@ export const updateStudentBasicDataRequest = student => {
                 });
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} data has been changed.`));
             dispatch(updateStudent(student));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
-            dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
+            
+            if (err.response !== undefined) {
+                let errorInfo = err.response.data.message;
+
+                if (err.response.data.data !== undefined) {
+                    err.response.data.data.forEach(item => {
+                        errorInfo += `${item.message}, `
+                    })
+                }
+                dispatch(errorRequest(errorInfo));
+            } else {
+                dispatch(errorRequest(err.message));
+            }
         }
     }
 };
@@ -1160,10 +1115,7 @@ export const deleteStudentRequest = studentId => {
             dispatch(getStudentsNamesRequest());
             dispatch(getStudentsWithRangeRequest(1, 5));
             dispatch(setAlertSuccess(true, `Student ${res.data.studentName} has been removed.`));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1192,10 +1144,7 @@ export const addSubjectRating = (student, subject) => {
             let studentAfterChange = student;
             studentAfterChange.ratings = [...studentAfterChange.ratings, res.data];
             dispatch(updateStudentInTeacherClass(studentAfterChange));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopUpdatingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message))
@@ -1217,10 +1166,7 @@ export const getTeacherStudentsNameRequest = classesId => {
                 }
             });
             dispatch(loadAllStudents(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1262,10 +1208,7 @@ export const getTeacherStudentsByIdRequest = students => {
                 })
             }
             dispatch(setClassesStudents(result));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1294,10 +1237,7 @@ export const getClassNameForStudentByIdRequest = studentsId => {
                     dispatch(addClassnameToStudent(item.id, item.name))
                 })
             }
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));
@@ -1320,10 +1260,7 @@ export const getTeachersByClassNameRequest = name => {
                     }
                 });
             dispatch(setSelectedClass(res.data));
-            timer = setTimeout(() => {
-                clearLocalStorage();
-                dispatch(setLogin(false));
-            }, countRemainingTime())
+            setLogout(dispatch);
             dispatch(stopGetingRequest());
         } catch (err) {
             dispatch(errorRequest(err.response !== undefined ? err.response.data.message : err.message));

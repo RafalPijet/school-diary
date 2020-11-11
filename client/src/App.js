@@ -47,7 +47,7 @@ const App = props => {
         if (!isLogin && userId) {
             loadUserById(userId);
         }
-        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogin]);
 
     if (isLogin && loggedUser.status === 'parent') {

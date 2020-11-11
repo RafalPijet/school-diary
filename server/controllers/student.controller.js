@@ -1,5 +1,6 @@
 const Student = require('../models/student.model');
 const uuid = require('uuid');
+const validator = require('validator');
 
 exports.getStudentById = async (req, res, next) => {
 
@@ -158,14 +159,39 @@ exports.getTeacherStudentsById = async (req, res, next) => {
     }
 };
 
-exports.addStudent = async (req, res) => {
+exports.addStudent = async (req, res, next) => {
+    const student = req.body;
+    const errors = [];
 
+    if (validator.isEmpty(student.lastName) || !validator.isLength(student.lastName, { min: 5 })) {
+        errors.push({ message: "Lastname too short! You must enter min. 5 signs" });
+    }
+
+    if (validator.isEmpty(student.firstName) || !validator.isLength(student.firstName, { min: 5 })) {
+        errors.push({ message: "Firstname too short! You must enter min. 5 signs" });
+    }
+
+    if (!validator.isDate(student.birthDate.substring(0, 10))) {
+        errors.push({ message: "Wrong date format" });
+    }
+    
     try {
-        let newStudent = new Student(req.body);
+
+        if (errors.length) {
+            const error = new Error('Validation failed: ');
+            error.data = errors;
+            error.statusCode = 422;
+            throw error;
+        }
+        let newStudent = new Student(student);
         newStudent.id = uuid.v4();
         res.status(200).json(await newStudent.save());
     } catch (err) {
-        res.status(500).json(err);
+        
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
@@ -199,9 +225,29 @@ exports.updateStudentParents = async (req, res, next) => {
 };
 
 exports.updateStudentBasicData = async (req, res, next) => {
+    const {id, firstName, lastName, birthDate} = req.body;
+    const errors = [];
+
+    if (validator.isEmpty(lastName) || !validator.isLength(lastName, { min: 3 })) {
+        errors.push({ message: "Lastname too short! You must enter min. 3 signs" });
+    }
+
+    if (validator.isEmpty(firstName) || !validator.isLength(firstName, { min: 3 })) {
+        errors.push({ message: "Firstname too short! You must enter min. 3 signs" });
+    }
+
+    if (!validator.isDate(birthDate.substring(0, 10))) {
+        errors.push({ message: "Wrong date format" });
+    }
 
     try {
-        const {id, firstName, lastName, birthDate} = req.body;
+
+        if (errors.length) {
+            const error = new Error('Validation failed: ');
+            error.data = errors;
+            error.statusCode = 422;
+            throw error;
+        }
         let student = await Student.findOne({id});
 
         if (!student) {
