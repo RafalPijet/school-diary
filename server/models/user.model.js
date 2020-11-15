@@ -10,7 +10,9 @@ const User = new Schema({
     telephone: {type: "String", required: true},
     email: {type: "String", required: true, unique: true},
     password: {type: "String", required: true},
-    students: [{type: Schema.ObjectId, ref: "Student"}]
+    students: [{type: Schema.ObjectId, ref: "Student"}],
+    resetToken: String,
+    resetTokenExpiration: Date
 });
 
 function populateStudents(next) {

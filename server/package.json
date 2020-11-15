@@ -19,6 +19,8 @@
     "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.9",
+    "nodemailer": "^6.4.16",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^2.0.3",
     "path": "^0.12.7",
     "uuid": "^3.3.3",

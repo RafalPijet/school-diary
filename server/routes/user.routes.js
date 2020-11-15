@@ -5,6 +5,7 @@ const isAuth = require('../middleware/is-auth');
 
 router.post('/users/login', userController.userByLogin);
 router.post('/users', userController.addUser);
+router.post('/reset/', userController.resetPassword);
 router.put('/users', isAuth, userController.updateUser);
 router.put('/users/parent/:id', isAuth, userController.updateParentStudents);
 router.delete('/users/:id', isAuth, userController.deleteUser);

@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {loadUserByLogin, addUser} from "../../../redux/thunks";
+import {loadUserByLogin, addUser, resetPasswordRequest} from "../../../redux/thunks";
 import {getRequest} from "../../../redux/actions/requestActions";
 import {resetRequest} from "../../../redux/actions/requestActions";
 import {getSubjects} from "../../../redux/actions/valuesActions";
@@ -10,7 +10,8 @@ const mapDispatchToProps = dispatch => ({
     loadUser: login => dispatch(loadUserByLogin(login)),
     addUser: user => dispatch(addUser(user)),
     resetRequest: () => dispatch(resetRequest()),
-    setRegisterAfter: login => dispatch(setRegister(login))
+    setRegisterAfter: login => dispatch(setRegister(login)),
+    resetPassword: email => dispatch(resetPasswordRequest(email))
 });
 
 const mapStateToProps = state => ({

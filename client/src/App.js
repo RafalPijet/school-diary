@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router";
 import { getLogin, getUser, setLogin } from "./redux/actions/usersActions";
-import { getIsDark } from "./redux/actions/valuesActions";
+import { getIsDark, setPath } from "./redux/actions/valuesActions";
 import MainLayout from './components/layouts/MainLayout/MainLayout';
 import Welcome from './components/pages/Welcome/Welcome';
 import Login from './components/pages/Login/Login';
@@ -22,12 +22,19 @@ import Students from './components/pages/Students/Students';
 import Parents from './components/pages/Parents/Parents';
 import StudentTeachers from "./components/pages/StudentTeachers/StudentTeachers";
 import Logout from './components/pages/Logout/Logout';
+import ResetPassword from './components/pages/ResetPassword/ResetPassword';
 import { loadUserById } from './redux/thunks';
 
 const App = props => {
-    const { isLogin, loggedUser, isDark, setLogin, loadUserById } = props;
+    const { isLogin, loggedUser, isDark, setLogin, loadUserById, setPath } = props;
+    let pathname = useLocation().pathname;
 
     useEffect(() => {
+
+        if (pathname.includes('change')) {
+            setPath(pathname);
+            return
+        }
         const token = localStorage.getItem('token');
         const expiryDate = localStorage.getItem('expiryDate');
         const userId = localStorage.getItem('userId');
@@ -99,6 +106,9 @@ const App = props => {
                     <Route path='/' exact component={Welcome} />
                     <Route path='/login' exact component={Login} />
                     <Route path='/registration' exact component={Registration} />
+                    <Route path='/change'>
+                        <ResetPassword/>
+                    </Route>
                     <Route component={PageNotFound} />
                 </Switch>
             </MainLayout>
@@ -113,6 +123,7 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
     setLogin: isLogin => dispatch(setLogin(isLogin)),
-    loadUserById: userId => dispatch(loadUserById(userId))
+    loadUserById: userId => dispatch(loadUserById(userId)),
+    setPath: path => dispatch(setPath(path))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

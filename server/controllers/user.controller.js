@@ -2,8 +2,16 @@ const uuid = require('uuid');
 const cryptoJS = require('crypto-js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 const validator = require('validator');
 const User = require('../models/user.model');
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key: process.env.SENDGRID_KEY
+    }
+}));
 
 exports.userById = async (req, res, next) => {
     const { userId } = req.params;
@@ -40,7 +48,7 @@ exports.userByLogin = async (req, res, next) => {
 
     try {
         let user = await User.findOne({ "email": email });
-        
+
         if (!user) {
             const error = new Error('A user with this email could not be found.');
             error.statusCode = 401;
@@ -74,32 +82,12 @@ exports.userByLogin = async (req, res, next) => {
     }
 };
 
-exports.addUser = async (req, res, next) => {
-    let newUser = req.body;
+exports.resetPassword = async (req, res, next) => {
+    const { email } = req.body;
     const errors = [];
 
-    if (!validator.isEmail(newUser.email)) {
-        errors.push({message: 'E-mail is invalid'});
-    }
-
-    if (validator.isEmpty(newUser.password) || !validator.isLength(newUser.password, {min: 5})) {
-        errors.push({message: 'Password to short! You must enter min. 5 signs'});
-    }
-
-    if (validator.isEmpty(newUser.lastName)) {
-        errors.push({message: "Lastname field can't be empty!"});
-    }
-
-    if (validator.isEmpty(newUser.firstName)) {
-        errors.push({message: "Firstname field can't be empty!"});
-    }
-
-    if (validator.isEmpty(newUser.subject) && newUser.status === 'teacher') {
-        errors.push({message: "For teacher user must be subject choiced!"});
-    }
-
-    if (!validator.isLength(newUser.telephone, {min: 18, max: 18})) {
-        errors.push({message: 'Phone is invalid'});
+    if (!validator.isEmail(email)) {
+        errors.push({ message: 'E-mail is invalid' });
     }
     
     try {
@@ -110,8 +98,76 @@ exports.addUser = async (req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
+        const user = await User.findOne({email});
 
-        const existingUser = await User.findOne({email: newUser.email});
+        if (!user) {
+            const error = new Error(`User with account ${email} not found!`);
+            error.statusCode = 409;
+            throw error;
+        }
+
+        const token = cryptoJS.AES.encrypt(email, process.env.SECRET_KEY).toString();
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 3600000;
+        await user.save();
+        console.log(`${process.env.URL}/reset/${token}`);
+        transporter.sendMail({
+            to: email,
+            from: 'stronglopez@wp.pl',
+            subject: 'Password reset',
+            html: `
+            <p>You requested a password reset</p>
+            <p>Click this <a href="${process.env.URL}/change/${email}/${token}">link</a> to set new password</p>
+        `
+        });
+        res.status(200).json({email});
+    } catch (err) {
+
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.addUser = async (req, res, next) => {
+    let newUser = req.body;
+    const errors = [];
+
+    if (!validator.isEmail(newUser.email)) {
+        errors.push({ message: 'E-mail is invalid' });
+    }
+
+    if (validator.isEmpty(newUser.password) || !validator.isLength(newUser.password, { min: 5 })) {
+        errors.push({ message: 'Password to short! You must enter min. 5 signs' });
+    }
+
+    if (validator.isEmpty(newUser.lastName)) {
+        errors.push({ message: "Lastname field can't be empty!" });
+    }
+
+    if (validator.isEmpty(newUser.firstName)) {
+        errors.push({ message: "Firstname field can't be empty!" });
+    }
+
+    if (validator.isEmpty(newUser.subject) && newUser.status === 'teacher') {
+        errors.push({ message: "For teacher user must be subject choiced!" });
+    }
+
+    if (!validator.isLength(newUser.telephone, { min: 18, max: 18 })) {
+        errors.push({ message: 'Phone is invalid' });
+    }
+
+    try {
+
+        if (errors.length) {
+            const error = new Error('Validation failed: ');
+            error.data = errors;
+            error.statusCode = 422;
+            throw error;
+        }
+
+        const existingUser = await User.findOne({ email: newUser.email });
 
         if (existingUser) {
             const error = new Error('Email address already exists');
@@ -123,7 +179,7 @@ exports.addUser = async (req, res, next) => {
         user.id = uuid.v4();
         res.status(200).json(await user.save());
     } catch (err) {
-        
+
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -160,25 +216,25 @@ exports.updateUser = async (req, res, next) => {
     const errors = [];
 
     if (!validator.isEmail(userAfterChange.email)) {
-        errors.push({message: 'E-mail is invalid'});
+        errors.push({ message: 'E-mail is invalid' });
     }
 
     if (validator.isEmpty(userAfterChange.lastName)) {
-        errors.push({message: "Lastname field can't be empty!"});
+        errors.push({ message: "Lastname field can't be empty!" });
     }
 
     if (validator.isEmpty(userAfterChange.firstName)) {
-        errors.push({message: "Firstname field can't be empty!"});
+        errors.push({ message: "Firstname field can't be empty!" });
     }
 
-    if (!validator.isLength(userAfterChange.telephone, {min: 18, max: 18})) {
-        errors.push({message: 'Phone is invalid'});
+    if (!validator.isLength(userAfterChange.telephone, { min: 18, max: 18 })) {
+        errors.push({ message: 'Phone is invalid' });
     }
 
     if (isPassword) {
 
-        if (validator.isEmpty(userAfterChange.newPassword) || !validator.isLength(userAfterChange.newPassword, {min: 5})) {
-            errors.push({message: 'Password to short! You must enter min. 5 signs'});
+        if (validator.isEmpty(userAfterChange.newPassword) || !validator.isLength(userAfterChange.newPassword, { min: 5 })) {
+            errors.push({ message: 'Password to short! You must enter min. 5 signs' });
         }
     }
 
@@ -190,7 +246,7 @@ exports.updateUser = async (req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
-        
+
         let user = await User.findOne({ id: userAfterChange.id });
 
         if (!user) {
@@ -199,7 +255,7 @@ exports.updateUser = async (req, res, next) => {
             throw error;
         }
 
-        let checkUser = await User.findOne({email: userAfterChange.email});
+        let checkUser = await User.findOne({ email: userAfterChange.email });
 
         if (checkUser && user.email !== userAfterChange.email) {
             const error = new Error('Email address already exists');

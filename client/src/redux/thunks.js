@@ -125,6 +125,33 @@ export const loadUserByLogin = login => {
     }
 };
 
+export const resetPasswordRequest = email => {
+    return async dispatch => {
+        dispatch(startRequest());
+        console.log('resetHandling: ' + email);
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.post(`${API_URL}/reset`, { email });
+            console.log(res.data);
+            dispatch(stopRequest());
+        } catch(err) {
+
+            if (err.response !== undefined) {
+                let errorInfo = err.response.data.message;
+
+                if (err.response.data.data !== undefined) {
+                    err.response.data.data.forEach(item => {
+                        errorInfo += `${item.message}, `
+                    })
+                }
+                dispatch(errorRequest(errorInfo));
+            } else {
+                dispatch(errorRequest(err.message));
+            }
+        }
+    }
+}
+
 export const addUser = user => {
     return async dispatch => {
         dispatch(startRequest());
