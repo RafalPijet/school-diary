@@ -16,7 +16,8 @@ import componentStyle from "./UserFormStyle";
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const UserForm = props => {
-    const { isLogin, subjects, resetRequest, loadUser, addUser, registerAfter, setRegisterAfter, resetPassword } = props;
+    const { isLogin, subjects, resetRequest, loadUser, addUser, registerAfter,
+         setRegisterAfter, resetPassword, alertSuccess, resetAlertSuccess } = props;
     const { pending, error, success } = props.request;
     const [login, setLogin] = useState({
         email: '',
@@ -97,6 +98,13 @@ const UserForm = props => {
         setIsAccept(true);
 
         if (error !== null) resetRequest();
+
+        if (alertSuccess.isOpen) {
+            let email = alertSuccess.message.substring(26, alertSuccess.message.length);
+            email = email.substring(0, email.indexOf(' '));
+            setLogin({email: email, password: ''});
+            resetAlertSuccess(false, '');
+        } 
     };
 
     const sendData = () => {
@@ -122,6 +130,17 @@ const UserForm = props => {
 
     const resetHandling = () => {
         resetPassword(login.email);
+    }
+
+    const alertMessage = () => {
+
+        if (error) {
+            return error
+        }
+
+        if (alertSuccess.isOpen) {
+            return alertSuccess.message
+        }
     }
 
     if (pending) {
@@ -204,11 +223,11 @@ const UserForm = props => {
                     </Grid>
                 </Grid>
                 <Alert
-                    message={error !== null ? error : 'The user has been registered'}
+                    message={error !== null || alertSuccess.isOpen ? alertMessage() : 'The user has been registered'}
                     variant={error !== null ? 'error' : 'success'}
-                    isOpenAlert={isAlert}
+                    isOpenAlert={isAlert || alertSuccess.isOpen}
                     handleCloseHandling={handleCloseHandling}
-                    duration={error !== null ? 5000 : 2000}
+                    duration={error !== null || alertSuccess.isOpen ? 5000 : 2000}
                 />
             </Paper>
         )
@@ -224,7 +243,9 @@ UserForm.propTypes = {
     isLogin: PropTypes.bool,
     request: PropTypes.object.isRequired,
     subjects: PropTypes.object.isRequired,
-    registerAfter: PropTypes.object.isRequired
+    registerAfter: PropTypes.object.isRequired,
+    alertSuccess: PropTypes.object.isRequired,
+    resetAlertSuccess: PropTypes.func.isRequired
 };
 
 export default UserForm;

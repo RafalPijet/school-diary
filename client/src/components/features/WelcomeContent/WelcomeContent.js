@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {makeStyles} from "@material-ui/core/styles";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
     Paper,
     Typography,
@@ -12,6 +14,7 @@ import Grow from "@material-ui/core/Grow";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import componentStyle from "./WelcomeContentStyle";
+import { getAlertSuccess, setAlertSuccess } from '../../../redux/actions/valuesActions';
 import showImage1 from '../../../images/showImage1.png';
 import showImage2 from '../../../images/showImage2.png';
 import showImage3 from '../../../images/showImage3.png';
@@ -26,6 +29,7 @@ import showImage11 from '../../../images/showImage11.png';
 import showImage12 from '../../../images/showImage12.png';
 import showImage13 from '../../../images/showImage13.png';
 import showImage14 from '../../../images/showImage14.png';
+import Alert from '../../common/Alert/Alert';
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
@@ -88,7 +92,8 @@ const collection = [
     }
 ];
 
-const WelcomeContent = () => {
+const WelcomeContent = props => {
+    const { alertSuccess, resetAlertSuccess } = props;
     const top = 30;
     const between = 20;
     const bottom = 10;
@@ -316,8 +321,28 @@ const WelcomeContent = () => {
                     </Tooltip>
                 </div>
             </div>
+            <Alert
+                message={alertSuccess.message}
+                variant="success"
+                isOpenAlert={alertSuccess.isOpen}
+                handleCloseHandling={() => resetAlertSuccess(false, '')}
+                duration={5000}
+            />
         </Paper>
     )
 };
 
-export default WelcomeContent;
+WelcomeContent.propTypes = {
+    alertSuccess: PropTypes.object.isRequired,
+    resetAlertSuccess: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+    alertSuccess: getAlertSuccess(state)
+})
+
+const mapDispatchToProps = dispatch => ({
+    resetAlertSuccess: (isOpen, message) => dispatch(setAlertSuccess(isOpen, message))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContent);

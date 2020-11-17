@@ -7,12 +7,14 @@ import { Paper, Grid, TextField, Typography } from "@material-ui/core";
 import DoneIcon from '@material-ui/icons/Done';
 import Fab from '@material-ui/core/Fab';
 import Spinner from '../../common/Spinner/Spinner';
+import Alert from '../../common/Alert/Alert';
 import componentStyle from '../UserForm/UserFormStyle';
 
 const useStyles = makeStyles(theme => componentStyle(theme));
 
 const NewPassword = props => {
     const { success, error, pending } = props.request;
+    const { changePassword, resetRequest } = props;
     const [data, setData] = useState({
         password: '',
         confirm: ''
@@ -20,19 +22,32 @@ const NewPassword = props => {
     const [isError, setIsError] = useState(false);
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState('');
+    const [isAccept, setIsAccept] = useState(false);
     const classes = useStyles();
     let location = useLocation().pathname;
 
     useEffect(() => {
-        location = location.substring(8, location.length);
-        let index = location.indexOf('/');
-        setEmail(location.substring(0, index));
-        setToken(location.substring(index + 1, location.length));
+        let path = location.substring(8, location.length);
+        let index = path.indexOf('/');
+        setEmail(path.substring(0, index));
+        setToken(path.substring(index + 1, path.length));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        setIsAccept(data.password.length && data.confirm.length && data.password === data.confirm);
+
+        if (isAccept) {
+            setIsError(data.password.length > 0 && data.confirm.length > 0 && data.password !== data.confirm);
+        }
+    }, [data.password, data.confirm, isAccept]);
+
     const handleTextField = event => {
         setData({ ...data, [event.target.name]: event.target.value })
+    };
+
+    const changePasswordHandling = () => {
+        changePassword(token, data);
     };
 
     if (pending) {
@@ -65,11 +80,20 @@ const NewPassword = props => {
                             color='primary'
                             className={classes.button}
                             aria-label='add'
+                            disabled={!isAccept}
+                            onClick={changePasswordHandling}
                         >
                             <DoneIcon />
                         </Fab>
                     </Grid>
                 </Grid>
+                <Alert
+                    message={error}
+                    variant='error'
+                    isOpenAlert={error !== null}
+                    duration={5000}
+                    handleCloseHandling={() => resetRequest()}
+                />
             </Paper>
         )
     }
@@ -77,7 +101,9 @@ const NewPassword = props => {
 }
 
 NewPassword.propTypes = {
-    request: PropTypes.object.isRequired
+    request: PropTypes.object.isRequired,
+    changePassword: PropTypes.func.isRequired,
+    resetRequest: PropTypes.func.isRequired
 }
 
 export default NewPassword;

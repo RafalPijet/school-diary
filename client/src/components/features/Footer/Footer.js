@@ -81,6 +81,10 @@ const Footer = props => {
                 default:
                     setInfoContent(welcomeDescription.home);
             }
+
+            if (path.includes('change')) {
+                setInfoContent(welcomeDescription.reset);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogin, path]);

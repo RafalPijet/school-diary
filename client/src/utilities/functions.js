@@ -160,13 +160,19 @@ export const welcomeDescription = {
     login: [
         'Enter your email address and password.',
         'The system will check whether you are a registered user.',
-        'If the password is not correct, enter it again'
+        'If the password is not correct, enter it again',
+        'If you have forgotten your password, you can reset it.'
     ],
     registration: [
         'Select your user type. If you are a teacher, choose your subject.',
         'Enter the remaining data and set your password.',
         'After entering all data correctly, the gray button will turn green.',
         'Press the button. If everything goes right, the system will take you to the login section.'
+    ],
+    reset: [
+        'Set a new password for the account you want to reset',
+        'Confirm new password. Remember that the passwords must be the same.',
+        'Press the button. If all goes well, the system will take you to the login section'
     ]
 };
 

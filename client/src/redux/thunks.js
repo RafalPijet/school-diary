@@ -128,13 +128,42 @@ export const loadUserByLogin = login => {
 export const resetPasswordRequest = email => {
     return async dispatch => {
         dispatch(startRequest());
-        console.log('resetHandling: ' + email);
+        
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
             let res = await axios.post(`${API_URL}/reset`, { email });
-            console.log(res.data);
+            dispatch(setPath('/'));
+            dispatch(setAlertSuccess(true, res.data.message));
             dispatch(stopRequest());
-        } catch(err) {
+        } catch (err) {
+
+            if (err.response !== undefined) {
+                let errorInfo = err.response.data.message;
+
+                if (err.response.data.data !== undefined) {
+                    err.response.data.data.forEach(item => {
+                        errorInfo += `${item.message}, `
+                    })
+                }
+                dispatch(errorRequest(errorInfo));
+            } else {
+                dispatch(errorRequest(err.message));
+            }
+        }
+    }
+}
+
+export const changePasswordRequest = (token, data) => {
+    return async dispatch => {
+        dispatch(startRequest());
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            let res = await axios.post(`${API_URL}/change/password`, { token, data });
+            dispatch(setAlertSuccess(true, res.data.message));
+            dispatch(stopRequest());
+            dispatch(setPath('/login'));
+        } catch (err) {
 
             if (err.response !== undefined) {
                 let errorInfo = err.response.data.message;
@@ -955,7 +984,7 @@ export const addStudentRequest = student => {
         dispatch(startAddingRequest());
         clearTimeout(timer);
         setExpiryDate(15);
-        
+
         try {
             let res = await axios.post(`${API_URL}/student`, student, {
                 headers: {
@@ -968,7 +997,7 @@ export const addStudentRequest = student => {
             setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
-            
+
             if (err.response !== undefined) {
                 let errorInfo = err.response.data.message;
 
@@ -990,7 +1019,7 @@ export const updateUserDataRequest = (isPassword, isDataChange, userAfterChange)
         dispatch(startUpdatingRequest());
         clearTimeout(timer);
         setExpiryDate(15);
-        
+
         try {
             let res = await axios.put(`${API_URL}/users`, { isPassword, isDataChange, userAfterChange },
                 {
@@ -1100,7 +1129,7 @@ export const updateStudentBasicDataRequest = student => {
             setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {
-            
+
             if (err.response !== undefined) {
                 let errorInfo = err.response.data.message;
 

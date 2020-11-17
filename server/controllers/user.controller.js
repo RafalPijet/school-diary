@@ -110,17 +110,71 @@ exports.resetPassword = async (req, res, next) => {
         user.resetToken = token;
         user.resetTokenExpiration = Date.now() + 3600000;
         await user.save();
-        console.log(`${process.env.URL}/reset/${token}`);
         transporter.sendMail({
             to: email,
             from: 'stronglopez@wp.pl',
             subject: 'Password reset',
             html: `
-            <p>You requested a password reset</p>
-            <p>Click this <a href="${process.env.URL}/change/${email}/${token}">link</a> to set new password</p>
+            <h2>your school diary information</h2>
+            <h3>Hello ${user.firstName} ${user.lastName}</h3>
+            <h3>You requested a password reset</h3>
+            <h3>Click this <a href="${process.env.URL}/change/${email}/${token}">link</a> to set new password</h3>
         `
         });
-        res.status(200).json({email});
+        res.status(200).json({message: `Hello ${user.firstName} ${user.lastName}. Check your email box ${user.email}`});
+    } catch (err) {
+
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.changePassword = async (req, res, next) => {
+    const {token, data} = req.body;
+    const errors = [];
+
+    if (!validator.isLength(data.password, {min: 5}) || !validator.isLength(data.confirm, {min: 5})) {
+        errors.push({message: 'Password to short! You must enter min. 5 signs.'});
+    }
+
+    if (data.password !== data.confirm) {
+        errors.push({message: 'Password and confirmation must be identical.'});
+    }
+
+    if (!validator.isLength(token)) {
+        errors.push({message: 'Invalid token.'});
+    }
+
+    try {
+
+        if (errors.length) {
+            const error = new Error('Validation failed: ');
+            error.data = errors;
+            error.statusCode = 422;
+            throw error;
+        }
+        const email = cryptoJS.AES.decrypt(token, process.env.SECRET_KEY).toString(cryptoJS.enc.Utf8);
+        const user = await User.findOne({resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+        
+        if (!user) {
+            const error = new Error('Password change date has expired!');
+            error.statusCode = 409;
+            throw error;
+        }
+        
+        if (user.email !== email) {
+            const error = new Error('User search error!');
+            error.statusCode = 409;
+            throw error;
+        }
+
+        user.password = cryptoJS.AES.encrypt(data.password, process.env.SECRET_KEY).toString();
+        user.resetToken = '';
+        await user.save();
+        res.status(200).json({message: `User password for account ${email} has been changed`});
+
     } catch (err) {
 
         if (!err.statusCode) {
