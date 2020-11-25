@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const path = require('path');
 const sanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
-const loadTestData = require('./dataTest');
 const userRouter = require('./routes/user.routes');
 const classRouter = require('./routes/class.routes');
 const ratingRouter = require('./routes/rating.routes');
@@ -35,7 +34,7 @@ app.use((error, req, res, next) => {
     const data = error.data;
     res.status(status).json({message, data});
 });
-// app.use(express.static(path.join(__dirname, '/../client/build')));
+app.use(express.static(path.join(__dirname, '/../client/build')));
 
 mongoose.connect(process.env.DB, {
     useNewUrlParser: true,
@@ -44,13 +43,12 @@ mongoose.connect(process.env.DB, {
 let db = mongoose.connection;
 db.once('open', () => {
     console.log('Connected to database');
-    // loadTestData();
 });
 
 db.on('error', err => console.log("Error connection: " + err));
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname + '/../client/build/index.html'))
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../client/build/index.html'));
+});
 
 app.listen(config.PORT, () => console.log(`Server is running on port: ${config.PORT}`));

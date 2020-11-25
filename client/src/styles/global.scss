@@ -47,3 +47,10 @@ button {
   background-color: #343A40;
   border: none;
 }
+
+@media (max-width: 1300px) {
+
+  .show-off {
+    display: none
+  }
+}
