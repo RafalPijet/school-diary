@@ -53,6 +53,14 @@ const ParentsHandling = props => {
 
     useEffect(() => {
 
+        if (!allStudents.length) {
+            loadStudents();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allStudents.length, request.working])
+
+    useEffect(() => {
+
         if (location === '/parents/available' && available.length && !isLocation) {
             setIsLocation(true);
             loadStudents();
@@ -68,6 +76,7 @@ const ParentsHandling = props => {
         }
 
         if (allStudents.length && !isReady && !available.length) {
+            console.log(allStudents.length);
             setReady(true);
             loadParents(page + 1, 7);
         }

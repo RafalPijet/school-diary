@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from "clsx";
-import {makeStyles} from "@material-ui/core/styles";
-import {AppBar, Tabs, Tab, Paper, Typography} from "@material-ui/core";
-import {Zoom} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { AppBar, Tabs, Tab, Paper, Typography } from "@material-ui/core";
+import { Zoom } from "@material-ui/core";
 import Spinner from "../../common/Spinner/Spinner";
 import ModalAreYouSure from "../../common/ModalAreYouSure/ModalAreYouSure";
 import componentStyle from "./ClassesContentStyle";
-import {a11yProps, sortByNameFromAToZ} from "../../../utilities/functions";
+import { a11yProps, sortByNameFromAToZ } from "../../../utilities/functions";
 import ClassContent from "../ClassContent/ClassContentContainer";
 
 const useStyles = makeStyles(theme => componentStyle(theme));
@@ -30,7 +30,9 @@ const ClassesContent = props => {
         teachers,
         modalYesNot,
         deleteClass,
-        setModalYesNot
+        setModalYesNot,
+        setAddingIsDone,
+        addingIsDone
     } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -40,6 +42,17 @@ const ClassesContent = props => {
     const [filteredClass, setFilteredClass] = useState(allClasses);
     const [classGradeIn, setClassGradeIn] = useState('none');
     const [isDelete, setIsDelete] = useState(false);
+
+    useEffect(() => {
+
+        if (addingIsDone) {
+            setValue(0);
+            setNewValue(0);
+            prepareContentClass();
+            setAddingIsDone(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addingIsDone])
 
     useEffect(() => {
 
@@ -114,7 +127,7 @@ const ClassesContent = props => {
         await deleteClass(modalYesNot.content.data.id);
         await setSelectedClass({});
         setIsDelete(false);
-        setModalYesNot(false, {description: '', data: {}});
+        setModalYesNot(false, { description: '', data: {} });
     };
 
     return (
@@ -134,23 +147,23 @@ const ClassesContent = props => {
                         >
                             {filteredClass.map((item, i) => {
                                 return <Tab className={classes.tabs} key={item.id} disabled={request.geting}
-                                            label={item.name}  {...a11yProps(i)}/>
+                                    label={item.name}  {...a11yProps(i)} />
                             })}
                         </Tabs>
                     </AppBar>
                     <Paper className={classes.content}>
-                        {request.geting ? <Spinner style={{marginLeft: '92px', marginTop: '55px'}}/> :
+                        {request.geting ? <Spinner style={{ marginLeft: '92px', marginTop: '55px' }} /> :
                             <Zoom
                                 in={isShow}
                                 timeout={500}
                                 onExited={isDelete ? deleteGo : changeClass}
                             >
-                                <Paper elevation={4} style={{width: '100%'}}>
+                                <Paper elevation={4} style={{ width: '100%' }}>
                                     {((Object.entries(selectedClass).length > 0)) &&
-                                    <ClassContent
-                                        classItem={selectedClass}
-                                        possibleTutors={possibleTutors}
-                                    />}
+                                        <ClassContent
+                                            classItem={selectedClass}
+                                            possibleTutors={possibleTutors}
+                                        />}
                                 </Paper>
                             </Zoom>
                         }
@@ -160,7 +173,7 @@ const ClassesContent = props => {
             <ModalAreYouSure
                 description={modalYesNot.content.description}
                 isOpen={modalYesNot.isOpen}
-                isConfirm={removeClass}/>
+                isConfirm={removeClass} />
         </Paper>
     )
 };
@@ -188,7 +201,9 @@ ClassesContent.propTypes = {
     teachers: PropTypes.array.isRequired,
     modalYesNot: PropTypes.object.isRequired,
     setModalYesNot: PropTypes.func.isRequired,
-    deleteClass: PropTypes.func.isRequired
+    deleteClass: PropTypes.func.isRequired,
+    addingIsDone: PropTypes.bool.isRequired,
+    setAddingIsDone: PropTypes.func.isRequired
 };
 
 export default ClassesContent;

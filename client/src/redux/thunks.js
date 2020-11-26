@@ -52,7 +52,8 @@ import {
     setAlertSuccess,
     setTutorIsUse,
     setIsStudentMode,
-    setPath
+    setPath,
+    setAddingIsDone
 } from "./actions/valuesActions";
 import store from './store';
 import { clearLocalStorage, countRemainingTime } from '../utilities/functions';
@@ -665,7 +666,7 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
         }
     }
 };
-
+//todo
 export const loadParentsRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startRequest());
@@ -682,7 +683,8 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            const allStudents = store.getState().students.allStudents;
+            const allStudents = await store.getState().students.allStudents;
+            console.log(allStudents);
             let studentsId = [];
             await parents.data.forEach(parent => {
                 let studentsForParent = [];
@@ -694,6 +696,7 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                     }
                 });
                 parent.students = studentsForParent;
+                // console.log(parent.students);
             });
 
             if (studentsId.length) {
@@ -720,6 +723,7 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                     return student;
                 })
             });
+            console.log(allParents);
             dispatch(loadParents(allParents));
             setLogout(dispatch);
             dispatch(stopRequest());
@@ -746,6 +750,7 @@ export const addClassRequest = payload => {
             dispatch(addNewClass(newClass));
             dispatch(setAlertSuccess(true, `${payload.name} has been added.`));
             dispatch(setTutorIsUse(true));
+            dispatch(setAddingIsDone(true));
             setLogout(dispatch);
             dispatch(stopAddingRequest());
         } catch (err) {

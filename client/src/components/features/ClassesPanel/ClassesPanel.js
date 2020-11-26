@@ -198,7 +198,7 @@ ClassesPanel.propTypes = {
     getClassGrade: PropTypes.func.isRequired,
     getPossibleTutors: PropTypes.func.isRequired,
     tutorIsUse: PropTypes.bool.isRequired,
-    setTutorIsUse: PropTypes.func.isRequired
+    setTutorIsUse: PropTypes.func.isRequired,
 };
 
 export default ClassesPanel;
