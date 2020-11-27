@@ -39,7 +39,8 @@ import {
     startUpdatingRequest,
     stopUpdatingRequest,
     startGetingRequest,
-    stopGetingRequest
+    stopGetingRequest,
+    resetRequest
 } from "./actions/requestActions";
 import {
     loadAllStudents,
@@ -63,7 +64,9 @@ const setLogout = dispatch => {
     timer = setTimeout(() => {
         clearLocalStorage();
         dispatch(setLogin(false));
+        dispatch(setUser({}));
         dispatch(setPath('/'));
+        dispatch(resetRequest());
     }, countRemainingTime())
 }
 

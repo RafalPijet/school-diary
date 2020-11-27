@@ -9,18 +9,6 @@ import Welcome from './components/pages/Welcome/Welcome';
 import Login from './components/pages/Login/Login';
 import Registration from './components/pages/Registration/Reagistration';
 import PageNotFound from './components/pages/PageNotFound/PageNotFound';
-// import StudentRatings from './components/pages/StudentRatings/StudentRatings';
-// import StudentData from './components/pages/StudentData/StudentData';
-// import Teachers from './components/pages/Teachers/Teachers';
-// import Home from './components/pages/Home/Home';
-// import HomeTeacher from './components/pages/HomeTeacher/HomeTeacher';
-// import ClassDiaries from './components/pages/ClassDiaries/ClassDiaries';
-// import TeacherData from './components/pages/TeacherData/TeacherData';
-// import HomePrincipal from './components/pages/HomePrincipal/HomePrincipal';
-// import Classes from './components/pages/Classes/Classes';
-// import Students from './components/pages/Students/Students';
-// import Parents from './components/pages/Parents/Parents';
-// import StudentTeachers from "./components/pages/StudentTeachers/StudentTeachers";
 import Logout from './components/pages/Logout/Logout';
 import ResetPassword from './components/pages/ResetPassword/ResetPassword';
 import { loadUserById } from './redux/thunks';
@@ -42,7 +30,7 @@ const App = props => {
     let pathname = useLocation().pathname;
 
     useEffect(() => {
-
+        
         if (pathname.includes('change')) {
             setPath(pathname);
             return

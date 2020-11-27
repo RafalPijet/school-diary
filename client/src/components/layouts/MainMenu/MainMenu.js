@@ -35,7 +35,7 @@ const MainMenu = props => {
     const [value, setValue] = useState('/');
 
     useEffect(() => {
-
+        
         if (path !== value) {
             setValue(path);
         }
