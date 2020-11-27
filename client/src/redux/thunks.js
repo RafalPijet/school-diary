@@ -666,7 +666,7 @@ export const loadTeachersRequestWithRange = (page, itemsPerPage) => {
         }
     }
 };
-//todo
+
 export const loadParentsRequestWithRange = (page, itemsPerPage) => {
     return async dispatch => {
         dispatch(startRequest());
@@ -684,7 +684,6 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                 }
             });
             const allStudents = await store.getState().students.allStudents;
-            console.log(allStudents);
             let studentsId = [];
             await parents.data.forEach(parent => {
                 let studentsForParent = [];
@@ -723,7 +722,6 @@ export const loadParentsRequestWithRange = (page, itemsPerPage) => {
                     return student;
                 })
             });
-            console.log(allParents);
             dispatch(loadParents(allParents));
             setLogout(dispatch);
             dispatch(stopRequest());

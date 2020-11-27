@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {useLocation} from "react-router";
 import {
     Paper,
     Grid,
@@ -49,19 +48,19 @@ const ParentsHandling = props => {
     const [isSearch, setIsSearch] = useState(false);
     const [isLocation, setIsLocation] = useState(false);
     const classes = useStyles();
-    let location = useLocation().pathname;
 
     useEffect(() => {
-
-        if (!allStudents.length) {
+        
+        if (!allStudents.length && !isReady && !available.length) {
             loadStudents();
+            setReady(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allStudents.length, request.working])
+    }, [allStudents.length])
 
     useEffect(() => {
 
-        if (location === '/parents/available' && available.length && !isLocation) {
+        if (available.length && !isLocation) {
             setIsLocation(true);
             loadStudents();
             available.forEach((item, i) => {
@@ -70,25 +69,27 @@ const ParentsHandling = props => {
             });
         }
 
-        if (!parentsName.length && !allStudents.length && !available.length) {
-            loadStudents();
+        if (!parentsName.length && !available.length) {
             loadParentName('parent');
         }
 
-        if (allStudents.length && !isReady && !available.length) {
-            console.log(allStudents.length);
-            setReady(true);
+        if (isReady && allStudents.length) {
             loadParents(page + 1, 7);
+            setReady(false);
         }
 
-        if (request.pending) setSelectedItem(0);
+        if (request.pending) {
+            setSelectedItem(0);
+            clearAvailable([]);
+            setIsLocation(false);
+        } 
 
         if (selectedParent === null && isSearch && !available.length) {
             loadParents(page + 1, 7);
             setIsSearch(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allStudents.length, parents.length, page, request.pending, selectedParent, available.length]);
+    }, [allStudents.length, parents.length, page, request.pending, selectedParent, available.length, isReady]);
 
     useEffect(() => {
         return () => {
@@ -110,6 +111,7 @@ const ParentsHandling = props => {
     };
 
     const handleChangePage = (event, newPage) => {
+        clearStudents([]);
         setReady(false);
         setPage(newPage);
     };
@@ -163,7 +165,7 @@ const ParentsHandling = props => {
             </Grid>
             <TableContainer className={classes.footer} component={Paper}>
                 <Autocomplete
-                    hidden={request.working || isLocation}
+                    hidden={request.working}
                     id='search-parent'
                     renderInput={params => <TextField {...params} label='Search parent'/>}
                     options={parentsName}
@@ -176,7 +178,7 @@ const ParentsHandling = props => {
                     <TableFooter>
                         <TableRow>
                             <MaterialPagination
-                                hidden={request.working || selectedParent !== null || isLocation}
+                                hidden={request.working || selectedParent !== null}
                                 rowsPerPageOptions={[7]}
                                 colSpan={3}
                                 count={parentsName.length}

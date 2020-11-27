@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types';
 import clsx from "clsx";
-import {Redirect} from "react-router";
 import {makeStyles} from "@material-ui/core/styles";
 import Spinner from "../../common/Spinner/Spinner";
 import {Paper, Typography, Grid, Tooltip, IconButton, Fade, TextField} from "@material-ui/core";
@@ -23,7 +22,8 @@ const StudentItem = props => {
         getStudentIdUpdated,
         studentIdUpdated,
         maxBirthDate,
-        setAvailable
+        setAvailable,
+        setPath
     } = props;
     const [data, setData] = useState({
         firstName: student.firstName,
@@ -34,7 +34,6 @@ const StudentItem = props => {
     const [isShowConfirm, setIsShowConfirm] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isDateError, setIsDateError] = useState(false);
-    const [isRedirect, setIsRedirect] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -80,7 +79,7 @@ const StudentItem = props => {
 
     const handleParents = async () => {
         await setAvailable(student.parents);
-        setIsRedirect(true);
+        setPath('/parents');
     };
 
     const handleUpdate = () => {
@@ -100,7 +99,6 @@ const StudentItem = props => {
 
     return (
         <Paper className={clsx(classes.root, isEdit && classes.item)} variant='outlined'>
-            {isRedirect && <Redirect to='/parents/available'/>}
             <Grid container>
                 <Grid item lg={6} className={classes.names}>
                     {((isUpdating && data.firstName !== student.firstName) ||
@@ -217,7 +215,8 @@ StudentItem.propTypes = {
     studentIdUpdated: PropTypes.string,
     getStudentIdUpdated: PropTypes.func.isRequired,
     maxBirthDate: PropTypes.string.isRequired,
-    setAvailable: PropTypes.func.isRequired
+    setAvailable: PropTypes.func.isRequired,
+    setPath: PropTypes.func.isRequired
 };
 
 export default StudentItem;
