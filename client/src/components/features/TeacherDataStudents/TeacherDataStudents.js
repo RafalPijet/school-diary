@@ -5,6 +5,7 @@ import clsx from "clsx";
 import {
     Paper,
     Grid,
+    Link,
     Typography,
     TableContainer,
     Table,
@@ -109,9 +110,15 @@ const TeacherDataStudents = props => {
                                 return <TeacherStudentItem key={student.id} student={student}/>
                             }) :
                             !allStudents.length ?
-                                <Typography align='center' style={{fontSize: 18}}>
-                                    You have no students assigned!
-                                </Typography> : <Spinner/>
+                            <>
+                                <Typography align='center' style={{fontSize: 20}}>
+                                    You don't have students assigned!
+                                </Typography>
+                                <Typography align='center'>Contact the principal:</Typography>
+                                <Link className={classes.email} href={'mailto:rafal.pijet@gmail.com'}>
+                                principal@gmail.com
+                                </Link>
+                            </> : <Spinner/>
                     }
                 </div>
                 <TableContainer className={classes.footer} component={Paper}>

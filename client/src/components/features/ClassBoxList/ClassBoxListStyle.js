@@ -27,6 +27,10 @@ const componentStyle = theme => ({
     tabs: {
         backgroundColor: theme.palette.action.tab,
         fontWeight: 800
+    },
+    email: {
+        color: theme.palette.action.warning,
+        fontSize: style.middleSize
     }
 });
 

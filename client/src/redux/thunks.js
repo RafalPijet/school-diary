@@ -58,7 +58,7 @@ import {
 } from "./actions/valuesActions";
 import store from './store';
 import { clearLocalStorage, countRemainingTime } from '../utilities/functions';
-let timer;
+let timer = null;
 
 const setLogout = dispatch => {
     timer = setTimeout(() => {
@@ -73,6 +73,7 @@ const setLogout = dispatch => {
 export const loadUserById = userId => {
     return async dispatch => {
         dispatch(startRequest());
+        clearTimeout(timer);
 
         try {
             let res = await axios.get(`${API_URL}/user/${userId}`, {
@@ -90,7 +91,7 @@ export const loadUserById = userId => {
                 });
             }
             await dispatch(setUser(user));
-            dispatch(stopRequest());
+            dispatch(resetRequest());
             dispatch(setLogin(true));
             dispatch(setPath('/'));
             setLogout(dispatch);

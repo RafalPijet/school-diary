@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import clsx from "clsx";
-import {Paper} from "@material-ui/core";
+import {Paper, Link} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Alert from "../../common/Alert/Alert";
 import componentStyle from "./ClassBoxListStyle";
@@ -112,7 +112,13 @@ const ClassBoxList = props => {
                                 })}
                             </Tabs>
                         </AppBar> :
-                        <Typography style={{fontSize: 18}}>You are not assigned to any class!</Typography>
+                        <>
+                            <Typography style={{fontSize: 20}}>You aren't assigned to any class!</Typography>
+                            <Typography>Contact the principal:</Typography>
+                            <Link className={classes.email} href={'mailto:rafal.pijet@gmail.com'}>
+                                principal@gmail.com
+                            </Link>
+                        </>
                     }
 
                     <Paper className={clsx(classes.root, classes.image)}>

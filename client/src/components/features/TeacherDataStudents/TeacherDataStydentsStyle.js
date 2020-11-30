@@ -33,6 +33,11 @@ const componentStyle = theme => ({
     },
     center: {
         justifyContent: 'center'
+    },
+    email: {
+        color: theme.palette.action.warning,
+        fontSize: style.middleSize,
+        textAlign: 'center'
     }
 });
 
